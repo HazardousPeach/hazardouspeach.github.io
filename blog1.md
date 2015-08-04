@@ -5,8 +5,10 @@ layout: default
 Blog
 ====
 
-|:-----:|-----|
+<table>
+<tbody>
 {% for post in site.posts %}
-| {{ post.date }} -- | [{{ post.title }}]({{ post.url }}) |
+<tr><td>{{ post.date | date: "%-d %B %Y"}} -- </td><td><a href="{{ post.url }}">{{ post.title }}</a></td></tr>
 {% endfor %}
-| hey | me |
+</tbody>
+</table>

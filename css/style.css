@@ -1,12 +1,19 @@
 body {
-  padding-top: 50px;
+    padding-top: 50px;
 }
 .content {
-  padding: 40px 15px;
-  text-align: left;
+    padding: 40px 15px;
+    text-align: left;
+    width: 1000px;
+    margin: 0 auto;
 }
 .authorpicture {
     float: right;
     height: 300px;
     width: auto;
+}
+
+.post-content {
+    margin: 30px 50px;
+    width: 70%;
 }
