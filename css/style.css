@@ -17,3 +17,7 @@ body {
     margin: 30px 50px;
     width: 70%;
 }
+p {
+    margin: 0 0 20px;
+    font-size: 14pt;
+}
