@@ -1,12 +1,15 @@
 ---
+title: Blog
 layout: default
 ---
 
 Blog
 ====
 
-There's nothing here yet, but check back later.
-
+<table>
+<tbody>
 {% for post in site.posts %}
-| {{ post.date | date_to_string }} -- | [{{ post.title }}]({{ post.url | prepend: site.baseurl }})
+<tr><td>{{ post.date | date: "%-d %B %Y"}} -- </td><td><a href="{{ post.url }}">{{ post.title }}</a></td></tr>
 {% endfor %}
+</tbody>
+</table>
