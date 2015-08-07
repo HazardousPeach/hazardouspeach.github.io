@@ -204,9 +204,9 @@ for, and each iteration adds some constant amount of error to the
 final answer [^assumption].
 
 [^assumption]: Since we need only a rough, cheap heuristic to guide
-our search, this assumption will work for now, but as we start
-expanding to look at more fragments, this assumption will probably be
-one of the first to go.
+    our search, this assumption will work for now. But as we start
+    expanding to look at more fragments, this assumption will probably be
+    one of the first to go.
 
 So what is our new notion of error? There's a lot of things we could
 pick here. End to end error of smaller inputs is still not a bad
@@ -371,4 +371,4 @@ accuracy. I hope after reading this, you have a sense of what it takes
 to give a good measurement of how well behaved a program fragment with
 loops is with respect to accuracy.
 
-Edit 7/7/15: Fixed small errors and added clarifications
+Edit 8/7/15: Fixed small errors and added clarifications
