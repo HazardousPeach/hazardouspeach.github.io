@@ -47,9 +47,8 @@ needs it to be accurate.
 So my team at the UW has decided to next tackle bringing the automated
 improvement of Herbie to program fragments containing loops which do
 floating point computation. Our research in this area is still very
-much exploratory, and we're still trying to figure out where we can
-get our foot in the door. But the possibilities of applying the Herbie
-approach to looping program fragments are looking promising.
+much exploratory, but the possibilities of applying the automated
+search of Herbie to looping program fragments are looking promising.
 
 For the rest of this post (and probably the next few), I'll be writing
 about our first forays into improving the accuracy of floating point
@@ -60,7 +59,12 @@ expressions, and you can read all about it in our
 [website](http://herbie.uwplse.org/), and on the blog of my friend and
 colleague, [Pavel Panchekha](https://pavpanchekha.com/), who has spent
 a lot of time and effort explaining some of the interesting problems
-we ran into while developing Herbie, and solutions we came up with.
+we ran into while developing Herbie, and solutions we came up
+with. Here, I want to talk about our developing techniques for
+improving the accuracy of program fragments with loops.
+
+Measuring Accuracy for Floating Point Expressions
+-------------------------------------------------
 
 So let's dive right in. When trying to search for the "best" fragment
 for any particular purpose, the first thing we need to do is define
@@ -70,11 +74,10 @@ mean by accurate. The intuitive notion is pretty simple: we want a
 fragment which is as close as possible to the "right" way of computing
 whatever we're computing. Since we're dealing with numbers here, we're
 going to assume that the "right" way of evaluating these fragments is
-using "real number semantics", that is, evaluating them as if the
-numbers are pure mathematical real numbers.
-
-Measuring Accuracy for Floating Point Expressions
--------------------------------------------------
+using "real number semantics". Here, "semantics" refers to a
+particular way of evaluating a program or expression. So, evaluating
+these fragments using "real number semantics" means evaluating them as
+if the numbers are pure mathematical real numbers.
 
 Okay, so we know what we mean by "accurate". We are looking to find
 expressions where the output when computed using floating point
@@ -87,40 +90,41 @@ average the results. Even measuring the accuracy of the expression on
 a single input, though, is a little trickier than it seems.
 
 Let's go back to our definition of accuracy: the difference between
-the expressions output when using floats, and the expressions output
-when using real numbers. For any given input, it's fairly trivial to
-find the the output of the expressions using floats. We can simply
-evaluate the expression on that input, using the hardware's float
-support. But how do we find the output of the expression when using
-real numbers? We can't directly compute using the real numbers, like
-we can with the floats. But what we can do is use software floating
-point libraries, like [GNU MPFR](www.mpfr.org/), to compute the answer
-using more bits than the 32, 64, and sometimes 80 provided by the
-hardware.
+what the expression's output is when using floats, and what it would
+be if we could use the real numbers. For any given input, it's fairly
+straightforward to find the the output of the expressions using
+floats. We can simply evaluate the expression on that input, using the
+hardware's float support. But how do we find the output of the
+expression when using real numbers? We can't directly compute using
+the real numbers, like we can with the floats. But what we can do is
+use software floating point libraries, like [GNU MPFR](www.mpfr.org/),
+to compute the answer using more bits than the 32, 64, and sometimes
+80 provided by the hardware.
 
 With MPFR we can, at the cost of a 100x-1000x slowdown, compute the
 expression using as many bits as we want. And, as the number of bits
-reaches infinity, we will eventually get the exact real number
-answer. We don't really care about the exact real number answer
-anyway, because what our expression will really be computing is some
-64-bit output, which we want to be the actual answer, rounded to the
-number of bits we're outputting. So what we really care about is
-getting some number out of MPFR such that the first 64 bits are
-correct.
+reaches infinity, in most cases we will eventually get the exact real
+number answer (there are some programs for which this is not the case,
+but we're not going to worry about those). We don't really care about
+the exact real number answer anyway, because we're not working with
+real numbers, we're working with floats. What we actually want is the
+float which is closest to the real number answer. So what we really
+care about is getting some number out of MPFR such that the first 64
+bits are correct.
 
 We're still faced with the question of how many bits to use to compute
-the "real" answer, but here we chose to use a heuristic (for those who
-don't know, a heuristic basically just an "educated guessing"
-procedure). We start with a relatively small number of bits (say, 80),
-and evaluate the expression on all of our sampled points using this
-number of bits. Then we increase the number of bits, to say 200, and
-recompute on all the inputs. Then, if any of the answers we got with
-200 bits are different from the ones we got with 80 bits, we increase
-the precision again, and repeat. We keep increasing the number of bits
-we compute with until not a single output changes. By this time we've
-usually reached a few thousand bits of precision, and can be fairly
-confident that the output's that we are testing against as the "ground
-truth" are accurate to the real number computation.
+the "real" answer, but here we chose to use a heuristic (a heuristic
+is basically just an "educated guessing" procedure). We start with a
+relatively small number of bits (say, 80), and evaluate the expression
+on all of our sampled points using this number of bits. Then we
+increase the number of bits, to say 200, and recompute on all the
+inputs. Then, if any of the answers we got with 200 bits are different
+from the ones we got with 80 bits, we increase the precision again,
+and repeat. We keep increasing the number of bits we compute with
+until not a single output changes. By this time we've usually reached
+a few thousand bits of precision, and can be fairly confident that the
+output's that we are testing against as the "ground truth" are
+accurate to the real number computation.
 
 So there you have it. To find the error of a floating point
 expression, we just sample many input points, compute their outputs
@@ -136,14 +140,11 @@ Measuring Accuracy for Floating Point *Fragments*
 
 This method of measuring error has served us very well in Herbie, and
 it works really well when all we want to measure is the error of a
-floating point expression. But now that we're moving on to considering
-program fragments with loops, the story gets a little trickier. Of
-course, we could just run each fragment end to end as a black box, and
-then use the same technique of sampling points and evaluating error
-shown above. And as long as the inputs we're sampling are
-representative of the ones the fragment will be dealing with, the only
-problem with this approach will be that is slow. The difficulties come
-when we try to make it faster.
+floating point expression. But this sampling technique requires
+running the program many times. This wasn't a problem when we were
+only looking at straight line code which was quick to evaluate
+end-to-end, but now that we're looking at program fragments with
+loops, this is in many cases too slow.
 
 Before we get into the details, let's step back and take a look at how
 we're representing looping program fragments. The way we'll find loops
@@ -182,11 +183,11 @@ them up. And let's say that when this fragment is running in the real
 world, it will have lists that are around one million items long. If
 we have to run this fragment on million item lists every time we take
 a step and want to test a new candidate, we're going to be waiting a
-long time for our improvement to finish.
+long time for our search to finish.
 
 What we'd like to be able to do is run the fragment on much smaller
 lists, say those with a hundred items, and use those faster runs to
-infer something about how the fragment will behave when its given
+infer something about how the fragment will behave when it's given
 million item lists. In this simple case, where all we want to do is
 find the sum of a list of numbers, the fragment with the most accuracy
 in summing a hundred item list is probably also the most accurate at
@@ -200,23 +201,25 @@ that the error behavior of the looping program fragments we care about
 are generally roughly linear. This means that there is some constant
 amount of error that happens regardless of how many iterations we loop
 for, and each iteration adds some constant amount of error to the
-final answer. Since we need only a rough, cheap heuristic to guide our
-search, this assumption will work for now, but as we start expanding
-to look at more fragments, this assumption will probably be one of the
-first to go.
+final answer [^assumption].
+
+[^assumption]: Since we need only a rough, cheap heuristic to guide
+our search, this assumption will work for now, but as we start
+expanding to look at more fragments, this assumption will probably be
+one of the first to go.
 
 So what is our new notion of error? There's a lot of things we could
 pick here. End to end error of smaller inputs is still not a bad
 choice, but we'll probably be served better in the long run if we pick
 something that scales up to bigger inputs well. With a linear model of
 error, the choice is fairly simple: we score each fragment during our
-search by the *slope* of it's error, that is, the best linear fit to
+search by the *slope* of its error, that is, the best linear fit to
 how its error grows.
 
 Now that we have a good notion of what it is we want to measure to get
 a handle on the accuracy of a floating point program fragment, how do
 we actually measure it? We'll want to get the error of the fragment at
-various points in it's execution. That means finding the error of the
+various points in its execution. That means finding the error of the
 fragment after zero iterations, after one iteration, after two
 iterations, and so on. For our fragment that sums a list, this
 translates to the error of summing an empty list, the error of summing
@@ -243,14 +246,17 @@ places, we're going to try to make our new semantics as similar to our
 old ones as possible.
 
 To do this, we'll define two operations on our fragments: a "step"
-operation, and a "take value" operation. The "take value" will be
+operation, and a "take value" operation. The former will move the
+program fragment forward by one step, roughly a single loop iteration,
+and the latter will get the current output of the program, if we were
+to stop it without iterating any further. The "take value" will be
 pretty simple for the expressions we already know and love: taking the
 value of some fragment or sub-expression that doesn't contain loops is
 just like evaluating it like we did before; you evaluate the
 sub-expressions or sub-fragments, and then apply the top-level
 operation to the results. Taking the value of a program fragment with
 loops is a little trickier: we don't want to actually evaluate the
-loop, because that would mean stepping it, and wouldn't portray it's
+loop, because that would mean stepping it, and wouldn't portray its
 error in the intermediary step. So instead, we want to use the current
 values of the loop variables to get some sort of answer out of the
 partially evaluated fragment. But what should this answer be? In the
@@ -260,7 +266,7 @@ what about loops that have multiple variables?  To answer this, let's
 look at the basic structure of looping segments.
 
 The loops that we're going to be looking at here eventually return a
-single value, so they can be broken down into three "parts" in a
+single value, so they can be broken down into four "parts" in a
 sense. There are some variables with initial values at the start of
 the loop. There are update rules which choose new values for the
 variables based on the old values. There is the loop condition, which
@@ -274,7 +280,7 @@ for the sub-fragment which are just plain old expressions (possibly
 containing looping fragments), and one for those that are
 loops. Taking a value of an expression is just evaluating it with our
 normal semantics; that is, taking the value of each sub-expression or
-sub-fragment, and then applying the expressions operation to
+sub-fragment, and then applying the expression's operation to
 them. Taking the value of a loop is taking the current value of the
 loop variables, and evaluating the return expression with them.
 
@@ -289,7 +295,7 @@ For a loop, stepping is pretty straightforward. If the loop condition
 is true, We just take all the loop variables, and update them using
 their updater expressions. Then, we set their initial values in the
 loop to their new, updated values. If the loop condition is false,
-then the loop will just step to it's return expression, with the
+then the loop will just step to its return expression, with the
 current values of all the loop variables substituted in. And that's
 it, the loop is one step forward.
 
@@ -306,15 +312,15 @@ loops terminate, and then will turn into a normal expression, and will
 stop stepping.
 
 So that's it. Using those procedures, we can both step a fragment, and
-take it's value at any particular step. We also know when a fragment
+take its value at any particular step. We also know when a fragment
 stops being able to step, so we have a natural stopping point for
-measuring it's error. Next, let's look at how we'll actually use these
+measuring its error. Next, let's look at how we'll actually use these
 two operations to find the error of a fragment as it steps.
 
 ### Assessing the Error of Partially Run Program Fragments
 
-Okay, so we want to know what the error of a fragment is on each step
-of it's execution. And we know how to step fragments, and take their
+Okay, so we want to know what the error of a fragment is at each step
+of its execution. And we know how to step fragments, and take their
 current values. We also know the error is the difference between an
 exact evaluation of the fragment, and a floating point evaluation. To
 find the error at each step, we'll want to get to that step, and then
@@ -364,3 +370,5 @@ of looping program fragments to find the ones with the best
 accuracy. I hope after reading this, you have a sense of what it takes
 to give a good measurement of how well behaved a program fragment with
 loops is with respect to accuracy.
+
+Edit 7/7/15: Fixed small errors and added clarifications
