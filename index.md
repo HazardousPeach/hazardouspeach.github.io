@@ -7,7 +7,7 @@ layout: default
 Alex Sanchez-Stern
 ==================
 
-Hey I'm Alex Sanchez-Stern, I'm a third year undergraduate at the
+Hey I'm Alex Sanchez-Stern, I'm a masters student at the
 University of Washington, working on a project called
 [Herbie](http://herbie.uwplse.org).
 
