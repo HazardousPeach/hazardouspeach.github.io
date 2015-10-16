@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Improving Accuracy: A Look at Sums"
+author: Alex Sanchez-Stern
+---
+
 In the last post on this site, I talked about the project I'm working
 on, Herbie. Herbie is a program that takes program fragments that
 manipulate numbers, and rewrites them to improve the accuracy of their
@@ -95,7 +101,7 @@ So, without further ado, let's dive in and learn about Kahan's magical
 compensated summation technique.
 
 Compensated Summation
------------------------------
+---------------------
 
 The trick at the heart of compensated summation is to use a second
 variable, called the error term, to hold the parts of the sum that are
@@ -154,7 +160,7 @@ In the real numbers, that formula would always be zero, since we add
 some things, and then subtract all of the same things. But in floating
 point numbers, we get the error of the addition! Since we first do the
 addition, losing some precision as our number gets too big to hold the
-smaller bits of item_i, but then subtract the big part away again, and
+smaller bits of the item, but then subtract the big part away again, and
 then subtract the item, we only have the parts of the number that were
 rounded off.
 
@@ -250,11 +256,13 @@ $$ err_i = item_i - (((sum_{i-1} + item_i + err_{i-1}) - sum_{i-1}) - err_{i-1})
 
 If we translate these new update rules back into program form, we get:
 
+~~~ lisp
 (do-list 
   ([sum 0.0 (+ sum (+ item err))]
    [err 0.0 (- item (- (- (+ sum (+ item err)) sum) err))])
   ([item lst])
   (+ sum err))
+~~~
 
 And there you have it! That's our final program, with the full power
 of compensated summation. This program will act approximately like you
