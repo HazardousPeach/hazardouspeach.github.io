@@ -8,8 +8,8 @@ In the last post on this site, I talked about the project I'm working
 on called Herbie. Herbie is a program that takes program fragments
 that manipulate numbers, and rewrites them to improve the accuracy of
 their answers. There's more background on Herbie in my last post
-(here), and you can check out the Herbie website to learn all about
-Herbie.
+[here](/2015/08/03/measuring-error.md), and you can check out the
+Herbie website to learn all about Herbie.
 
 While we've already published a paper on how Herbie can improve the
 accuracy of floating point expressions, we're still working on getting
@@ -31,6 +31,9 @@ moving object, or many more basic numerical calculations, you're going
 to end up adding a list of numbers of some form or another. So it's
 worth it to know the pitfalls of adding lists of numbers, and how you
 can avoid them.
+
+A Simple Example
+----------------
 
 For simplicity, let's look at a basic example of summing a list, where
 you're given a list of numbers, and all you need to do is add them
@@ -89,6 +92,8 @@ multiplication, the 1.23, is called the "significand". The part that
 is raised to a power, the ten is called the "base". And the power
 itself is called the "exponent".
 
+![Scientific notation]({{ site.baseurl }}images/scientificnotation.png)
+
 In the floating point numbers that exist on modern computers, the base
 is two instead of ten. With a base of two, the digit of the
 significand before the decimal point is always a one (except for some
@@ -97,13 +102,15 @@ instead only have to represent the digits after the decimal point, and
 the exponent. We call these digits after the decimal point the
 "mantissa".
 
+![Binary scientific notation]({{ site.baseurl }}images/floatnotation.png)
+
 So floating point numbers on computers have some bits to represent the
 **mantissa**, some bits to represent the **exponent**, and some bits
 to represent the **sign** (whether the number is positive or negative).
 
-////FIGURE/////
+![Floating point bit representation]({{ site.baseurl }}images/floatbits.png)
 
-Now, what happens when you add two floating point numbers, *a* and *b*?
+Now, what happens when you add two floating point numbers?
 
 Well, one of two things could happen. One number could be much larger
 than the other, in which case the result will probably be the same
@@ -112,24 +119,37 @@ magnitude (or the bigger one could be very close to jumping up an
 exponent), and the result will have a bigger exponent than both of
 them.
 
-////FIGURE////
+![Adding floating point numbers, pre-truncation]({{ site.baseurl }}images/addingpretrunc.png)
 
 Either way, the result is going to have a bigger exponent than one of
 the numbers. This means that bits on the lower end of that number are
 no longer going to be in the range that the mantissa represents, and
 they'll be dropped off. This is what we call "rounding error".
 
-////FIGURE///
+![Adding floating point numbers, post-truncation]({{ site.baseurl }}images/addingposttrunc.png)
 
 In a case like this where we have a single addition, there really
 isn't much we can do about this. No matter what we do, those small
 bits of the number won't fit in our 64-bit floating point number. But
 since those bits are so small, we usually don't care.
 
-The real problem comes when we 
+The real problem comes when we are adding more than two floats, and
+the bits that were rounded off add up to enough that they would have
+affected the final sum. When we're adding a bunch of numbers of the
+same sign, this isn't really a problem, since the sum grows at least
+as fast as the rounded off bits. But if some of your numbers are of
+the opposite sign, the sum might grow slower than your rounded off
+bits, and you lose accuracy by rounding off those bits.
+
+Adding a few numbers probably won't produce enough error to really
+affect your sum, but when you start summing lots of numbers, it can
+become a serious problem.
+
+Compensated Summation
+---------------------
 
 The solution to this problem: a trick called "compensated summation."
-The great and powerful William Kahan introduced this trick in his 1965
+The Great and Powerful William Kahan introduced this trick in his 1965
 article, "Further Remarks on Reducing Truncation Error."  Back then,
 many computers didn't support the 64-bit floating point numbers that
 we have today, and could only use much smaller floats. I wish I could
@@ -151,8 +171,7 @@ for summing.
 So, without further ado, let's dive in and learn about Kahan's magical
 compensated summation technique.
 
-Compensated Summation
----------------------
+### How it works
 
 The trick at the heart of compensated summation is to use a second
 variable, called the error term, to hold the parts of the sum that are
@@ -216,18 +235,21 @@ then subtract the item, we only have the parts of the number that were
 rounded off.
 
 Let's look at this with an example. Say we've got a sum that's
-currently 100,000. For simplicity, let's say that we can only hold 4
-digits of precision, so our number is represented 1000x10^2. Now,
-let's say that we're adding the item 101 (or 101x10^0). When we do the
-addition, we'll lose the one at the end of our item, since it's too
-small to fit in our four digits. The result will be 1001x10^2, when
-the real number answer would be 100,101. If we then subtract the old
-sum away from that, we get 1001x10^2 - 1000x10^2 = 100. Finally,
-subtracting that number from our item gets us 101 - 100 = 1. That's
-exactly the error that we lost when we added the item to the old sum.
+currently 300,000. For simplicity, let's say that we can only hold 4
+digits of precision, so our number is represented 3.000x10^5. Now,
+let's say that we're adding the item 301 (or 3.010x10^2). When we do
+the addition, we'll lose the one at the end of our item, since it's
+too small to fit in our four digits. The result will be 3.001x10^5,
+when the real number answer would be 300,301. If we then subtract the
+old sum away from that, we get 3.003x10^5 - 3.000x10^5 =
+3.00x10^2. Finally, subtracting that number from our item gets us
+3.010x10^2 - 3.000x10^2 = 1.000x10^0. That's exactly the error that we
+lost when we added the item to the old sum.
 
-Here we found the error of our computation 1000x10^2 + 101x10^0 with
+Here we found the error of our computation 3.000x10^5 + 3.01x10^2 with
 the computation:
+
+![
 
 101x10^0 - ((1000x10^2 + 101x10^0) - 1000x10^2)
    ^            ^           ^           ^
@@ -320,13 +342,12 @@ of compensated summation. This program will act approximately like you
 had a sum variable with twice as many bits, and then at the end you
 cut off half the bits at the end.
 
-Okay, so that is compensated summation in a nutshell. Now that we know
-how to transform programs which do summation into ones which do
-compensated summation, it's fairly straightforward to add this
-capability to Herbie, and finally be able to improve the program
-accuracy of our first program fragments. With this technique, we can
-effectively eliminate the error of programs that add hundreds of
-numbers. Even more complex programs, like those that calculate the
+Now that we know how to transform programs which do summation into
+ones which do compensated summation, it's fairly straightforward to
+add this capability to Herbie, and finally be able to improve the
+program accuracy of our first program fragments. With this technique,
+we can effectively eliminate the error of programs that add hundreds
+of numbers. Even more complex programs, like those that calculate the
 value of a polynomial, can be improved significantly, since many
 programs make use of adding lots of numbers in one way or another.
 
