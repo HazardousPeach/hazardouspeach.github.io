@@ -78,6 +78,56 @@ improve the accuracy of this program. It's called "compensated
 summation". But before we get into the details, let's go over some
 background.
 
+A Quick Introduction to Floating Point Sums
+-------------------------------------------
+
+Floating point numbers on computers are represented kind of like the
+"scientific notation" you might have learned about in high school. In
+this scientific notation, instead of writing numbers like 123000, you
+write them as 1.23x10^5. The part that comes before the
+multiplication, the 1.23, is called the "significand". The part that
+is raised to a power, the ten is called the "base". And the power
+itself is called the "exponent".
+
+In the floating point numbers that exist on modern computers, the base
+is two instead of ten. With a base of two, the digit of the
+significand before the decimal point is always a one (except for some
+weird cases called subnormals, but we can ignore those for now), we
+instead only have to represent the digits after the decimal point, and
+the exponent. We call these digits after the decimal point the
+"mantissa".
+
+So floating point numbers on computers have some bits to represent the
+**mantissa**, some bits to represent the **exponent**, and some bits
+to represent the **sign** (whether the number is positive or negative).
+
+////FIGURE/////
+
+Now, what happens when you add two floating point numbers, *a* and *b*?
+
+Well, one of two things could happen. One number could be much larger
+than the other, in which case the result will probably be the same
+magnitude of the larger number. Or they could be of roughly the same
+magnitude (or the bigger one could be very close to jumping up an
+exponent), and the result will have a bigger exponent than both of
+them.
+
+////FIGURE////
+
+Either way, the result is going to have a bigger exponent than one of
+the numbers. This means that bits on the lower end of that number are
+no longer going to be in the range that the mantissa represents, and
+they'll be dropped off. This is what we call "rounding error".
+
+////FIGURE///
+
+In a case like this where we have a single addition, there really
+isn't much we can do about this. No matter what we do, those small
+bits of the number won't fit in our 64-bit floating point number. But
+since those bits are so small, we usually don't care.
+
+The real problem comes when we 
+
 The solution to this problem: a trick called "compensated summation."
 The great and powerful William Kahan introduced this trick in his 1965
 article, "Further Remarks on Reducing Truncation Error."  Back then,
