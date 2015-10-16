@@ -5,10 +5,11 @@ author: Alex Sanchez-Stern
 ---
 
 In the last post on this site, I talked about the project I'm working
-on, Herbie. Herbie is a program that takes program fragments that
-manipulate numbers, and rewrites them to improve the accuracy of their
-answers. There's more background on Herbie in my last post (here), and
-you can check out the Herbie website to learn all about Herbie.
+on called Herbie. Herbie is a program that takes program fragments
+that manipulate numbers, and rewrites them to improve the accuracy of
+their answers. There's more background on Herbie in my last post
+(here), and you can check out the Herbie website to learn all about
+Herbie.
 
 While we've already published a paper on how Herbie can improve the
 accuracy of floating point expressions, we're still working on getting
