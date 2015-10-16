@@ -6,6 +6,7 @@ on, Herbie. Herbie is a program that takes program fragments that
 manipulate numbers, and rewrites them to improve the accuracy of their
 answers. There's more background on Herbie in my last post (here), and
 you can check out the Herbie website to learn all about Herbie.
+
 *** Improving program fragments
 While we've already published a paper on how Herbie can improve the
 accuracy of floating point expressions, we're still working on getting
@@ -59,6 +60,11 @@ looking for more accurate versions, and we'll be presenting all of our
 program examples like this from here on out.
 
 *** Motivating numbers: summation causes error
+You might think that programs as simple as this can't have much error
+at all. But adding even as few as a thousand random 64-bit floating
+point numbers can result in losing almost half the bits in your result
+from rounding error.
+
 *** Can't tackle this with expression herbie
 *** Compensated Summation!
 ** Background
@@ -67,22 +73,23 @@ program examples like this from here on out.
 *** What compensated summation gives you
 The solution to this problem: a trick called "compensated summation."
 The great and powerful William Kahan introduced this trick in his 1965
-article, "Further Remarks on Reducing Truncation Error." Back then,
+article, "Further Remarks on Reducing Truncation Error."  Back then,
 many computers didn't support the 64-bit floating point numbers that
-we have today, and could only use 32-bit floats. Unfortunately, even
-back then they ran into sequences numbers they wanted to sum that
-would lose precision if they were only summed with 32-bit floats, and
-needed 64-bits to get acceptable precision. Kahan wrote about this
-compensated summation trick as a way to get the advantages of using
-64-bits on a machine that only supported 32-bit floats.
+we have today, and could only use much smaller floats. I wish I could
+tell you how much smaller, but unfortunately, floating point wasn't
+standardized back then, so different computers had different sizes of
+floating point. Even back then they ran into sequences numbers they
+wanted to sum that would lose precision with the width of float they
+had. Kahan wrote about this compensated summation trick as a way to
+get the advantages of using twice as many bits as the machine
+supported.
 
 Today, support for 64-bit floats is ubiquitous on our computing
 devices. But 64-bit floats still aren't enough to get an accurate sum
 in lots of applications. Luckily, Kahan's summation technique can
 double the precision of your sum no matter how many bits you start
-with: just like it could make a 32-bit machine look like it used
-64 bits to do the sum, it can make a 64-bit machine look like it used
-128 bits for summing.
+with: today, it can make a 64-bit machine look like it used 128 bits
+for summing.
 
 So, without further ado, let's dive in and learn about Kahan's magical
 compensated summation technique.
