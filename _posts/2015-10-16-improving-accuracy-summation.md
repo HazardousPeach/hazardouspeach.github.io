@@ -4,33 +4,32 @@ title: "Improving Accuracy: A Look at Sums"
 author: Alex Sanchez-Stern
 ---
 
-In the last post on this site, I talked about the project I'm working
-on called Herbie. Herbie is a program that takes program fragments
-that manipulate numbers, and rewrites them to improve the accuracy of
-their answers. There's more background on Herbie in my last post
+In the last post on this site, I talked about a project I'm working on
+called Herbie. Herbie is a project that automatically rewrites
+numerical program fragments to improve the accuracy of their
+answers. There's more background on Herbie in my last post
 [here](/2015/08/03/measuring-error.md), and you can check out the
-Herbie website to learn all about Herbie.
+Herbie website [here](herbie.uwplse.org) to learn all about it.
 
 While we've already published a paper on how Herbie can improve the
 accuracy of floating point expressions, we're still working on getting
-Herbie to improve the accuracy of more complex floating point program
-fragments, like ones with loops in them. Again, you can check out the
-last post for more background on this.
+Herbie to improve the accuracy of more complex numerical programs,
+like ones with loops in them. Again, you can check out the last post
+for more background on this.
 
 In this post, I'll be talking about a simple type of floating point
-computation that involves loops, adding a list of numbers, and the
-trick we're building into Herbie to improve the accuracy of programs
-that add lists of numbers.
+computation that involves loops, adding up many numbers, and the trick
+we're building into Herbie to improve the accuracy of programs that
+add numbers.
 
 While the basic example, taking a list of numbers that you have in
 memory and adding them together, seems like a bit of a niche case, it
-turns out that adding lists of numbers is something that shows up in
-different forms in a lot of different kinds of programs. Anytime
-you're evaluating a polynomial, multiplying two matrices, simulating a
-moving object, or many more basic numerical calculations, you're going
-to end up adding a list of numbers of some form or another. So it's
-worth it to know the pitfalls of adding lists of numbers, and how you
-can avoid them.
+turns out that adding up many numbers is something that shows up a lot
+in practice. Anytime you're evaluating a polynomial, multiplying two
+matrices, simulating a moving object, or many more basic numerical
+calculations, you're going to end up adding up many numbers of some
+form or another. So it's worth it to know the pitfalls of adding lots
+of numbers, and how you can avoid them.
 
 A Simple Example
 ----------------
@@ -74,7 +73,7 @@ or another, this can end up being a serious problem.
 
 While the previous version of Herbie, which only operated on loop free
 programs, could improve the accuracy of a straight-line summation of a
-few numbers, without support for loops, there's no way to improve the
+few numbers, without support for loops there's no way to improve the
 accuracy of a sum of an arbitrary number of items. Fortunately, once
 we extend the tool to reason about loops, there is a way we can
 improve the accuracy of this program. It's called "compensated
@@ -86,7 +85,7 @@ A Quick Introduction to Floating Point Sums
 
 Floating point numbers on computers are represented kind of like the
 "scientific notation" you might have learned about in high school. In
-this scientific notation, instead of writing numbers like 123000, you
+this scientific notation, instead of writing numbers like 123,000, you
 write them as 1.23x10^5. The part that comes before the
 multiplication, the 1.23, is called the "significand". The part that
 is raised to a power, the ten is called the "base". And the power
@@ -97,7 +96,7 @@ itself is called the "exponent".
 In the floating point numbers that exist on modern computers, the base
 is two instead of ten. With a base of two, the digit of the
 significand before the decimal point is always a one (except for some
-weird cases called subnormals, but we can ignore those for now), we
+weird cases called subnormals, but we can ignore those for now). So we
 instead only have to represent the digits after the decimal point, and
 the exponent. We call these digits after the decimal point the
 "mantissa".
@@ -114,32 +113,34 @@ Now, what happens when you add two floating point numbers?
 
 Well, one of two things could happen. One number could be much larger
 than the other, in which case the result will probably be the same
-magnitude of the larger number. Or they could be of roughly the same
-magnitude (or the bigger one could be very close to jumping up an
-exponent), and the result will have a bigger exponent than both of
-them.
+magnitude of the larger number. Otherwise, the numbers could have
+roughly the same magnitude (or the bigger one could be very close to
+jumping up an exponent), and the result will have a bigger exponent
+than both of them.
 
 ![Adding floating point numbers, pre-truncation]({{ site.baseurl }}images/addingpretrunc.png)
 
 Either way, the result is going to have a bigger exponent than one of
-the numbers. This means that bits on the lower end of that number are
-no longer going to be in the range that the mantissa represents, and
-they'll be dropped off. This is what we call "rounding error".
+the numbers. Since the mantissa only has so many bits, this means that
+bits on the lower end of the smaller number are no longer going to be
+in the range that the mantissa represents, and they'll be dropped
+off. This is what we call "rounding error".
 
 ![Adding floating point numbers, post-truncation]({{ site.baseurl }}images/addingposttrunc.png)
 
 In a case like this where we have a single addition, there really
 isn't much we can do about this. No matter what we do, those small
-bits of the number won't fit in our 64-bit floating point number. But
+bits of the number won't fit in our 64-bit floating point number. And
 since those bits are so small, we usually don't care.
 
 The real problem comes when we are adding more than two floats, and
 the bits that were rounded off add up to enough that they would have
-affected the final sum. When we're adding a bunch of numbers of the
-same sign, this isn't really a problem, since the sum grows at least
-as fast as the rounded off bits. But if some of your numbers are of
-the opposite sign, the sum might grow slower than your rounded off
-bits, and you lose accuracy by rounding off those bits.
+affected the final sum. Even when we're adding a bunch of numbers of
+the same sign, and the sum is growing pretty fast, the rounded off
+bits can still grow fast enough to change our final answer. And if
+some of your numbers are of the opposite sign, the sum might grow
+*much* slower than your rounded off bits, and you lose lots of
+accuracy by rounding off those bits.
 
 Adding a few numbers probably won't produce enough error to really
 affect your sum, but when you start summing lots of numbers, it can
@@ -154,26 +155,26 @@ article, "Further Remarks on Reducing Truncation Error."  Back then,
 many computers didn't support the 64-bit floating point numbers that
 we have today, and could only use much smaller floats. I wish I could
 tell you how much smaller, but unfortunately, floating point wasn't
-standardized back then, so different computers had different sizes of
-floating point. Even back then they ran into sequences numbers they
-wanted to sum that would lose precision with the width of float they
-had. Kahan wrote about this compensated summation trick as a way to
-get the advantages of using twice as many bits as the machine
-supported.
+even standardized back then, so different computers had different
+sizes of floating point. Even back then they ran into sequences
+numbers they wanted to sum that would lose precision with the size of
+float they had. Then Kahan came along and wrote about this compensated
+summation trick that could sum numbers as accurately as if you'd used
+*twice* as many bits for your sum variable, and then truncated at the
+end.
 
 Today, support for 64-bit floats is ubiquitous on our computing
 devices. But 64-bit floats still aren't enough to get an accurate sum
-in lots of applications. Luckily, Kahan's summation technique can
-double the precision of your sum no matter how many bits you start
-with: today, it can make a 64-bit machine look like it used 128 bits
-for summing.
+in lots of cases. Luckily, Kahan's summation technique can double the
+precision of your sum no matter how many bits you start with: today,
+it can make a 64-bit machine look like it used 128 bits for summing.
 
 So, without further ado, let's dive in and learn about Kahan's magical
-compensated summation technique.
+compensated summation trick.
 
 ### How it works
 
-The trick at the heart of compensated summation is to use a second
+The insight at the heart of compensated summation is to use a second
 variable, called the error term, to hold the parts of the sum that are
 too small to fit into our sum variable, but we might want later. Then,
 when this smaller part gets big enough, we add it back into our
@@ -190,9 +191,9 @@ final answer, but were rounded off too early in the original version of
 the program.
 
 To understand how exactly we get this error term to hold on to the
-parts of the sum too small to fit into the sum term, it's helpful to
-look at some code. Here is a simple program which adds the items in a
-list, without any fancy compensated summation:
+parts of the sum too small to fit into the sum variable, it's helpful
+to look at some code. Here is a simple program which adds the items in
+a list, without any fancy compensated summation:
 
 ~~~ lisp
 (do-list ;; This bit of syntax declares that we're looping over a list 
@@ -203,12 +204,12 @@ list, without any fancy compensated summation:
 ~~~
 
 Hopefully, this program fragment is pretty easy to understand. Now, to
-add compensated summation to this program, the first thing we'll want
-to do is add a error term, which we'll call "err". err, like sum,
-should also start at zero. But how do we update err? Well, err is
-supposed to hold the parts of the sum that are too small to fit in the
-sum variable. Let's do a little bit of math here to figure out what
-that means.
+add compensated summation to this, the first thing we'll want to do is
+add a error term, which we'll call "err". err, like sum, should also
+start at zero. But how do we update err? Well, err is supposed to hold
+the parts of the sum that are too small to fit in the sum
+variable. Let's do a little bit of math here to figure out what that
+means.
 
 We can say we update our sum with the rule:
 
@@ -220,40 +221,38 @@ the old sum again:
 
 $$ (sum_{i-1} + item_i) - sum_{i-1} $$
 
-We get our number back down to a scale where it can represent the bits
-that were lost, but since we passed through a bit number, we've lost
-them. Now, if we subtract that number from the item:
+We get a result which is back down to a scale where it can represent
+the bits that were lost, but since we passed through a big number,
+we've lost them. Now, if we subtract that result from the item:
 
 $$ item_i - ((sum_{i-1} + item_i) - sum_{i-1}) $$
 
+We get the error!
+
 In the real numbers, that formula would always be zero, since we add
 some things, and then subtract all of the same things. But in floating
-point numbers, we get the error of the addition! Since we first do the
+point numbers, we get the error of the addition. Since we first do the
 addition, losing some precision as our number gets too big to hold the
-smaller bits of the item, but then subtract the big part away again, and
-then subtract the item, we only have the parts of the number that were
-rounded off.
+smaller bits of the item, but then subtract the big part away again,
+and then subtract the item, we only have the parts of the number that
+were rounded off.
 
 Let's look at this with an example. Say we've got a sum that's
 currently 300,000. For simplicity, let's say that we can only hold 4
 digits of precision, so our number is represented 3.000x10^5. Now,
 let's say that we're adding the item 301 (or 3.010x10^2). When we do
 the addition, we'll lose the one at the end of our item, since it's
-too small to fit in our four digits. The result will be 3.001x10^5,
-when the real number answer would be 300,301. If we then subtract the
-old sum away from that, we get 3.003x10^5 - 3.000x10^5 =
-3.00x10^2. Finally, subtracting that number from our item gets us
-3.010x10^2 - 3.000x10^2 = 1.000x10^0. That's exactly the error that we
-lost when we added the item to the old sum.
+too small to fit in our four digits. The result will be 3.003x10^5,
+when the real number answer would be 300,301 (or 3.00301x10^5). If we
+then subtract the old sum away from that, we get 3.003x10^5 -
+3.000x10^5 = 3.000x10^2. Finally, subtracting that number from our
+item gets us 3.010x10^2 - 3.000x10^2 = 1.000x10^0, or 1. That's
+exactly the amount that we lost when we added the item to the old sum.
 
 Here we found the error of our computation 3.000x10^5 + 3.01x10^2 with
 the computation:
 
 ![How we find the error of an addition]({{ site.baseurl }}images/findingerrorformula.png)
-
-101x10^0 - ((1000x10^2 + 101x10^0) - 1000x10^2)
-   ^            ^           ^           ^
-The item     The sum     the item     the sum
 
 Now that we can find the error of each addition, we can keep track of
 this error and add it in at the end with the program:
@@ -273,8 +272,8 @@ items of a list over the program we had previously. Yay, we did it!
 
 ...but actually, we're not quite done yet. Even though this program
 can keep track of more bits of the sum while we're summing, it can't
-yet keep track of twice as many bits of precision as the original. And
-we can do better.
+yet keep track of *twice* as many bits as the original. And we can do
+better.
 
 You see, in this program the error term keeps growing with every
 addition we do. And eventually, it might get too big to hold some of
@@ -291,13 +290,13 @@ them.
 
 So how do we stop our error term from getting too big to hold some of
 the bits we care about? Instead of only adding in our error term at
-the end of the loop, let's add it in at every iteration! If we do this
-right, every time the error term get's big enough to overlap with the
-sum, we can take the part that overlaps and add it into the sum, and
-the error term will always be a little less than overlapping at the
-start of the next step. This way, we can always hold on to twice as
-much precision as either of our accumulator variables (the sum and the
-error term) could on their own.
+the end of the loop, let's add it in *every* time we go around the
+loop! If we do this right, every time the error term get's big enough
+to overlap with the sum, we can take the part that overlaps and add it
+into the sum, and the error term will always be a little less than
+overlapping at the start of the next step. This way, we can always
+hold on to twice as much precision as either of our accumulator
+variables (the sum and the error term) could on their own.
 
 To figure out how to do this right, we'll need some math again. First,
 let's look at how our update rule for the sum is going to
@@ -340,18 +339,19 @@ If we translate these new update rules back into program form, we get:
 ~~~
 
 And there you have it! That's our final program, with the full power
-of compensated summation. This program will act approximately like you
-had a sum variable with twice as many bits, and then at the end you
-cut off half the bits at the end.
+of compensated summation. This program will act approximately as if
+you had a sum variable with twice as many bits, and then at the end
+you cut off half the bits.
 
 Now that we know how to transform programs which do summation into
 ones which do compensated summation, it's fairly straightforward to
-add this capability to Herbie, and finally be able to improve the
-program accuracy of our first program fragments. With this technique,
-we can effectively eliminate the error of programs that add hundreds
-of numbers. Even more complex programs, like those that calculate the
+add this capability to Herbie. We can now finally improve the accuracy
+of our first loop program fragments. With this technique, we can
+effectively eliminate the error of programs that add hundreds of
+numbers. Even more complex programs, like those that calculate the
 value of a polynomial, can be improved significantly, since many
-programs make use of adding lots of numbers in one way or another.
+real-world programs make use of adding lots of numbers in one way or
+another.
 
 With this trick under our belt, we're well under way to preventing
-numerical inaccuracy in real world code.
+numerical inaccuracy in real-world code.
