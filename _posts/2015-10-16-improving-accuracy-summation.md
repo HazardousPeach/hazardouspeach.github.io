@@ -249,7 +249,7 @@ lost when we added the item to the old sum.
 Here we found the error of our computation 3.000x10^5 + 3.01x10^2 with
 the computation:
 
-![
+![How we find the error of an addition]({{ site.baseurl }}images/findingerrorformula.png)
 
 101x10^0 - ((1000x10^2 + 101x10^0) - 1000x10^2)
    ^            ^           ^           ^
@@ -269,6 +269,8 @@ this error and add it in at the end with the program:
 This program will significantly improve the accuracy of adding the
 items of a list over the program we had previously. Yay, we did it!
 
+![Thumbs up!](http://www.ufunk.net/wp-content/uploads/2013/03/thumbs-and-ammo-5.jpg)
+
 ...but actually, we're not quite done yet. Even though this program
 can keep track of more bits of the sum while we're summing, it can't
 yet keep track of twice as many bits of precision as the original. And
@@ -285,7 +287,7 @@ promised doubled precision. Over time, these bits might have
 accumulated enough to affect our final sum, so we don't want to lose
 them.
 
-/////FIGURE/////
+![Why we lose bits]({{ site.baseurl }}images/errandsum.png)
 
 So how do we stop our error term from getting too big to hold some of
 the bits we care about? Instead of only adding in our error term at
