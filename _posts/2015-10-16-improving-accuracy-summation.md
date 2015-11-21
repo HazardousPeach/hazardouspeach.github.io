@@ -8,8 +8,8 @@ In the last post on this site, I talked about a project I'm working on
 called Herbie. Herbie is a project that automatically rewrites
 numerical program fragments to improve the accuracy of their
 answers. There's more background on Herbie in my last post
-[here](/2015/08/03/measuring-error.md), and you can check out the
-Herbie website [here](herbie.uwplse.org) to learn all about it.
+[here](/2015/08/03/measuring-error.html), and you can check out the
+Herbie website [here](http://herbie.uwplse.org) to learn all about it.
 
 While we've already published a paper on how Herbie can improve the
 accuracy of floating point expressions, we're still working on getting
