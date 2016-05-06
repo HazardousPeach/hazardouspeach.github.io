@@ -2,14 +2,17 @@
 author: Alex Sanchez-Stern
 layout: default
 ---
-![Alex Sanchez-Stern]({{ site.baseurl }}images/me.jpg){: .authorpicture }
+![Alex Sanchez-Stern]({{ site.baseurl }}images/me2.jpg){: .authorpicture }
 
 Alex Sanchez-Stern
 ==================
 
-Hey I'm Alex Sanchez-Stern, I'm a masters student at the
-University of Washington, working on a project called
-[Herbie](http://herbie.uwplse.org).
+Hey I'm Alex Sanchez-Stern, I'm a masters student at the University of
+Washington, working on a project called
+[Herbie](http://herbie.uwplse.org). I'm graduating from the UW this
+Spring and I'll be heading off to UCSD for a PhD. I'm generally
+interested in Synthesis and Verificaiton projects, although my
+experience with verification is still pretty limited.
 
 Herbie
 ------
@@ -26,4 +29,6 @@ You can reach me at
 [asnchstr@cs.washington.edu](mailto:asnchstr@cs.washington.edu), my
 university email address, or find me in the Allen G. Center for
 Computer Science & Engineering, CSE 407 most weekdays during the
-quarter.
+quarter. My UCSD email address is
+[alexss@cs.ucsd.edu](mailto:alexss@cs.ucsd.edu), if you'd rather use
+that one.
