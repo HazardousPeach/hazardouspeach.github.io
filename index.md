@@ -7,12 +7,13 @@ layout: default
 Alex Sanchez-Stern
 ==================
 
-Hey I'm Alex Sanchez-Stern, I'm a masters student at the University of
-Washington, working on a project called
-[Herbie](http://herbie.uwplse.org). I'm graduating from the UW this
-Spring and I'll be heading off to UCSD for a PhD. I'm generally
-interested in Synthesis and Verificaiton projects, although my
-experience with verification is still pretty limited.
+Hey I'm Alex Sanchez-Stern, I'm a PhD student at the University of
+California San Diego. I'm also part of the team at the UW that built
+[Herbie](http://herbie.uwplse.org). I graduated from the UW with a
+Masters degree in the Spring of 2016. I'm generally interested in
+using synthesis to elide complex domain details, and improving the
+usability of proof assistants through better proof search and new
+meta-language frameworks.
 
 Herbie
 ------
@@ -25,10 +26,14 @@ points to find a version that's more accurate.
 Contact
 -------
 
-You can reach me at
-[asnchstr@cs.washington.edu](mailto:asnchstr@cs.washington.edu), my
-university email address, or find me in the Allen G. Center for
-Computer Science & Engineering, CSE 407 most weekdays during the
-quarter. My UCSD email address is
-[alexss@cs.ucsd.edu](mailto:alexss@cs.ucsd.edu), if you'd rather use
-that one.
+You can reach me at [alexss@eng.ucsd.edu](mailto:alexss@eng.ucsd.edu)
+my university email address.
+
+Papers
+------
+
+So far I've co-authored a few papers:
+
+[Automatically Improving Accuracy for Floating Point Expressions](http://herbie.uwplse.org/pldi15-paper.pdf)
+
+[Toward a Standard Benchmark Format and Suite for Floating-Point Analysis](http://fpbench.org/nsv16-paper.pdf)
