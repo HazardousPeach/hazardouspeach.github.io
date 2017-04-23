@@ -8,7 +8,7 @@ In the last post on this site, I talked about a project I'm working on
 called Herbie. Herbie is a project that automatically rewrites
 numerical program fragments to improve the accuracy of their
 answers. There's more background on Herbie in my last post
-[here](/2015/08/03/measuring-error.html), and you can check out the
+[here]({{ site.baseurl }}/2015/08/03/measuring-error.html), and you can check out the
 Herbie website [here](http://herbie.uwplse.org) to learn all about it.
 
 While we've already published a paper on how Herbie can improve the
@@ -91,7 +91,7 @@ multiplication, the 1.23, is called the "significand". The part that
 is raised to a power, the ten is called the "base". And the power
 itself is called the "exponent".
 
-![Scientific notation]({{ site.baseurl }}images/scientificnotation.png)
+![Scientific notation]({{ site.baseurl }}/images/scientificnotation.png)
 
 In the floating point numbers that exist on modern computers, the base
 is two instead of ten. With a base of two, the digit of the
@@ -101,13 +101,13 @@ instead only have to represent the digits after the decimal point, and
 the exponent. We call these digits after the decimal point the
 "mantissa".
 
-![Binary scientific notation]({{ site.baseurl }}images/floatnotation.png)
+![Binary scientific notation]({{ site.baseurl }}/images/floatnotation.png)
 
 So floating point numbers on computers have some bits to represent the
 **mantissa**, some bits to represent the **exponent**, and some bits
 to represent the **sign** (whether the number is positive or negative).
 
-![Floating point bit representation]({{ site.baseurl }}images/floatbits.png)
+![Floating point bit representation]({{ site.baseurl }}/images/floatbits.png)
 
 Now, what happens when you add two floating point numbers?
 
@@ -118,7 +118,7 @@ roughly the same magnitude (or the bigger one could be very close to
 jumping up an exponent), and the result will have a bigger exponent
 than both of them.
 
-![Adding floating point numbers, pre-truncation]({{ site.baseurl }}images/addingpretrunc.png)
+![Adding floating point numbers, pre-truncation]({{ site.baseurl }}/images/addingpretrunc.png)
 
 Either way, the result is going to have a bigger exponent than one of
 the numbers. Since the mantissa only has so many bits, this means that
@@ -126,7 +126,7 @@ bits on the lower end of the smaller number are no longer going to be
 in the range that the mantissa represents, and they'll be dropped
 off. This is what we call "rounding error".
 
-![Adding floating point numbers, post-truncation]({{ site.baseurl }}images/addingposttrunc.png)
+![Adding floating point numbers, post-truncation]({{ site.baseurl }}/images/addingposttrunc.png)
 
 In a case like this where we have a single addition, there really
 isn't much we can do about this. No matter what we do, those small
@@ -252,7 +252,7 @@ exactly the amount that we lost when we added the item to the old sum.
 Here we found the error of our computation 3.000x10^5 + 3.01x10^2 with
 the computation:
 
-![How we find the error of an addition]({{ site.baseurl }}images/findingerrorformula.png)
+![How we find the error of an addition]({{ site.baseurl }}/images/findingerrorformula.png)
 
 Now that we can find the error of each addition, we can keep track of
 this error and add it in at the end with the program:
@@ -286,7 +286,7 @@ promised doubled precision. Over time, these bits might have
 accumulated enough to affect our final sum, so we don't want to lose
 them.
 
-![Why we lose bits]({{ site.baseurl }}images/errandsum.png)
+![Why we lose bits]({{ site.baseurl }}/images/errandsum.png)
 
 So how do we stop our error term from getting too big to hold some of
 the bits we care about? Instead of only adding in our error term at

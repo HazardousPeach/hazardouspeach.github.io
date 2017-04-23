@@ -16,12 +16,17 @@
           {% for other_page in site.pages %}
           {% if other_page.title %}
           <li>
-            <a href={{ other_page.url }}>
+            <a href={{ site.baseurl }}{{ other_page.url }}>
               {{ other_page.title }}
             </a>
           </li>
           {% endif %}
           {% endfor %}
+          <li>
+            <a href={{ site.baseurl }}/cv.pdf>
+              CV
+            </a>
+          </li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

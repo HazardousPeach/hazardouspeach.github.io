@@ -2,7 +2,7 @@
 author: Alex Sanchez-Stern
 layout: default
 ---
-![Alex Sanchez-Stern]({{ site.baseurl }}images/me2.jpg){: .authorpicture }
+![Alex Sanchez-Stern]({{ site.baseurl }}/images/me2.jpg){: .authorpicture }
 
 Alex Sanchez-Stern
 ==================

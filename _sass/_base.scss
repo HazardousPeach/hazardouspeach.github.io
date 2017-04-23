@@ -23,6 +23,27 @@ body {
     -webkit-text-size-adjust: 100%;
 }
 
+#datecell {
+    margin: 0 auto;
+}
+#dashcell {
+    font-weight: bold;
+}
+table {
+    color: #333;
+    font-family: Helvetica, Arial, sans-serif;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+tr {
+    border: 1px solid #CCC;
+}
+td {
+    height: 30px;
+    background: #FAFAFA;
+    font-size: large;
+}
+
 
 
 /**
