@@ -47,6 +47,8 @@ them somewhere and load them later, and produce output. We'll ignore
 input from the user, and assume that all data is encoded in the
 program.
 
+![A Float Machine]({{ site.baseurl }}/images/floatmachine.png)
+
 Wait, what's a program? Okay, a program is a big list of $$n$$
 instructions, where the instructions are numbered from $$1$$ to
 $$n$$. Instructions tell the processor to do something with the data
@@ -118,7 +120,7 @@ like normal.
 
 For example, the instruction:
 
-$$ \texttt{if}\ (\text{LESS}(\texttt{memory}[57],\ \texttt{memory}[28]))\ \texttt{goto}\ 45 $$
+$$ \texttt{if}\ (\text{LESS}(\texttt{memory}[57],\ \texttt{memory}[28]))\ \texttt{goto\ 45} $$
 
 goes to go to $$\texttt{instruction[45]}$$ if the value at location 57 is less than
 the value at location 28, and just goes to the next instruction
@@ -146,10 +148,10 @@ value of the $$sin$$ of 7. This is the program we'd write:
 |1  | $$ \texttt{memory}[1] \gets Const7() $$|
 |2  | $$ \texttt{memory}[2] \gets Const0() $$|
 |3  | $$ \texttt{memory}[3] \gets sin(\texttt{memory}[1]) $$|
-|4  | $$ \texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto}\ 6 $$|
+|4  | $$ \texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto 6} $$|
 |5  | $$ \texttt{memory}[3] \gets negate(\texttt{memory}[3]) $$|
 |6  | $$ \texttt{output}\ \texttt{memory}[3]$$|
-|7  | $$ \texttt{if}\ (ConstTRUE())\ \texttt{goto}\ -1 $$|
+|7  | $$ \texttt{if}\ (ConstTRUE())\ \texttt{goto -1} $$|
 {:id .code}
 
 Let's walk through this a line at a time:
@@ -190,7 +192,7 @@ you're writing the code, you won't actually know what the inputs are.
 
 The next instruction:
 
-|4  | $$ \texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto}\ 6 $$|
+|4  | $$ \texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto 6} $$|
 {:id .code}
 
 is actually going to do the branch. Here, we run the LESS predicate
@@ -216,13 +218,13 @@ the "answer" of the program to the user.
 Finally, we're going to run $$\texttt{instruction[7]}$$ to terminate
 the program. 
 
-|7  | $$ \texttt{if}\ (ConstTRUE())\ \texttt{goto}\ -1 $$|
+|7  | $$ \texttt{if}\ (ConstTRUE())\ \texttt{goto -1} $$|
 {:id .code}
 
 This is another conditional jump, but the predicate always returns
 true. Why would we want that? Well, it allows us to jump to the
-special $$\texttt{instruction[-1]}$$ unconditionally. When the float
-machine gets to $$\texttt{instruction[-1]}$$ it stops.
+special instruction $$\texttt{instruction[-1]}$$ unconditionally. When
+the float machine gets to $$\texttt{instruction[-1]}$$ it stops.
 
 ****
 
@@ -241,7 +243,7 @@ code.
 
 However, before we do that, let's make one more modification to the
 machine. In a real computer, not all calculation is done in floating
-point. There are also more integer like types, that do almost
+point. There are also more integer-like types, that do almost
 everything in your computer. Even though you can technically emulate
 these with floats, we'll add integers to the float machine, so that we
 can talk about the distinction between code that deals with floating
@@ -250,7 +252,9 @@ point, and code that doesn't.
 Real machines put integers and floats in the same memory bank, but
 this part isn't really important for Herbgrind, so to simplify things
 we'll give an extra type of memory to our computer: `int`
-memory.`int` memory is indexed just like float memory, but contains integers
+memory.
+
+`int` memory is indexed just like float memory, but contains integers
 as values instead of floating point numbers. Since both memories have
 slots for every address, we need to have a way to tell if a program
 instruction is talking about int memory or float memory. We'll do this
@@ -259,14 +263,14 @@ take integer arguments and produce an integer, `int` branches take
 `int` predicates which operate on integers, and `int` output prints
 out an integer.
 
-We'll also add conversion operations, both float-to-int, which takes
-floating point arguments and produces an integer, and int-to-float,
+We'll also add conversion operations, both `float-to-int`, which takes
+floating point arguments and produces an integer, and `int-to-float`,
 which takes integer arguments and produces a float.
 
 And that's it! That's the Float Machine. For now that's not going to
 be very useful, inless you particularly like thinking of novel ways of
 building a computer, but in the next post, I'll talk about what
-Herbgrind does to this machine to detect and report it's error. Then,
+Herbgrind does to this machine to detect and report its error. Then,
 we'll translate that to a real machine, and get the design of
 Herbgrind.
 
