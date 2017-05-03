@@ -6,45 +6,30 @@ author: Alex Sanchez-Stern
 
 In
 the
-[previous post]({{ site.baseeurl }}/2016/04/22/introducint-herbgrind.html) here,
+[previous post]({{ site.baseurl }}/2017/04/22/introducing-herbgrind.html) here,
 I wrote about how I got started working on a new floating point
 tool, [Herbgrind](http://uwplse.github.io/herbgrind). Herbgrind is a
-dynamic analysis which finds floating point issues in a run of a
-binary, and gives you an output like this[^debuginfo]:
-
-~~~
-Result in main at diff-roots.c:21 (address 1)
-47.252184 bits average error
-64.000000 bits max error
-Aggregated over 1000 instances
-Influenced by erroneous expression:
-
-    (FPCore (x)
-      (- (sqrt (+ 1.000000 x)) (sqrt x)))
-   in main at diff-roots.c:20 (address 400A08)
-   47.252184 bits average error
-   64.000000 bits max error
-   47.250599 bits average local error
-   64.000000 bits max local error
-   Aggregated over 1000 instances
-~~~
-
-To understand how Herbgrind gets there, I want to start from the
-basics. So let's get to it.
+dynamic analysis tool that finds floating point issues in a compiled
+program. To understand how Herbgrind gets there, I want to start from
+the basics, to introduce the concepts in an easy-to-understand
+context. This post is the first in a series where we build up
+Herbgrind, starting from an abstract floating point program and
+analysis, and eventually getting to the systems which allow Herbgrind
+to find error. So let's get to it.
 
 What is a floating point program?
 ---------------------------------
 
 Well, it's a program, so it runs on some sort of machine. And it uses
 floating point, so that machine must have some way of doing floating
-point calculations. Real machines like the one you're reading this on
+point calculations. Real-world machines like the one you're reading this on
 are big and complicated, so to start, we'll talk about a much more
-basic machine. We'll call it a "Float Machine".
+basic machine. We call it a "Float Machine".
 
 To start with, we'll say our machine has three parts: a processor,
 some memory, and a display. This will let us compute on floats, store
 them somewhere and load them later, and produce output. We'll ignore
-input from the user, and assume that all data is encoded in the
+input from the user, and assume that all "inputs" are encoded in the
 program.
 
 ![A Float Machine]({{ site.baseurl }}/images/floatmachine.png)
@@ -64,17 +49,17 @@ computer.
 Let's make this a little more concrete. 
 
 #### Operations
-An operation is a function (like +, -, or sin), information about
-where the inputs come from, and information about where the output
-goes. Since memory is just a big array of values, we're going to use
-numbers to represent locations in memory. For instance, you might have
-an operation like:
+We'll define an operation as having three parts: a function (like +,
+-, or sine[^sine]), information about where the inputs come from, and
+information about where the output goes. Since memory is just a big
+array of values, we're going to use numbers to represent locations in
+memory. For instance, you might have an operation like:
 
 $$ \texttt{memory}[25] \gets \texttt{memory}[42] + \texttt{memory}[0] $$
 
 or
 
-$$ \texttt{memory}[45] \gets sin(\texttt{memory}[30]) $$
+$$ \texttt{memory}[45] \gets \sin(\texttt{memory}[30]) $$
 
 In a C-like language, you might write these as:
 
@@ -120,9 +105,9 @@ like normal.
 
 For example, the instruction:
 
-$$ \texttt{if}\ (\text{LESS}(\texttt{memory}[57],\ \texttt{memory}[28]))\ \texttt{goto\ 45} $$
+$$ \texttt{if}\ (\text{LESS}(\texttt{memory}[57],\ \texttt{memory}[28]))\ \texttt{goto 45} $$
 
-goes to go to $$\texttt{instruction[45]}$$ if the value at location 57 is less than
+skips to $$\texttt{instruction[45]}$$ if the value at location 57 is less than
 the value at location 28, and just goes to the next instruction
 otherwise.
 
@@ -143,13 +128,16 @@ the PC, just prints to the screen.
 #### A (Relatively) Simple Example
 
 Let's look at an example program. Say we want to get the absolute
-value of the $$sin$$ of 7. This is the program we'd write:
+value of the $$\sin$$ of 7. This doesn't really mean much, math-wise,
+since $$\sin$$ is a function that get's applied to angles measured in
+radians (180 degrees = $$\pi$$ radians), but it's a nice example. This
+is a program that computes what we want[^colors]:
 
 |1  | $$ \texttt{memory}[1] \gets Const7() $$|
 |2  | $$ \texttt{memory}[2] \gets Const0() $$|
-|3  | $$ \texttt{memory}[3] \gets sin(\texttt{memory}[1]) $$|
+|3  | $$ \texttt{memory}[3] \gets \sin(\texttt{memory}[1]) $$|
 |4  | $$ \texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto 6} $$|
-|5  | $$ \texttt{memory}[3] \gets negate(\texttt{memory}[3]) $$|
+|5  | $$ \texttt{memory}[3] \gets \texttt{negate}(\texttt{memory}[3]) $$|
 |6  | $$ \texttt{output}\ \texttt{memory}[3]$$|
 |7  | $$ \texttt{if}\ (ConstTRUE())\ \texttt{goto -1} $$|
 {:id .code}
@@ -164,11 +152,11 @@ the value 0 into $$\texttt{memory[2]}$$.
 
 $$\texttt{instruction[3]}$$ is our first real operation:
 
-|3  | $$ \texttt{memory}[3] \gets sin(\texttt{memory}[1]) $$|
+|3  | $$ \texttt{memory}[3] \gets \sin(\texttt{memory}[1]) $$|
 {:id .code}
 
 This line takes the value at $$\texttt{memory[1]}$$ ($$7$$), runs it
-through the $$sin$$ function, and puts the result in
+through the $$\sin$$ function, and puts the result in
 $$\texttt{memory[3]}$$. After all three of these instructions are run,
 memory looks like this:
 
@@ -178,17 +166,16 @@ memory looks like this:
 |...|...|
 {:id .memory}
 
-Now that we've got $$sin(7)$$, we next need to find it's absolute
+Now that we've got $$\sin(7)$$, we next need to find its absolute
 value, and for that we'll need a branch. If the value is less than
 zero, then we'll need to negate it.
 
-Something is funny about this though. Since the "input" is always 7,
-we know that it's $$sin$$ will always be positive, so what's the point of
-having a branch?  Well, we can imagine these programs as having a
-bunch of code written once, with some special memory locations for the
-inputs. Then, whenever someone wants to run them, they'll put their
-inputs in those memory locations, and let it run. In that case, when
-you're writing the code, you won't actually know what the inputs are.
+In this example the number $$7$$ is fixed, but in general we can
+imagine these programs as having a bunch of code written once, with
+some special memory locations for the inputs. Then, whenever someone
+wants to run them, they'll put their inputs in those memory locations,
+and let it run. In that case, when you're writing the code, you won't
+actually know what the inputs are.
 
 The next instruction:
 
@@ -199,20 +186,20 @@ is actually going to do the branch. Here, we run the LESS predicate
 over the value at $$\texttt{memory[2]}$$ and the value at
 $$\texttt{memory[3]}$$. $$\texttt{memory[2]}$$ holds 0, since we put
 it there at the beginning of the program, and $$\texttt{memory[3]}$$
-holds $$sin(7)$$. LESS will return true if $$0 < sin(7)$$, and
-false otherwise. In this case, since $$sin(7)$$ is positive, it'll be
+holds $$\sin(7)$$. LESS will return true if $$0 < \sin(7)$$, and
+false otherwise. In this case, since $$\sin(7)$$ is positive, it'll be
 true. That means that instead of just going to the next instruction
 after this one, we'll "jump" over to instruction 6.
 
-If $$sin(7)$$ were negative, we wouldn't have we hadn't jumped, and
-instruction five would have negated $$sin(7)$$, making it positive.
+If $$\sin(7)$$ were negative, we wouldn't have jumped, and instruction
+five would have negated $$\sin(7)$$, making it positive.
 
 Since we did jump, we're now at $$\texttt{instruction[6]}$$:
 
 |6  | $$ \texttt{output}\ \texttt{memory}[3]$$|
 {:id .code}
 
-which prints out the value we've computed, $$|sin(7)|$$. This provides
+which prints out the value we've computed, $$|\sin(7)|$$. This provides
 the "answer" of the program to the user.
 
 Finally, we're going to run $$\texttt{instruction[7]}$$ to terminate
@@ -249,7 +236,7 @@ these with floats, we'll add integers to the float machine, so that we
 can talk about the distinction between code that deals with floating
 point, and code that doesn't.
 
-Real machines put integers and floats in the same memory bank, but
+Real-world machines put integers and floats in the same memory bank, but
 this part isn't really important for Herbgrind, so to simplify things
 we'll give an extra type of memory to our computer: `int`
 memory.
@@ -268,10 +255,15 @@ floating point arguments and produces an integer, and `int-to-float`,
 which takes integer arguments and produces a float.
 
 And that's it! That's the Float Machine. For now that's not going to
-be very useful, inless you particularly like thinking of novel ways of
+be very useful, unless you particularly like thinking of novel ways of
 building a computer, but in the next post, I'll talk about what
-Herbgrind does to this machine to detect and report its error. Then,
-we'll translate that to a real machine, and get the design of
-Herbgrind.
+Herbgrind does to this machine to detect and report its error.
 
-[^debuginfo]: Assuming you're compiled with debug information turned on.
+[^sine]: The sine function is a trigonometric function, which can't be
+    defined through finite arithmetic formulas. It returns values
+    between -1 and 1, and repeats every 2$$\pi$$. For the purposes of this
+    post, you don't need to know exactly what it does. Sine is often
+    written "sin" in code and math.
+
+[^colors]: I'm using green for programs, and blue for memory in this
+    post.
