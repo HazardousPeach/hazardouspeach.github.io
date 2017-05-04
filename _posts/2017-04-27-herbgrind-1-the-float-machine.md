@@ -12,21 +12,34 @@ tool, [Herbgrind](http://uwplse.github.io/herbgrind). Herbgrind is a
 dynamic analysis tool that finds floating point issues in a compiled
 program. To understand how Herbgrind gets there, I want to start from
 the basics, to introduce the concepts in an easy-to-understand
-context. This post is the first in a series where we build up
-Herbgrind, starting from an abstract floating point program and
-analysis, and eventually getting to the systems which allow Herbgrind
-to find error. So let's get to it.
+context.
+
+This post is the first in a series where we build up Herbgrind,
+starting from an abstract floating point program and analysis, and
+eventually getting to the systems which allow Herbgrind to find
+floating point errors. In this post we'll define a simple machine
+which can do floating point calculation, and go over a simple example
+program. This is the machine which we'll use to define Herbgrind's
+analysis in future posts.
+
+So let's get to it.
 
 What is a floating point program?
 ---------------------------------
 
 Well, it's a program, so it runs on some sort of machine. And it uses
 floating point, so that machine must have some way of doing floating
-point calculations. Real-world machines like the one you're reading this on
-are big and complicated, so to start, we'll talk about a much more
-basic machine. We call it a "Float Machine".
+point calculations. Floating point is a number representation that
+computers use to approximate math with real numbers. It's a bit like
+"scientific notation" you might have read about in high school; for a
+bit more background on how it works, check out my post on Kahan
+summation
+[here]({{ site.baseurl }}/2015/10/16/improving-accuracy-summation.html). Real-world
+machines like the one you're reading this on are big and complicated,
+so to start, we'll talk about a much more basic machine. We call it a
+"Float Machine".
 
-To start with, we'll say our machine has three parts: a processor,
+The Float Machine has three parts: a processor,
 some memory, and a display. This will let us compute on floats, store
 them somewhere and load them later, and produce output. We'll ignore
 input from the user, and assume that all "inputs" are encoded in the
@@ -49,11 +62,12 @@ computer.
 Let's make this a little more concrete. 
 
 #### Operations
-We'll define an operation as having three parts: a function (like +,
--, or sine[^sine]), information about where the inputs come from, and
-information about where the output goes. Since memory is just a big
-array of values, we're going to use numbers to represent locations in
-memory. For instance, you might have an operation like:
+We'll define an "operation" instruction as having three parts: a
+function (like +, -, or sine[^sine]), information about where the
+inputs come from, and information about where the output goes. Since
+memory is just a big array of values, we're going to use numbers to
+represent locations in memory. For instance, you might have an
+operation like:
 
 $$ \texttt{memory}[25] \gets \texttt{memory}[42] + \texttt{memory}[0] $$
 
@@ -68,6 +82,12 @@ memory[25] = memory[42] + memory[0]
 memory[45] = sin(memory[30])
 ~~~
 
+Each of these instructions has a function ($$+$$ and $$\sin$$), memory
+locations where the inputs come from ($$\texttt{memory}[42]$$,
+$$\texttt{memory}[0]$$, and $$\texttt{memory}[30]$$), and memory
+locations where the output goes ($$\texttt{memory}[25]$$ and
+$$\texttt{memory}[45]$$.
+
 Since our language doesn't include constants explicitly, we'll
 sometimes have operations which take no arguments, and produce a
 constant result, like:
@@ -79,9 +99,9 @@ You can think of this as:
 $$ \texttt{memory}[57] \gets 4 $$
 
 #### Branches
-A branch is a little more complex, because it's going to change the
+A branch instruction is a little more complex, because it's going to change the
 control flow of our programs. Every programming language has something
-like this, in a C-like language it might look like.
+like this, in a C-like language it might look like this:
 
 ~~~ C
 if (cond(memory)) { // cond is a predicate
@@ -115,21 +135,21 @@ Finally...
 
 #### Output
 
-The last type of instruction is an output statement, like:
+The last type of instruction is an output instruction, like:
 
 $$ \texttt{output}\ \texttt{memory}[64]$$
 
 This takes a location in memory, and prints the value there to
 screen. A program can output as many times as it wants. When the user
 looks at the program's behavior, all they see is the outputs that
-printed. An output statement doesn't affect the state of memory, or
-the PC, just prints to the screen.
+printed. An output instruction doesn't affect the state of memory, or
+the PC, it just prints to the screen.
 
 #### A (Relatively) Simple Example
 
 Let's look at an example program. Say we want to get the absolute
 value of the $$\sin$$ of 7. This doesn't really mean much, math-wise,
-since $$\sin$$ is a function that get's applied to angles measured in
+since $$\sin$$ is a function that gets applied to angles measured in
 radians (180 degrees = $$\pi$$ radians), but it's a nice example. This
 is a program that computes what we want[^colors]:
 
