@@ -261,6 +261,8 @@ this part isn't really important for Herbgrind, so to simplify things
 we'll give an extra type of memory to our computer: `int`
 memory.
 
+![Another Float Machine]({{ site.baseurl }}/images/floatmachine2.png)
+
 `int` memory is indexed just like float memory, but contains integers
 as values instead of floating point numbers. Since both memories have
 slots for every address, we need to have a way to tell if a program
