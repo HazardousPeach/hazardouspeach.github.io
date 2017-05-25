@@ -9,15 +9,14 @@ the
 [previous post]({{ site.baseurl }}/2017/04/22/introducing-herbgrind.html) here,
 I wrote about how I got started working on a new floating point
 tool, [Herbgrind](http://uwplse.github.io/herbgrind). Herbgrind is a
-dynamic analysis tool that finds floating point issues in a compiled
-program. To understand how Herbgrind gets there, I want to start from
-the basics, to introduce the concepts in an easy-to-understand
-context.
+program analysis tool that finds numerical issues. To understand how
+Herbgrind gets there, I want to start from the basics, to introduce
+the concepts in an easy-to-understand context.
 
 This post is the first in a series where we build up Herbgrind,
 starting from an abstract floating point program and analysis, and
 eventually getting to the systems which allow Herbgrind to find
-floating point errors. In this post we'll define a simple machine
+numerical errors. In this post we'll define a simple machine
 which can do floating point calculation, and go over a simple example
 program. This is the machine which we'll use to define Herbgrind's
 analysis in future posts.
@@ -47,17 +46,16 @@ program.
 
 ![A Float Machine]({{ site.baseurl }}/images/floatmachine.png)
 
-Wait, what's a program? Okay, a program is a big list of $$n$$
-instructions, where the instructions are numbered from $$1$$ to
-$$n$$. Instructions tell the processor to do something with the data
-in memory, and maybe write something to the display. The machine will
-keep track of a number to tell us which instruction we're currently
-executing, called the PC, for _program counter_. There are going to be
-three types of instructions: operations on values, conditional
-branches, and output statements. It turns out, with just these three
-things (well, really just the first two, if you're willing to read the
-memory afterwards), we can write any computation that runs on any
-computer.
+Wait, what's a program? Okay, a program is a big list of instructions,
+where the instructions are numbered starting at 1. Instructions
+tell the processor to do something with the data in memory, and maybe
+write something to the display. The machine will keep track of a
+number to tell us which instruction we're currently executing, called
+the PC, for _program counter_. There are going to be three types of
+instructions: operations on values, conditional branches, and output
+statements. It turns out, with just these three things (well, really
+just the first two, if you're willing to read the memory afterwards),
+we can write any computation that runs on any computer.
 
 Let's make this a little more concrete. 
 

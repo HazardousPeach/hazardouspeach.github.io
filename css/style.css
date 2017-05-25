@@ -71,6 +71,12 @@ img.centered {
 h4 {
     font-weight: bold;
 }
+ul {
+    font-size: large
+}
+.MathJax_Display {
+    font-size: 1.2em !important;
+}
 /*Scaling*/
 @media all {html {font-size: 16px;}}
 @media all and (max-width:760px){html {font-size: 15px;}}

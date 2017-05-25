@@ -1,15 +1,15 @@
 ---
 layout: post
-title: "Herbgrind Part 2: The Herbgrind Analysis"
+title: "Herbgrind Part 2: The Real Machine"
 author: Alex Sanchez-Stern
 ---
 
 Welcome back to my series of posts on Herbgrind, a dynamic analysis
 tool that finds floating point issues in compiled programs. The
 purpose of this series is to explain how Herbgrind works and the
-principles behind it's design. To do that, we're starting with a
+principles behind its design. To do that, we're starting with a
 simple hypothetical computer called the "Float Machine", which is just
-enough to capture the interesting floating point behaviour of a real
+enough to capture the interesting floating point behavior of a real
 computer, like the one that's probably sitting on your desk.
 
 ![Herbgrind logo]({{ site.baseurl }}/images/full-logo.png){:style="width:30%" class="centered"}
@@ -18,21 +18,22 @@ In
 the
 [last post]({{ site.baseurl }}/2017/04/27/herbgrind-1-the-float-machine.html),
 we defined the Float Machine. This meant talking about how it
-executes, and what it's programs look like. In this post, I'll
-describe how Herbgrind finds error in a machine like this. In the next
-post I'll talk about how this translates to the kind of machines that
-you use every day.
+executes, and what its programs look like. In this post, I'll describe
+how Herbgrind determines how much error is in a Float Machine
+program. 
 
 Analyzing Programs for the Float Machine
 ----------------------------------------
 
 In the last post, we introduced the float machine, a simple machine
-which can run floating point programs in it's own language. This
+which can run floating point programs in its own language. This
 language has three instructions: an "operation" instruction which
 takes some values from memory, runs a floating-point function on them,
 and puts them back in memory; a "branch" instruction which jumps to a
 different part of the program if some condition holds; and an "output"
 instruction which prints a value to the screen.
+
+![A Float Machine]({{ site.baseurl }}/images/floatmachine-w-program.png){:class="centered"}
 
 We can think of Herbgrind as just another machine that runs these
 programs, but runs them slightly differently. The Herbgrind machine
@@ -41,15 +42,90 @@ information about the actual execution. But it also has some more
 sub-machines, which execute the program in other ways, and sometimes
 talk to each other.
 
-In Herbgrind, each machine solves a problem. And the first problem
-that people face when trying to find the cause of floating point
-error, is that floating point error is generally silent.
+![The Herbgrind Mystery Machine]({{ site.baseurl }}/images/herbgrind-mystery-machines.jpg){:class="centered" style="width:75%"}
 
-You see, floating point error, unlike other types of bugs in a
+The machine we'll talk about in this post is called the Real machine,
+because it executes the program in the real numbers. But first, we'll
+talk about why we need this machine. In Herbgrind, each machine solves
+a problem. And the first problem that people face when trying to find
+the cause of floating point error, is that floating point error is
+generally silent.
+
+A Primer on Silent Error
+------------------------
+
+Floating point error, unlike other types of bugs in a
 program, doesn't generally have a place where it "happens". Instead
 it's something that slowly grows through multiple instructions, so
 that at any given point it's not clear how "wrong" the computed answer
 is.
+
+This may seem counter-intuitive. After all, an answer is either wrong
+or it isn't, right? To get a sense of how error can appear without any
+particular step seeming bad, let's look at a simple example.
+
+Let's say you're computing the formula:
+
+$$ (x + 1) - x $$
+
+This formula looks reasonable (although a bit redundant) at first. A
+few simple mathematical transformation can show us that the value of
+this formula is 1 for any value of $$x$$.
+
+$$
+(x + 1) - x \\
+(1 + x) - x \\
+1 + (x - x) \\
+1 + 0 \\
+1 
+$$
+
+However, when the original formula is run in floating point, and given
+a large value of $$x$$, it'll return 0 instead of 1! For $$x =
+10^{16}$$, $$(x + 1)$$ isn't representable in floating point, so the 1
+gets rounded off. This means the entire computation goes like this:
+
+$$
+(10^{16} + 1) - 10^{16} \\
+10^{16} - 10^{16} \\
+0
+$$
+
+You can see that the error appears in the second line, when the 1
+gets rounded off, resulting in the wrong answer in the end.
+
+However, looking at each piece of the computation in isolation, it's
+not clear that anything particularly bad is happening. Just looking at
+the addition which actually causes the error, you would see:
+
+$$
+10^{16} + 1 \\
+10^{16}
+$$
+
+The correct answer is $$10^{16}+1$$, but the computation gets
+$$10^{16}$$. But, $$10^{16}$$ is actually the closest floating point
+number to $$10^{16}$$, so it's not actually possible to do this
+addition any better. And, even if it were possible to do better,
+relative to $$10^{15}$$, this difference is pretty small. Depending on
+what you do with it afterwards, this amount of error might not
+matter. For instance, if you were to divide the result by $$10^{16}$$,
+then you would get 10 vs. 10.0000000000000001, which is a negligible
+amount of error (and once again, not representable any better in
+64-bit floating point).
+
+The next step isn't any more clearly wrong either. After all, 0 *is*
+the right answer when subtracting $$10^{16}$$ and $$10^{16}$$. Because
+we've lost the information on how the orignal answer was slightly
+wrong, you can't see at this step that there is now major error.
+
+Calculations like this are why floating point error is generally
+silent. You wouldn't want the computer to crash every time it had to
+round the answer a small amount. But these tiny errors can grow later,
+and their growth is virtually undetectable
+
+Making The Error Loud
+---------------------
 
 To fix this, we need to create some way to check the answer at every
 step, and see how far it is getting from the "correct" answer. Since
@@ -80,13 +156,45 @@ the program on it as a real number program
 it normally using floats ($$\texttt{prog}_{\mathbb{F}}$$). This is the
 best accuracy we could possibly get from a floating point program.
 
-Since this equation doesn't always hold, it's often useful to know how
-far the result is from the right answer. If it's not exactly right,
-but very close, then in a lot of situations we don't care. However,
-even for simple programs, sometimes the answer computed is very far
-from the right answer. We're going to call the distance between the
-computed answer and the right answer the "floating point error" of the
-program.
+This definition might not seem like it's giving us anything extra, but
+we'll see that by applying it to the whole program, instead of just
+each operation, we can catch the error which would otherwise be
+silent. To apply this definition to the whole program, though, we'll
+need to have someway to compute what the program *should* have been,
+in the real numbers. This is the first task of the Real Machine.
+
+The Real Machine is a lot like the Float Machine from
+the
+[last post]({{ site.baseurl }}/2017/04/27/herbgrind-1-the-float-machine.html),
+except it does everything in the Reals. It uses the same program as
+the float machine, but it has a "Real" processor which can do real
+number calculations, and "Real" memory for storing these real numbers.
+
+![A Real Machine]({{ site.baseurl }}/images/real-machine-unattached.png){:class="centered"}
+
+Since the Real Machine only checks the accuracy of the float machine,
+it doesn't need its own output. And since it only cares about
+floating point calculations, it doesn't need its own `int` memory
+(memory that holds non-float values). But to keep track of where it is
+in the program, and check the error of the float machine, it depends
+on being connected to the float machine.
+
+![Herbgrind with Float and Real Machines]({{ site.baseurl }}/images/herbgrind-float-and-real.jpg){:class="centered"}
+
+With the Real machine, we can finally identify whole program
+error. But we still need a way to determine whether the error is large
+or small. For this, we have to quantify the error that appears.
+
+Quantifying Error
+-----------------
+
+Since programs often don't compute the "correct" answer, it's
+useful to know how far the result is from the right answer. If it's
+not exactly right, but very close, then in a lot of situations we
+don't care. However, even for simple programs, sometimes the answer
+computed is very far from the right answer. We're going to call the
+distance between the computed answer and the right answer the
+"floating point error" of the program.
 
 $$ \texttt{error}(\texttt{prog}, x) =
 \varepsilon(\texttt{prog}_{\mathbb{F}}(x), [[
@@ -122,7 +230,7 @@ to return 0, and it returns 1, that's pretty bad. With absolute error,
 both of these differences are treated the same.
 
 Relative error helps fix this problem by scaling the error according
-to the right answer. However, it has it's own problems. Since it
+to the right answer. However, it has its own problems. Since it
 divides by the correct answer, what do you do when the correct answer
 is zero? And how do you account for the fact that floating point
 numbers aren't spaced exactly exponentially, so numbers of different
@@ -141,7 +249,7 @@ possibly be from each other, the error is $$2^{64} - 1$$ ULPs.
 
 You might notice that there's a 64 in that number, just like the
 number of bits used in your computer to represent (double-precision)
-floats. This isn't just a coincidence: if you take the $$log_2$$ of
+floats. This isn't just a coincidence: if you take the $$\log_2$$ of
 the number of ulps, you get something like the number of bits
 different between two floating point numbers. So we can say that two
 values on the opposite ends of the number line have "64 bits" of
@@ -165,45 +273,11 @@ error generally measures how many inputs are really bad.
 
 -------------
 
-Phew, that's a lot of background. Okay, now we know:
+Phew, that's a lot of information. Okay, now we know:
 
 * What floating point error is
 * How to measure it for a particular input
 * How to grade a program on its floating point error
-
-Remember when I said that sub-machines in Herbgrind solve a particular
-problem? And that the first problem was that floating point error is
-silent? Well, the first sub-machine solves this problem, by computing
-the error of the program and telling us when it gets bad. To do this,
-we need the real number execution, and so we'll call this the "Real
-Machine".
-
-The Real Machine is a lot like the Float Machine from
-the
-[last post]({{ site.baseurl }}/2017/04/27/herbgrind-1-the-float-machine.html),
-except in does everything in the Reals. It uses the same program as
-the float machine, but it has a "Real" processor which can do real
-number calculations, and "Real" memory for storing these real numbers.
-
-You might be saying "well, if we can just compute things in real
-numbers, why bother with all this float bussiness?". Unfortunately, we
-can't actually compute in the real numbers, in practice we'll have to
-fake it. And even with our faked version, it's going to be really
-slow, so it's only really useful for debugging. But while we're being
-all abstract with this float machine, we get to pretend that we can
-just compute in the real numbers.
-
-The Real Machine is going to tell the user, at the end of the
-analysis, what the error of the program was. To make this easy to use,
-we'll split it by error for each "output" instruction in the
-program. With the "branch" instruction, the program can run the same
-piece of code multiple times, and in fact that's how most programs are
-made. So an "output" instruction is going to have many times it's
-executed per run, and each time it'll have a different exact value,
-and different computed value. For each of these statements, Herbgrind
-uses the Real Machine to find the error of the outputted value, and at
-the end of the program, it'll tell the user what the maximum and
-average error is.
 
 With just this Real Machine, Herbgrind can detect error in floating
 point programs, and tell you how bad it is. But Herbgrind's mission
