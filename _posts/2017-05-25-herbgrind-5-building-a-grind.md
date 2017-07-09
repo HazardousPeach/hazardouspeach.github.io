@@ -224,7 +224,19 @@ VEX. It has a value, `0x01`, which is specified in hexidecimal. If it
 helps, you can just replace this with `1` in your head. It also has a
 second part `:I64`, which tells you what *type* the value has. In this
 case, `I64` means a 64-bit integer. There are also types `I32` for a
-32-bit integer, `F64` for a 64-bit float, and others.
+32-bit integer, `F64` for a 64-bit float, and others[^valgrind-types].
+
+[^valgrind-types]: The types given by VEX to data are not exactly like
+    the types you'll find in a higher level programming language. They
+    are only "correct" (in the sense that an `I64` actually holds an
+    integer, and not a floating-point number), at a very local
+    level. While you'll never see a float operation being run on an
+    `I64`, VEX programs might put a value into thread state (or
+    memory) as an `I64`, only to take it out as a `F64`, sometimes
+    even within the same superblock. In future posts, we'll explore
+    how Herbgrind layers it's own type system on top of the one
+    provided by VEX to get a little more precision. But in general,
+    giving types to things at the machine-code level is hard
 
 The left side of the equality tells VEX where to put the value. `STle`
 means, "STore Little Endian", where "Little Endian" is just one of the
