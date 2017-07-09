@@ -250,7 +250,7 @@ int x = 1;
 
 Which assigns `x` to $$1$$. When the program is compiled, the variable
 `x` gets given a concrete location in memory, in this example
-`11111111111`
+`11111111111`.
 
 ```
 ------ IMark(0x400810, 7, 0) ------
@@ -276,7 +276,8 @@ int z = x + 3 * y;
 
 There's a lot going on in this line: `y` is being muitiplied by $$3$$,
 then added to `x`, then stored in `z`. Since VEX is much lower-level
-than this source code,
+than this source code, it uses many statements to accomplish this,
+each doing one simple thing.
 
 ```
 ------ IMark(0x400817, 7, 0) ------
