@@ -13,7 +13,7 @@ to capture the interesting floating point behavior of a real computer,
 like the one that's probably sitting on your desk. Now, we're bringing
 Herbgrind's analysis to the real world, making it computable and fast.
 
-![Herbgrind logo]({{ site.baseurl }}/images/full-logo.png){:style="width:30%" class="centered"}
+![Herbgrind logo]({{ site.baseurl }}/images/full-logo.png){:style="width:30%" .centered}
 
 In the last four posts in the series, we built up Herbgrind for
 the
@@ -55,10 +55,12 @@ diagnose and fix the error.
 Now that we've defined what Herbgrind does in the abstract, it's time
 to bring the power of Herbgrind to your desk. To do that, we're going
 to enlist the help of one of the most incredible (and at times,
-infuriating) piece of software I've ever encountered: Valgrind.
+infuriating) pieces of software I've ever encountered: Valgrind.
 
 What is Valgrind?
 -----------------
+
+[![Valgrind Logo](http://valgrind.org/images/valgrind-link3.png){:style="width:auto; display:block; margin: 0 auto"}](http://valgrind.org)
 
 A few of you might have encountered Valgrind while debugging C code in
 a programming class. Its most popular "tool", Memcheck, is endlessly
@@ -83,6 +85,8 @@ look at this VEX, insert or remove statements, and even insert runtime
 calls to tool code. Finally, Valgrind takes the modified VEX, and
 compiles it back to machine code on the target architecture.
 
+![Valgrind Diagram]({{ site.baseurl }}/images/valgrind-diagram-1.png){:style="width:100%; margin:3em 0em;"}
+
 Memcheck and a host of other tools (Cachegrind, Callgrind, Helgrind,
 etc.) use this interface to produce complex analysis of binary
 programs.
@@ -100,7 +104,7 @@ needed.
 
 Each of these pieces is what is known in compiler literature as "super
 blocks". Super blocks are pieces of code which always start in the
-same place, and don't have any internal branches are loops. They do,
+same place, and don't have any internal branches or loops. They do,
 however, have multiple points where they might exit, depending on some
 conditions. If that's confusing, don't worry: for now, you can just
 think of them as small pieces of code which don't do anything tricky
@@ -148,6 +152,23 @@ blocks. Memory, on the other hand, is extremely large and can store
 objects for a long time. The downside is that's it's relatively slow
 to use.
 
+VEX programs are made up of a big list of instructions, much like the
+Float Machine. One kind of VEX instruction is an operation
+instruction, like the operation instruction in the float machine. It
+takes arguments, which can be either constant or values from
+temporaries, and runs some operation on them, storing the result in a
+temporary. Since VEX has three different types of storage, there's
+another VEX instruction to move values between them. There are also
+instructions which just store metadata, and some complicated things
+like conditional exits which we don't have to worry too much about for
+now.
+
+But it'll probably be a lot easier to understand the role that these
+instructions play if we walk through an example.
+
+A Simple Program in VEX
+-----------------------
+
 Let's look at a simple example VEX program. Let's say you write the
 program:
 
@@ -194,7 +215,7 @@ trace it all the way back to the source code!
 STle(11111111111) = 0x01:I64
 ```
 
-This next line is storing the value $1$ in memory at location
+This next line is storing the value $$1$$ in memory at location
 `11111111111`. In most architectures, this address wouldn't make any
 sense, but let's suspend our disbelief for a second here and pretend
 it does; the actual memory locations don't really matter too much. The
@@ -215,8 +236,8 @@ Together, these two lines represent the line in the source code:
 int x = 1;
 ```
 
-Which assigns `x` to $1$. When the program is compiled, the variable
-`x` gets given a concret e location in memory, in this example
+Which assigns `x` to $$1$$. When the program is compiled, the variable
+`x` gets given a concrete location in memory, in this example
 `11111111111`
 
 ```
@@ -225,7 +246,7 @@ STle(22222222222) = 0x02:I64
 ```
 
 These two lines are pretty much the same as the ones above: they store
-the value $2$ (`0x02`) to the location `22222222222`, and correspond
+the value $$2$$ (`0x02`) to the location `22222222222`, and correspond
 to the C code:
 
 ```
@@ -233,7 +254,7 @@ int y = 2;
 ```
 
 The simply load the value two into the memory location the compiler
-picked for `y`, ``22222222222`.
+picked for `y`, `22222222222`.
 
 The next seven lines will all be part of the line:
 
@@ -241,7 +262,7 @@ The next seven lines will all be part of the line:
 int z = x + 3 * y;
 ```
 
-There's a lot going on in this line: `y` is being muitiplied by $3$,
+There's a lot going on in this line: `y` is being muitiplied by $$3$$,
 then added to `x`, then stored in `z`. Since VEX is much lower-level
 than this source code,
 
@@ -272,7 +293,7 @@ have the operator for a sixty four bit multiply, which the
 pretty-printer helpfully prints for us as Mul64. In between the
 parenthesis, we have the two arguments to that operator: the first one
 is the temporary we loaded `y` into in the last line, and the second
-one is the constant value $3$.
+one is the constant value $$3$$.
 
 Once we finish with the multiply, we want to store it in another
 temporary, so that's what the `t2 = ` part of the line does.
@@ -310,6 +331,8 @@ used depends on how your program got compiled to binary.
 There are many more details about Valgrind tools operate, but I don't
 want to bog you down just yet, so I'll try to bring them up as they're
 needed.
+
+[![Valgrind Logo](http://valgrind.org/images/valgrind-link4.png){:style="width:auto; display:block; margin: 0 auto"}](http://valgrind.org)
 
 In the next posts, we'll talk about how we move Herbgrind the abstract
 analysis to the VEX machine and Valgrind framework, where we can run
