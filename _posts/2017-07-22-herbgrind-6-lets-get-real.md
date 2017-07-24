@@ -68,12 +68,13 @@ number of bits, instead of just 64- or 32-bit floats[^mpfr-name].
 
 MPFR numbers still aren't real numbers, since they still only have a
 limited number of bits. But adding more bits to your representation
-means you get closer to the real numbers[^limited-precision]. So, if
-your 64-bit answer and your 1000-bit answer disagree, your 64-bit
-answer is definitely not the same as the real number answer. Another
-way to think of this is that if you measure the error of the 64-bit
-answer with respect to the 1000-bit answer, you'll get a lower bound
-on the error of your 64-bit answer with respect to the real numbers.
+generally means you get closer to the real
+numbers[^limited-precision]. So, if your 64-bit answer and your
+1000-bit answer disagree, your 64-bit answer is definitely not the
+same as the real number answer. Another way to think of this is that
+if you measure the error of the 64-bit answer with respect to the
+1000-bit answer, you'll get a lower bound on the error of your 64-bit
+answer with respect to the real numbers.
 
 [^limited-precision]: Well, almost always. There are programs that
     have been discovered by numerical analysts which will converge on
@@ -110,48 +111,58 @@ things get more complicated.
 #### Mixed-Type Memory
 In the Float Machine there were two memory banks, one for integers,
 and one for floating-point numbers. In the VEX machine there is no
-such distinciton: any location could hold either[^VEX types]. The
+such distinciton: any location could hold either[^VEX-types]. The
 simplest solution to this issue is to treat every location in memory
 as a float, given a shadow value at the beginning of the
 program. Unfortunately, this would mean creating a shadow value for
 every location in memory, thread state, and temporaries, which would
 take far too much space!
 
-[^VEX types]: Well, for temporaries this isn't quite true. VEX has a
-  type system for the temporaries, but it doesn't give you all the
-  guarantees you'd want. You'll never find an integer in a
-  "float-typed" register, but you often find floating-point numbers in
-  temporaries labeled for integers.
+[^VEX-types]: Well, for temporaries this isn't quite true. VEX has a
+    type system for the temporaries, but it doesn't give you all the
+    guarantees you'd want. You'll never find an integer in a
+    "float-typed" register, but you often find floating-point numbers in
+    temporaries labeled for integers.
 
 Instead, we'll take a lazy approach. At the beginning of the program,
 we'll assume each value is a non-float. Then, whenever we run a
 floating point operation, we'll mark both of it's inputs as floats,
 give them shadow values based on their current value, and execute the
-operation producing a shadow result.
+operation producing a shadow result. This lazy approach is pretty
+efficient, only storing the shadows that we might need.
 
 ![Shadow storage diagram]({{ site.baseurl }}/images/shadow-storage-1.png)
 
-This approach works because we can't know anything more precise about
-a value than what it is before any floating point operation is run on
-it. Even if those bits came from some other part of the program and
-had arbitrary transformations done on them, we wouldn't know how to
-interpret those operations as real number transformations. The first
-time we have any possible error to track is exactly when we make the
-shadow value for the first time: at the first floating point
-operation. This lazy approach is pretty efficient, only storing the
-shadows that we might need.
+This approach leaves a lot of program statments untracked. Before its
+first floating point operation, a value might be moved around, packed
+into data structures and unpacked, and have its bits flipped for
+various reasons. But none of these statements can introduce floating
+point error, since they don't correspond to any real number
+operation. Even if a value came from some other part of the program
+and had arbitrary transformations done on them, we wouldn't know how
+to interpret those operations as real number transformations. The
+first time we have any possible error to track is exactly when we make
+the shadow value for the first time: at the first floating point
+operation.
 
 It has one subtlety though, and that comes with how it interacts with
 the many ways of representing floats. You see, the VEX machine doesn't
 have a single type of floating-point number, it has two; just like an
 x86 processor, or any other modern processor for that matter, VEX
-includes both 32- and 64-bit floats. It also happens to represent
-values which are packed into an array of up to 256 bits. VEX of course
-contains instructions for converting between these formats, like
-turning a 32-bit float into a 64-bit one, or pulling a 32-bit float
-out of the first quarter of a 128-bit array. So what do we do when
-these kinds of operations are run on something that we have not yet
-determined is a float?
+includes both 32- and 64-bit floats[^no-80-bit]. It also happens to
+represent values which are packed into an array of up to 256 bits. VEX
+of course contains instructions for converting between these formats,
+like turning a 32-bit float into a 64-bit one, or pulling a 32-bit
+float out of the first quarter of a 128-bit array. So what do we do
+when these kinds of operations are run on something that we have not
+yet determined is a float?
+
+[^no-80-bit] 32-bit processors using x87 also include 80-bit floats,
+    bur they can cause a myriad of problems. Herbgrind has been developed
+    for 64-bit processors, and only really supports SSE and it's
+    sucessors, which became the standard in the early 2000's (first
+    released in 1999). As a result, we don't really deal with 80-bit
+    floats.
 
 Well, it'd be safe to treat them like a floating point operation, and
 add a shadow value to them. But we don't really *have* to do that, do
@@ -233,7 +244,12 @@ a reference to one of these objects, they shouldn't be freed, but even
 when everyone else has divested themselves, each object still has one
 reference to it. To make sure this doesn't happen, code using
 reference counting has to be very careful about what kinds of data
-structures it creates.
+structures it creates[^herbgrind-cycles].
+
+[^herbgrind-cycles] For the real number shadows, Herbgrind doesn't
+    generally have to worry about cycles. But once we start dealing with
+    symbolic expression trees, it's pretty common to have objects which
+    reference each other.
 
 ![Reference cycle diagram]({{ site.baseurl }}/images/cycle.png)
 
@@ -286,7 +302,7 @@ VEX has a number that represents it, and that the program uses to
 refer to it (t1, t2, t3, etc). So to keep track of their shadows,
 we'll create a similarly numbered list of shadow temporaries. Since
 we're not going to shadow all the temporaries, some of these slots are
-empty (a NULL pointer instead of a pointer to a shadow location). But
+empty (a NULL pointer instead of a pointer to a shadow temporary). But
 we still have a problem: there are (in theory) an infinite set of
 temporaries! We can't hold on to an infinite set of pointers, even if
 most of them are NULL. So when we first look at each code block to
@@ -341,7 +357,7 @@ the rest is reasonably straightforward (well, until you try to
 actually implement it...). When we see an instruction in the original
 program which moves a value from memory to thread state, for instance,
 or from a temporary to memory, we will add an instruction which moves
-from the shadow location which cooresponds to the source location, to
+from the shadow temporary which cooresponds to the source location, to
 the shadow destination. When we see a floating point instruction in
 the original program which is doing some sort of mathematical
 operation, we'll create shadow values for the arguments if they don't
@@ -349,7 +365,7 @@ exist, and put the shadow result in the shadow destination. With just
 these two parts (a way to create and manipulate shadow values, and a
 way to move them around), we can track the entire execution of the
 program. When it's finally done, wherever it puts the result, we'll
-find an exact result in the cooresponding shadow location.
+find an exact result in the cooresponding shadow temporary.
 
 That's pretty much it for the Real Machine! With these parts, we can
 get the (almost) exactly correct result, and we can compare it to the
