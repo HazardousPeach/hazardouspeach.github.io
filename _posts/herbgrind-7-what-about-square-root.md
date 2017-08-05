@@ -47,9 +47,12 @@ functions like "square root" that don't[^sqrt-instruction].
     "square root" instruction, but not all of them, and almost none
     have built in support for functions like "sine" or "logarithm".
 
+Shadowing Transcendental Functions
+------------------------------------
+
 Functions, like square root, that can't be defined directly as a
-(finite) series of arithmetic operations are called "trancendental
-functions", because they "trancend" the simple operations. This makes
+(finite) series of arithmetic operations are called "transcendental
+functions", because they "transcend" the simple operations. This makes
 them pretty hard to compute, but luckily some really smart people
 figured it out a long time ago. Those people wrote libraries, like GNU
 `libm` which use mathematical bit-twiddling to compute these functions
@@ -76,7 +79,7 @@ For our purposes, we're going to wrap the calls to `libm`
 implementations of math functions, but unfortunately we run into a
 hitch when we try to call straight into the original
 implementations. What we want to do is intercept the call to, say,
-`sqrt`, and do the necessary bookeeping to compute the exact
+`sqrt`, and do the necessary bookkeeping to compute the exact
 version. Then, call into the original version to get the computed
 value, which we return to the client program. But Valgrind's wrapping
 mechanism uses a very complex, low-level procedure to shuttle
@@ -86,7 +89,7 @@ floating point arguments. So while the arguments make it into the
 wrapper fine, it's not currently possible to pass floating point
 arguments down to the wrapped functions from there[^float-wrappers].
 
-[^float-wrappers]: I wondered for a long time whethere I was just
+[^float-wrappers]: I wondered for a long time whether I was just
     making some mistake when calling into the wrapped functions,
     but
     [This](https://sourceforge.net/p/valgrind/mailman/message/22854595/) mailing
@@ -123,7 +126,7 @@ in
 [this post]({{ site.baseurl }}/2017/05/25/herbgrind-5-building-a-grind.html). But
 what you may not know is that Valgrind is *even crazier*. You see,
 even though Valgrind has "host" and "client" code running at any given
-time, the two aren't fully seperated like they would be if it used a
+time, the two aren't fully separated like they would be if it used a
 virtual machine, or some sort of process container. Instead, the
 Valgrind core, the tool logic (like that of Herbgrind), and the
 recompiled client code itself all runs together, in the same address
@@ -176,7 +179,7 @@ functions. Most libraries you can get away with linking in statically,
 or not using at all, but the C standard library is a complex beast,
 and provides a lot of essential functionality.
 
-The Valgrind solution? Reimplement it. From scratch.
+The Valgrind solution? Re-implement it. From scratch.
 
 The Valgrind implementation of the standard library has a few
 omissions, but it's impressively complete. It's certainly enough to do
