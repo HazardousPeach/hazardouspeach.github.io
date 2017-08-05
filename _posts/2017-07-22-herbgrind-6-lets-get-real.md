@@ -369,6 +369,4 @@ find an exact result in the cooresponding shadow temporary.
 
 That's pretty much it for the Real Machine! With these parts, we can
 get the (almost) exactly correct result, and we can compare it to the
-computed result to figure out how much error there is. Next up, we'll
-look at implementing the Local Machine to find out where the error
-comes from.
+computed result to figure out how much error there is.
