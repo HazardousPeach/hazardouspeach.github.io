@@ -3,8 +3,8 @@ title: Alex Sanchez-Stern
 email: asnchstr@cs.uw.edu
 description: > # this means to ignore newlines until "baseurl:"
   A website describing me and my work.
-baseurl: "/home/alex/site/_site" # the subpath of your site, e.g. /blog/
-url: "alex.uwplse.org" # the base hostname & protocol for your site
+baseurl: "/home/alex/site/_site/" # the subpath of your site, e.g. /blog/
+url: "" # the base hostname & protocol for your site
 github_username:  HazardousPeach
 exclude: [Makefile]
 css: [/bootstrap/css/bootstrap.min.css, /css/style.css]
