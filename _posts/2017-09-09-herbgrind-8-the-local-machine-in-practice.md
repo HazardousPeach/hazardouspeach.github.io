@@ -9,9 +9,10 @@ tool that finds floating point issues in compiled programs. The
 purpose of this series is to explain how Herbgrind works and the
 principles behind its design. To do that, we started with a simple
 hypothetical computer called the "Float Machine", which is just enough
-to capture the interesting floating point behavior of a real computer,
-like the one that's probably sitting on your desk. Now, we're bringing
-Herbgrind's analysis to the real world, making it computable and fast.
+to capture the interesting floating point behavior of a practical
+computer, like the one that's probably sitting on your desk. Now,
+we're bringing Herbgrind's analysis to the real world, making it
+computable and fast.
 
 ![Herbgrind logo]({{ site.baseurl }}/images/full-logo.png){:style="width:30%" .centered}
 
@@ -65,7 +66,7 @@ inputs.
 compared: one which rounds __before__ the computation, and one which
 rounds __after__*
 
-Doing this in on a real computer, using the Valgrind framework, is
+Doing this in on a practical computer, using the Valgrind framework, is
 pretty straightforward. We already know from the last post that we
 have shadow values for each argument, sitting around in memory
 somewhere. VEX only allows operations to be executed on temporaries
@@ -113,7 +114,7 @@ because of the way Valgrind interacts with the C standard library,
 when the original operation is a library call we can't run the
 "normal" by just calling the original `libm` implementation, but
 luckily we've already set up the machinery to call the OpenLibm
-implementation instead. OpenLibm, as a fully function implementation
+implementation instead. OpenLibm, as a fully functional implementation
 of `math.h`, also includes the single-precision versions of all the
 functions.
 
@@ -135,8 +136,9 @@ So the steps to computing local error are:
 Once we can compute the local error for each operation, we can figure
 out where the error in a program is "coming from", by just looking for
 the operations with lots of local error! The local error of different
-operations doesn't interact, so we get a good measure of the error
-that arises from that operation alone.
+operations doesn't interact, since we start from exact arguments every
+time, so we get a good measure of the error that arises from that
+operation alone.
 
 Where Error Goes
 ----------------
@@ -215,8 +217,8 @@ convert floating-point values to integers.
 Putting it All Together
 -----------------------
 
-To give the user as complete a picture of the error's impact as
-possible, we want to tell them, for each observation:
+To give the user the most complete picture of the error's impact, we
+want to tell them, for each observation:
 
 1. How often it happened
 2. Which operations with high local error flowed into it
