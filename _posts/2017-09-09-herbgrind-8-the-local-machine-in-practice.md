@@ -53,7 +53,7 @@ the
 we developed the notion of "local error", the error that a single
 operation has, independent of any error around it. We found that we
 can discover the local error of an operation by using exact values for
-it's arguments, from the Real Machine, and then rounding them and
+its arguments, from the Real Machine, and then rounding them and
 executing the operation on floats. The difference between this result
 and the exact result is the local error of the operation on those
 inputs.
@@ -73,8 +73,8 @@ somewhere. VEX only allows operations to be executed on temporaries
 temporaries), so we don't have to consider the case where the shadow
 value is in the memory hash table, or thread state shadow
 storage. When we see an operation whose local error we want to
-evaluate, we know that the exact values of it's arguments are in the
-shadow temporaries that correspond to it's argument temporaries.
+evaluate, we know that the exact values of its arguments are in the
+shadow temporaries that correspond to its argument temporaries.
 
 MPFR provides an API for taking an exact shadow value, and rounding it
 to a double- or single- precision float. There's a lot of flexibility
@@ -250,7 +250,7 @@ captured in the abstract model.
 
 For a final closing blurb, I recently designed a new "drawing" version
 of the Herbgrind logo, a little more cleaned up than the photo
-version, for using on slides and such. Here's it's official debut:
+version, for using on slides and such. Here's its official debut:
 
 ![Herbgrind drawing logo]({{ site.baseurl }}/images/logo-drawing.svg){:class="centered"}
 
