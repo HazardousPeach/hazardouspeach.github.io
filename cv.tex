@@ -1,0 +1,164 @@
+\documentclass[11pt,a4paper,sans]{moderncv}
+
+\moderncvstyle{casual}
+\moderncvcolor{green}
+
+\usepackage[scale=0.75]{geometry}
+
+\firstname{Alex}
+\familyname{Sanchez-Stern}
+
+\title{Curriculum Vitae}
+\address{4183 Fourth Ave, Apt A}{San Diego, CA 92103}
+\phone{(206) 902 6299}
+\email{alexss@eng.ucsd.edu}
+\homepage{cseweb.ucsd.edu/\textasciitilde{}alexss}
+\photo[70pt][0.4pt]{images/me2}
+
+\begin{document}
+
+\makecvtitle
+
+%----------------------------------------------------------------------------------------
+%      EDUCATION
+%----------------------------------------------------------------------------------------
+
+\section{Education}
+
+\cventry{2018--present}{Doctor of Philosophy, Computer
+  Science}{University of California, San Diego}{}{}{\textit{In Progress}}
+\cventry{2016--2018}{Candidate of Philosophy, Computer
+  Science}{University of California, San Diego}{}{}{}
+\cventry{2015--2016}{Masters of Science, Computer Science}{The
+  University of Washington}{}{}{Honors}
+\cventry{2012--2015}{Bachelors of Science, Computer Science}{The
+  University of Washington}{}{}{Honors}
+
+\section{PhD Thesis (in progress)}
+\cvitem{Title}{\emph{Hybrid-Neural Synthesis of Machine-Checkable Software Correctness Proofs}}
+\cvitem{Supervisor}{Professor Sorin Lerner}
+
+\cvitem{Description}{The correctness of large software artifacts has
+  important impact on many aspects of the modern
+  world. Machine-checkable software correctness proofs provide a
+  guarantee that a piece of software adheres to some logical
+  specification, however producing such proofs is labor-intensive,
+  taking in some cases 23 person-years of highly skilled labor to
+  prove properties of 10,000 line programs. This thesis work uses a
+  hybrid-approach of machine learning and proof assistant search
+  procedures to produce proofs of correctness for a large variety of
+  software automatically or semi-automatically.}
+
+\section{Masters Thesis}
+\cvitem{Title}{\emph{Dynamic Analysis of Floating Point Errors with Herbgrind}}
+\cvitem{Supervisor}{Professor Zachary Tatlock}
+\cvitem{Description}{Numerical computation using floating point
+  numbers is notoriously difficult to reason about, even in idealized
+  environments. This thesis presents the development of a tool which
+  can analyze the runtime behavior of programs written in a variety of
+  environments and languages, and extract inaccurate floating point
+  computation for improvement.}
+
+\section{Bachelors Thesis}
+
+\cvitem{Title}{\emph{Algebraic Simplification for the Herbie Project}}
+\cvitem{Supervisor}{Professor Zachary Tatlock}
+\cvitem{Description}{The ability to simplify arbitrary mathematical
+  expressions is extremely useful in many applications, including the
+  Herbie numerical synthesis tool, but is exponential in general. This
+  thesis presents a set of data structures and heuristics that allow
+  thousands of expressions to be simplified every second.}
+
+%----------------------------------------------------------------------------------------
+%	WORK EXPERIENCE
+%----------------------------------------------------------------------------------------
+
+\section{Experience}
+
+\subsection{Vocational}
+\cventry{September 2016--present}{Research
+  Assistant}{\textsc{University of California, San Diego}}{San
+  Diego}{}{Continued work begun at the University of Washington on the
+  Herbgrind project for automatically diagnosing the causes of
+  floating-point error in large numerical software, and began work on
+  neural synthesis of machine-checkable proofs of program
+  correctness.
+\newline{}\newline{}
+Detailed achievements:
+\begin{itemize}
+\item Worked with collaborators at the UW as well as Sorin Lerner at
+  UCSD to complete work on the Herbgrind tool and paper.
+  \begin{itemize}
+  \item Implemented in 20,000 lines of code (C, python, and bash scripts).
+  \item Analyses programs up to 50,000 lines of code.
+  \item Published and presented ``Finding Root Causes of Floating Point Error'' at PLDI 2018
+  \item Pre-print of the paper available at \url{http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf}
+  \item Talk slides available at \url{http://herbgrind.ucsd.edu/pldi18-talk/}
+  \item Talk video available at \url{https://www.youtube.com/watch?time_continue=1&v=bFL6PaPrz8Y}
+  \end{itemize}
+\item Began work on neural synthesis of machine-checkable proofs of program correctness.
+\item Continuing maintenance of the Herbie project with collaborators at the UW.
+\end{itemize}}
+
+\cventry{December 2013--September 2016}{Research Assistant}{\textsc{University of
+    Washington}}{Seattle}{}{Worked with another research assistant to
+  develop the Herbie system for automatically improving the accuracy of
+  floating point code
+\newline{}\newline{}
+Detailed achievements:
+\begin{itemize}
+\item Worked with Pavel Panchekha and Zachary Tatlock in developing
+  the high level design of the system over the course of two years.
+\item Worked closely with Pavel Panchekha to write the implementation
+  of the system, including specifically:
+  \begin{itemize}
+  \item Independently developing the algebraic simplification system
+  \item Writing the top level code which controls the various subsystems
+  \item Developed the experimental loop variant of Herbie to continue
+    the work described in the paper.
+  \end{itemize}
+\item Authored a paper on our work together with Pavel Panchekha,
+  Zachary Tatlock, and James Wilcox.
+  \begin{itemize}
+    \item Our paper was published at the Programming Languages Design
+      and Implementation 2015 conference.
+    \item Paper and talk available at \url{http://herbie.uwplse.org/pldi15.html}
+  \end{itemize}
+\item Authored a second paper with Pavel Panchekha, Zachary Tatlock,
+  Chen Qiu, and international collaborators Nasrine Damouche and
+  Matthieu Martel on a new format and benchmark suite for cross-tool
+  floating point benchmarks.
+\item Began work on a third project, Herbgrind, which I continued at UCSD
+\end{itemize}}
+
+\cventry{June 2013--September 2013}{College Tech}{\textsc{Seattle
+    Schools District}}{Seattle}{}{Maintained existing educational and
+  teacher machines, and set up and installed new machines, at a
+  variety of schools in the Seattle Schools District.}
+
+\cventry{September 2011--January 2013}{Assistant Operations
+  Engineer}{\textsc{Casa Latina}}{Seattle}{}{Wrote tests and data aggregation and
+  display code for the Machete job registration system, under James
+  Carter.}
+
+\cventry{July 2011--September 2011}{Intern}{\textsc{Bensussen Deutsch
+    \& Associates, Inc}}{Woodinville}{}{Performed market research,
+  handled product returns, and managed product testing.}
+
+
+\section{Awards}
+
+\cvitem{2015}{Marygates Research Scholarship}
+\cvitem{2015}{Distinguished Paper -- PLDI 2015}
+
+%----------------------------------------------------------------------------------------
+%	COMPUTER SKILLS SECTION
+%----------------------------------------------------------------------------------------
+
+\section{Technical Skills}
+
+\cvitem{Basic}{\textsc{java}, \textsc{haskell}, \textsc{coq}, \textsc{rust}}
+\cvitem{Intermediate (authored projects with at least hundreds of lines of code)}{\textsc{HTML/Javascript/CSS}, \textsc{c\#}, \textsc{c++}, \LaTeX, Linux}
+\cvitem{Advanced (authored projects with at least thousands of lines of code)}{\textsc{racket}, \textsc{c}, \textsc{python}}
+
+\end{document}
