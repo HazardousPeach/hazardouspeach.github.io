@@ -1,6 +1,6 @@
 
 
-build:
+build: cv.pdf
 	jekyll build
 
 publish: build
@@ -14,3 +14,6 @@ publish: build
 	rsync -a _site/ uwplse.org:/var/www/alex
 	mv _config.yml _config_plse.yml
 	mv _config_local.yml _config.yml
+
+cv.pdf: cv.tex
+	latexmk -pdf cv
