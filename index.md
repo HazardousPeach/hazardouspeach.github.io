@@ -49,3 +49,5 @@ So far I've co-authored a few papers:
 [Automatically Improving Accuracy for Floating Point Expressions](http://herbie.uwplse.org/pldi15-paper.pdf)
 
 [Toward a Standard Benchmark Format and Suite for Floating-Point Analysis](http://fpbench.org/nsv16-paper.pdf)
+
+[Finding Root Causes of Floating Point Error](http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf)
