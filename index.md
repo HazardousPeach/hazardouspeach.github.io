@@ -24,6 +24,15 @@ it a floating point expression, and it tests it against hundreds of
 points to find a version that's more accurate. Herbie is open source
 software, published at PLDI 2015.
 
+Herbgrind
+---------
+
+[Herbgrind](http://herbgrind.ucsd.edu) is a debugging tool to help
+developers find the *root cause* of floating-point inaccuracy in large
+numerical software. It runs directly on program binaries, and produces
+reports about inaccuracies found that affect program
+outputs. Herbgrind is free and open source software, published at PLDI
+2018.
 
 Contact
 -------
