@@ -21,7 +21,9 @@ Herbie
 [Herbie](http://herbie.uwplse.org) is a tool to help scientists and
 programmers write accurate floating point code more easily. You give
 it a floating point expression, and it tests it against hundreds of
-points to find a version that's more accurate.
+points to find a version that's more accurate. Herbie is open source
+software, published at PLDI 2015.
+
 
 Contact
 -------
