@@ -38,7 +38,8 @@ Contact
 -------
 
 You can reach me at [alexss@eng.ucsd.edu](mailto:alexss@eng.ucsd.edu)
-my university email address.
+my university email address. I'm
+also [on GitHub](https://github.com/HazardousPeach).
 
 Papers
 ------
