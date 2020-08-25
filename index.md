@@ -26,9 +26,9 @@ obligations in the Coq proof assistant. It has been shown to
 outperform enumerative and solver-based proof search tools, as well as
 other state-of-the-art machine-learning based proof search
 tools. Proverbot9001 is [free and open source
-software](https://github.com/UCSD-PL/proverbot9001), to be published
-at MAPL 2020 in June 2020. You can find an extended version of the
-paper here [on my site](papers/proverbot9001.pdf).
+software](https://github.com/UCSD-PL/proverbot9001), published at MAPL
+2020 in June 2020. You can find an extended version of the paper here
+[on my site](papers/proverbot9001.pdf).
 
 REPLica
 -------
