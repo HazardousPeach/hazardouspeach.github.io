@@ -45,7 +45,7 @@ Analysis](papers/replica.pdf).
 Caravan
 -------
 
-Caravan is a new tool for safe database migrations that respect data
+Caravan is a new tool for secure database migrations that respect data
 access policies. The project consists of several languages, for
 specifying data access policies, specifying migration actions, and
 maniuplating database values. It also includes tooling for interacting
