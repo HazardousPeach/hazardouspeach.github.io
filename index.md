@@ -17,8 +17,23 @@ improving the usability of proof assistants through better proof
 search and new meta-language frameworks. My thesis is on
 Proverbot9001, a neural-guided proof search tool described below.
 
-Proverbot9001
--------------
+Publications
+------------
+{% for pub in site.data.publications %}
+{% include publication.html
+    src=pub.src
+    title=pub.title
+    conference=pub.conference
+    authors=pub.authors
+    id=forloop.index
+    bibtex=pub.bibtex
+%}
+{% endfor %}
+
+Projects
+--------
+
+### Proverbot9001
 
 [Proverbot9001](http://proverbot9001.ucsd.edu) is a ongoing initiative
 which uses neural network guided proof search to solve proof
@@ -30,8 +45,7 @@ software](https://github.com/UCSD-PL/proverbot9001), published at MAPL
 2020 in June 2020. You can find an extended version of the paper here
 [on my site](papers/proverbot9001.pdf).
 
-REPLica
--------
+### REPLica
 
 REPLica is a tool that instruments Coq's interaction model in order to
 collect fine-grained data on proof developments, as well as a
@@ -42,8 +56,7 @@ data)](https://github.com/uwplse/coq-change-analytics), published at
 CPP 2020 as [REPLica: REPL Instrumentation for Coq
 Analysis](papers/replica.pdf).
 
-Caravan
--------
+### Caravan
 
 Caravan is a new tool for secure database migrations that respect data
 access policies. The project consists of several languages, for
@@ -56,8 +69,7 @@ ongoing work in collaboration with John Renner (UCSD), Fraser Brown
 (Stanford), and Deian Stefan (UCSD).
 
 
-Herbgrind
----------
+### Herbgrind
 
 [Herbgrind](http://herbgrind.ucsd.edu) is a debugging tool to help
 developers find the *root cause* of floating-point inaccuracy in large
@@ -68,8 +80,7 @@ software](https://github.com/uwplse/herbgrind), published at PLDI 2018
 as [Finding Root Causes of Floating Point
 Error](http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf).
 
-FPBench
--------
+### FPBench
 
 [fpbench](http://fpbench.org) is a benchmark format and suite for the
 development of floating point tooling. I co-authored the original
@@ -78,8 +89,7 @@ Format and Suite for Floating-Point
 Analysis](http://fpbench.org/nsv16-paper.pdf). Since then, the project
 has grown to include instutitions and teams across the world.
 
-Herbie
-------
+### Herbie
 
 [Herbie](http://herbie.uwplse.org) is a tool to help scientists and
 programmers write accurate floating point code more easily. You give

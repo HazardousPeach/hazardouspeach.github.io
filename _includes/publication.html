@@ -1,0 +1,26 @@
+<div class="publication">
+    <div class="info">
+        <a href="{{include.src}}"><h3>{{include.title}}</h3></a>
+        <div class="authors">{{include.authors}}</div>
+    </div>
+    <div class="conference">{{include.conference}}</div>
+    {% if include.bibtex %}
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-{{include.id}}"/>
+            <label class="expander" for="bibtex-{{include.id}}">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+{% capture foo %}```
+{{include.bibtex | strip }}
+```
+{% endcapture %}
+            {{foo | markdownify}}
+            </div>
+
+        </form>
+    </div>
+    {% endif %}
+</div>

@@ -1,3 +1,9 @@
+---
+---
+@charset "utf-8";
+$dark-gray: #888;
+$black: #222;
+
 body {
     padding-top: 30px;
     margin: 3em auto;
@@ -97,6 +103,63 @@ ul {
 }
 .MathJax_Display {
     font-size: 1.2em !important;
+}
+
+.publication {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 1.5rem;
+    color: $dark-gray;
+    width: 100%;
+
+    h3 {
+        margin-top: 0;
+    }
+    & > * {
+        max-width: 100%;
+    }
+    .info {
+        flex: 1 1 70%;
+        min-width: 40%;
+    }
+    .conference {
+        padding-left: 1rem;
+        flex: 0 0 content;
+        color: $dark-gray;
+    }
+    .bibtex {
+        flex: 0 0 100%;
+        input {
+            display: none;
+        }
+        .expander {
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            i {
+                transition: transform 0.25s;
+            }
+        }
+        input:checked + .expander i {
+            transform: rotate(90deg);
+        }
+
+        .bib-content {
+            color: $black;
+            transition: max-height 0.25s;
+            overflow: hidden;
+            transform-origin: top;
+            max-height: 0;
+            width: 100%;
+        }
+
+        input:checked + .expander + .bib-content {
+            max-height: 14.5rem;
+        }
+    }
 }
 /*Scaling*/
 @media all {html {font-size: 16px;}}
