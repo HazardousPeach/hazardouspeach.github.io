@@ -161,6 +161,23 @@ ul {
         }
     }
 }
+
+div.project {
+    display:table;
+    margin-top:3em;
+    margin-bottom:3em;
+}
+
+img.projectlogo {
+    float:left;
+    width:15%;
+    margin-right:2em;
+}
+
+div.projectdesc {
+    display:table=cell;
+    vertical-align:middle;
+}
 /*Scaling*/
 @media all {html {font-size: 16px;}}
 @media all and (max-width:760px){html {font-size: 15px;}}
