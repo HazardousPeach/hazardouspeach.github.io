@@ -37,7 +37,7 @@ CPP 2020 as [REPLica: REPL Instrumentation for Coq
 Analysis](papers/replica.pdf).
 
 <div markdown="1" class="project">
-<img src="{{ site.url }} {{ site.baseurl }}/images/caravan-placeholder-logo.png" class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/caravan-placeholder-logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
