@@ -1,6 +1,18 @@
 <div class="publication">
     <div class="info">
-        <a href="{{include.src}}"><h3>{{include.title}}</h3></a>
+        <!-- <a href="{{include.src}}"><h3>{{include.title}}</h3></a> -->
+      <h3 style='display:inline-block'>{{include.title}}</h3>
+        <p>
+          {% if include.paper %}
+          <a href="{{ include.paper }}">[paper]</a>
+          {% endif %}
+          {% if include.github %}
+          <a href="{{ include.github }}">[github]</a>
+          {% endif %}
+          {% if include.website %}
+          <a href="{{ include.website }}">[website]</a>
+          {% endif %}
+      </p>
         <div class="authors">{{include.authors}}</div>
     </div>
     <div class="conference">{{include.conference}}</div>

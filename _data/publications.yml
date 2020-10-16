@@ -1,5 +1,6 @@
 - title: "Generating Correctness Proofs with Neural Networks"
-  src: http://proverbot9001.ucsd.edu/papers/proverbot9001.pdf
+  website: "http://proverbot9001.ucsd.edu/"
+  paper: "http://proverbot9001.ucsd.edu/papers/proverbot9001.pdf"
   conference: "MAPL 2020"
   authors: Alex Sanchez-Stern, Yousef Alhessi, Lawrence Saul, Sorin Lerner
   bibtex: |-
@@ -13,7 +14,8 @@
     }
 
 - title: "REPLica: REPL instrumentation for Coq Analysis"
-  src: https://www.alexsanchezstern.com/papers/replica.pdf
+  github: https://www.github.com/uwplse/coq-change-analytics
+  paper: https://www.alexsanchezstern.com/papers/replica.pdf
   conference: "CPP2020"
   authors: Talia Ringer, Alex Sanchez-Stern, Dan Grossman, Sorin Lerner
   bibtex: |-
@@ -29,7 +31,8 @@
     }
 
 - title: "Finding Root Causes of Floating Point Error"
-  src: http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf
+  website: https://herbgrind.ucsd.edu/
+  paper: https://herbgrind.ucsd.edu/herbgrind-pldi18.pdf
   conference: "PLDI 2018"
   authors: Alex Sanchez-Stern, Pavel Panchekha, Sorin Lerner, Zachary Tatlock
   bibtex: |-
@@ -48,7 +51,8 @@
     }
 
 - title: "Towards a Standard Benchmark Format and Suite for Floating-Point Analysis"
-  src: http://fpbench.org/nsv16-paper.pdf
+  website: https://fpbench.org/
+  paper: https://fpbench.org/nsv16-paper.pdf
   conference: NSV 2016
   authors: Nasrine Damouche, Matthieu Martel, Pavel Panchekha, Jason Qiu, Alex Sanchez-Stern, Zachary Tatlock
   bibtex: |-
@@ -61,7 +65,8 @@
     }
 
 - title: "Automatically Improving Accuracy for Floating-Point Expressions"
-  src: http://herbie.uwplse.org/pldi15-paper.pdf
+  website: https://herbie.uwplse.org/
+  paper: https://herbie.uwplse.org/pldi15-paper.pdf
   conference: PLDI 2015
   authors: Pavel Panchekha, Alex Sanchez-Stern, James R. Wilcox, Zachary Tatlock
   bibtex: |-

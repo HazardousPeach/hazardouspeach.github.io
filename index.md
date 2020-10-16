@@ -21,7 +21,9 @@ Publications
 ------------
 {% for pub in site.data.publications %}
 {% include publication.html
-    src=pub.src
+    paper=pub.paper
+    website=pub.website
+    github=pub.github
     title=pub.title
     conference=pub.conference
     authors=pub.authors
