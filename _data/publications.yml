@@ -16,7 +16,7 @@
 - title: "REPLica: REPL instrumentation for Coq Analysis"
   github: https://www.github.com/uwplse/coq-change-analytics
   paper: https://www.alexsanchezstern.com/papers/replica.pdf
-  conference: "CPP2020"
+  conference: "CPP 2020"
   authors: Talia Ringer, Alex Sanchez-Stern, Dan Grossman, Sorin Lerner
   bibtex: |-
     @inproceedings{ringer:2020:replica,
