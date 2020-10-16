@@ -3,7 +3,7 @@ title: Alex Sanchez-Stern
 email: alexss@eng.ucsd.edu
 description: > # this means to ignore newlines until "baseurl:"
   A website describing me and my work.
-baseurl: "/" # the subpath of your site, e.g. /blog/
+baseurl: "//" # the subpath of your site, e.g. /blog/
 url: "alexsanchezstern.com" # the base hostname & protocol for your site
 github_username:  HazardousPeach
 exclude: [Makefile]
