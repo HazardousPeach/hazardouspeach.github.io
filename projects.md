@@ -8,11 +8,11 @@ Projects
 ========
 
 <div markdown="1" class="project">
-<img src="http://proverbot9001.ucsd.edu/images/proverbot9001-logo-with-text.png" class="projectlogo"/>
+<img src="https://proverbot9001.ucsd.edu/images/proverbot9001-logo-with-text.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
-[Proverbot9001](http://proverbot9001.ucsd.edu) is a ongoing initiative
+[Proverbot9001](https://proverbot9001.ucsd.edu) is a ongoing initiative
 which uses neural network guided proof search to solve proof
 obligations in the Coq proof assistant. It has been shown to
 outperform enumerative and solver-based proof search tools, as well as
@@ -56,32 +56,32 @@ ongoing work in collaboration with John Renner (UCSD), Fraser Brown
 
 
 <div markdown="1" class="project">
-<img src="http://herbgrind.ucsd.edu/logo.png" class="projectlogo"/>
+<img src="https://herbgrind.ucsd.edu/logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
-[Herbgrind](http://herbgrind.ucsd.edu) is a debugging tool to help
+[Herbgrind](https://herbgrind.ucsd.edu) is a debugging tool to help
 developers find the *root cause* of floating-point inaccuracy in large
 numerical software. It runs directly on program binaries, and produces
 reports about inaccuracies found that affect program
 outputs. Herbgrind is [free and open source
 software](https://github.com/uwplse/herbgrind), published at PLDI 2018
 as [Finding Root Causes of Floating Point
-Error](http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf).
+Error](https://herbgrind.ucsd.edu/herbgrind-pldi18.pdf).
 
 </div>
 </div>
 
 <div markdown="1" class="project">
-<img src="http://fpbench.org/img/logo.png" class="projectlogo"/>
+<img src="https://fpbench.org/img/logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
-[fpbench](http://fpbench.org) is a benchmark format and suite for the
+[fpbench](https://fpbench.org) is a benchmark format and suite for the
 development of floating point tooling. I co-authored the original
 FPBench paper, published at NSV 2016 as [Toward a Standard Benchmark
 Format and Suite for Floating-Point
-Analysis](http://fpbench.org/nsv16-paper.pdf). Since then, the project
+Analysis](https://fpbench.org/nsv16-paper.pdf). Since then, the project
 has grown to include instutitions and teams across the world.
 
 </div>
@@ -91,13 +91,13 @@ has grown to include instutitions and teams across the world.
 <img src="https://herbie.uwplse.org/logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
-[Herbie](http://herbie.uwplse.org) is a tool to help scientists and
+[Herbie](https://herbie.uwplse.org) is a tool to help scientists and
 programmers write accurate floating point code more easily. You give
 it a floating point expression, and it tests it against hundreds of
 points to find a version that's more accurate. Herbie is [open source
 software](https://github.com/uwplse/herbie), published at PLDI 2015 as
 [Automatically Improving Accuracy for Floating Point
-Expressions](http://herbie.uwplse.org/pldi15-paper.pdf).
+Expressions](https://herbie.uwplse.org/pldi15-paper.pdf).
 
 </div>
 </div>
