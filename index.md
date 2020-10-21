@@ -12,10 +12,11 @@ California San Diego. I'm also part of the team at the UW that built
 [Herbie](http://herbie.uwplse.org). I graduated from the UW with a
 Masters degree in the Spring of 2016, and started my PhD at UCSD in
 the Fall of 2016; I'm graduating in the Spring of 2021. I'm generally
-interested in using synthesis to elide complex domain details, and
-improving the usability of proof assistants through better proof
-search and new meta-language frameworks. My thesis is on
-Proverbot9001, a neural-guided proof search tool described below.
+interested in using programming language techniques to bring
+hard-fought domain expertise to more everyday programmers. My thesis
+is on Proverbot9001, a neural-guided proof search tool described on
+the [projects]({{ site.url }}{{ site.baseurl }}/projects.html) page,
+and in the MAPL paper showh below.
 
 Publications
 ------------
