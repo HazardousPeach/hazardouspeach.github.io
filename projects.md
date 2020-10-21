@@ -56,18 +56,18 @@ ongoing work in collaboration with John Renner (UCSD), Fraser Brown
 
 
 <div markdown="1" class="project">
-<img src="https://herbgrind.ucsd.edu/logo.png" class="projectlogo"/>
+<img src="http://herbgrind.ucsd.edu/logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
-[Herbgrind](https://herbgrind.ucsd.edu) is a debugging tool to help
+[Herbgrind](http://herbgrind.ucsd.edu) is a debugging tool to help
 developers find the *root cause* of floating-point inaccuracy in large
 numerical software. It runs directly on program binaries, and produces
 reports about inaccuracies found that affect program
 outputs. Herbgrind is [free and open source
 software](https://github.com/uwplse/herbgrind), published at PLDI 2018
 as [Finding Root Causes of Floating Point
-Error](https://herbgrind.ucsd.edu/herbgrind-pldi18.pdf).
+Error](http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf).
 
 </div>
 </div>

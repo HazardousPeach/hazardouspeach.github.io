@@ -1,6 +1,6 @@
 - title: "Generating Correctness Proofs with Neural Networks"
-  website: "http://proverbot9001.ucsd.edu/"
-  paper: "http://proverbot9001.ucsd.edu/papers/proverbot9001.pdf"
+  website: "https://proverbot9001.ucsd.edu/"
+  paper: "https://proverbot9001.ucsd.edu/papers/proverbot9001.pdf"
   conference: "MAPL 2020"
   authors: Alex Sanchez-Stern, Yousef Alhessi, Lawrence Saul, Sorin Lerner
   bibtex: |-
@@ -31,8 +31,8 @@
     }
 
 - title: "Finding Root Causes of Floating Point Error"
-  website: https://herbgrind.ucsd.edu/
-  paper: https://herbgrind.ucsd.edu/herbgrind-pldi18.pdf
+  website: http://herbgrind.ucsd.edu/
+  paper: http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf
   conference: "PLDI 2018"
   authors: Alex Sanchez-Stern, Pavel Panchekha, Sorin Lerner, Zachary Tatlock
   bibtex: |-
