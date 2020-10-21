@@ -9,7 +9,7 @@ Alex Sanchez-Stern
 
 Hey I'm Alex Sanchez-Stern, I'm a PhD student at the University of
 California San Diego. I'm also part of the team at the UW that built
-[Herbie](http://herbie.uwplse.org). I graduated from the UW with a
+[Herbie](https://herbie.uwplse.org). I graduated from the UW with a
 Masters degree in the Spring of 2016, and started my PhD at UCSD in
 the Fall of 2016; I'm graduating in the Spring of 2021. I'm generally
 interested in using programming language techniques to bring
