@@ -16,7 +16,7 @@ interested in using programming language techniques to bring
 hard-fought domain expertise to more everyday programmers. My thesis
 is on Proverbot9001, a neural-guided proof search tool described on
 the [projects]({{ site.url }}{{ site.baseurl }}/projects.html) page,
-and in the MAPL paper showh below.
+and in the MAPL paper below.
 
 Publications
 ------------
