@@ -56,7 +56,7 @@ ongoing work in collaboration with John Renner (UCSD), Fraser Brown
 
 
 <div markdown="1" class="project">
-<img src="http://herbgrind.ucsd.edu/logo.png" class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/herbgrind_logo.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
