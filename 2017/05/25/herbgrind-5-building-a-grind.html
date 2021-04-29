@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Herbgrind Part 5: Building a 'Grind</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Herbgrind Part 5: Building a 'Grind</h1>
+    <p class="post-meta">May 25, 2017 • Alex Sanchez-Stern</p>
+  </header>
+
+  <article class="post-content">
+    <p>Welcome back to my series of posts on Herbgrind, a dynamic analysis
+tool that finds floating point issues in compiled programs. The
+purpose of this series is to explain how Herbgrind works and the
+principles behind its design. To do that, we started with a simple
+hypothetical computer called the “Float Machine”, which is just enough
+to capture the interesting floating point behavior of a real computer,
+like the one that’s probably sitting on your desk. Now, we’re bringing
+Herbgrind’s analysis to the real world, making it computable and fast.</p>
+
+<p><img src="//images/full-logo.png" alt="Herbgrind logo" style="width:30%" class="centered" /></p>
+
+<p>In the last four posts in the series, we built up Herbgrind for
+the
+<a href="//2017/04/27/herbgrind-1-the-float-machine.html">Float Machine</a>,
+a hypothetical machine which executes floating point programs. We
+showed that Herbgrind is actually composed of three machines run on
+top of the float machine, sharing the program.</p>
+
+<p>The first,
+the
+<a href="//2017/05/07/herbgrind-2-the-real-machine.html">Real Machine</a>,
+computes the program with perfect accuracy, exactly as we would in the
+pure mathematical real numbers. Then, it compares the final result
+computed this way to the final result computed by the float machine,
+using floating point numbers. By measuring the difference between the
+two outputs, the Real Machine can compute the “floating point error”
+of the program.</p>
+
+<p>The second machine,
+the
+<a href="//2017/05/10/herbgrind-3-the-local-machine.html">Local Machine</a>,
+computes each operation in a “locally approximate” way. This means
+taking exact inputs, and rounding them to floats, and then executing
+the float operation using them. With this method, the Local Machine
+can detect at which operations error first appears, so it can start to
+zero in on the cause of the error. The Local Machine also tracks what
+outputs these sources of error influence, so that the user doesn’t
+have to worry about error that doesn’t affect the results they care
+about.</p>
+
+<p>Finally,
+the
+<a href="//2017/05/20/herbgrind-4-the-symbolic-machien.html">Symbolic Machine</a> tracks
+how each value in the program was built. This way, when the Local
+Machine detects error in an operation, they Symbolic Machine can tell
+the user what operations preceded the error, and thus help the user
+diagnose and fix the error.</p>
+
+<p>Now that we’ve defined what Herbgrind does in the abstract, it’s time
+to bring the power of Herbgrind to your desk. To do that, we’re going
+to enlist the help of one of the most incredible (and at times,
+infuriating) pieces of software I’ve ever encountered: Valgrind.</p>
+
+<h2 id="what-is-valgrind">What is Valgrind?</h2>
+
+<p><a href="http://valgrind.org"><img src="http://valgrind.org/images/valgrind-link3.png" alt="Valgrind Logo" style="width:auto; display:block; margin: 0 auto" /></a></p>
+
+<p>A few of you might have encountered Valgrind while debugging C code in
+a programming class. Its most popular “tool”, Memcheck, is endlessly
+useful for its ability to diagnose memory errors in programs in unsafe
+languages like C. But, as I was mostly unaware before starting this
+project, Valgrind is actually a powerful framework for creating
+analysis tools.</p>
+
+<p>Valgrind provides an interface for building programs, called “tools”,
+which analyze a program by running it in a modified environment, and
+observing parts of its state. Valgrind tools can have their own state,
+and do pretty much anything they want to the analyzed
+program. Valgrind operates on program binaries directly, and works
+across a variety of architectures, making it both portable across
+systems and relatively language independent.</p>
+
+<p>Programs run under Valgrind go through three phases. First, the
+Valgrind core decompiles the program to a language called VEX, which
+is a low-level intermediary language just above the machine code,
+where many compiler details are erased. Then, the Valgrind tool can
+look at this VEX, insert or remove statements, and even insert runtime
+calls to tool code. Finally, Valgrind takes the modified VEX, and
+compiles it back to machine code on the target architecture.</p>
+
+<p><img src="//images/valgrind-diagram-1.png" alt="Valgrind Diagram" style="width:100%; margin:3em 0em;" /></p>
+
+<p>Memcheck and a host of other tools (Cachegrind, Callgrind, Helgrind,
+etc.) use this interface to produce complex analysis of binary
+programs.</p>
+
+<h2 id="writing-a-valgrind-tool-101">Writing a Valgrind Tool, 101</h2>
+
+<p>A Valgrind tool sits in the middle of the Valgrind pipeline, receiving
+VEX programs, operating on them, and returning them to the core. But
+Valgrind doesn’t pass through the whole program at once. Instead, it
+takes an approach commonly known as “just-in-time compiling”, or JIT
+compiling. This involves breaking the client program up into pieces,
+and compiling (or in Valgrind’s case, instrumenting) them as they are
+needed.</p>
+
+<p>Each of these pieces is what is known in compiler literature as “super
+blocks”. Super blocks are pieces of code which always start in the
+same place, and don’t have any internal branches or loops. They do,
+however, have multiple points where they might exit, depending on some
+conditions. If that’s confusing, don’t worry: for now, you can just
+think of them as small pieces of code which don’t do anything tricky
+like jumping around or changing what they do with an “if”
+branch. Luckily, Valgrind takes care of the tricky control bits before
+they reach the tool.</p>
+
+<p>When tool code receives a piece of the client program, it’s in
+Valgrind’s intermediary language VEX. VEX is kind of like the Float
+Machine programs we defined in part one of the series, but it handles
+a lot more of the complexity that you find in real-world machine
+code. Many of these features are set up to make it more
+straightforward to think about what the machine is doing on the
+hardware level. The rest of this post will discuss what programs look
+like at the VEX level, to set a baseline for implementing the various
+“machines” that make up Herbgrind. We can understand VEX programs by
+thinking about a new machine, the VEX machine.</p>
+
+<h2 id="the-vex-machine">The VEX Machine</h2>
+
+<p>Like programs in the Float Machine, each VEX machine superblock has an
+infinite<sup id="fnref:infinite-temps" role="doc-noteref"><a href="#fn:infinite-temps" class="footnote" rel="footnote">1</a></sup> set of numbered slots to store data in. All
+the operations that the VEX machine does on values directly are done
+on values in these slots, which are called “temporaries” in VEX
+terminology. However, the temporaries only exist for as long as that
+block is running. In a program made up of many blocks, you can’t use
+temporaries to communicate any information between blocks.</p>
+
+<p>Instead, you need to use one of two other types of storage, which
+stick around at the end of the super block. These are called “thread
+state”, and “memory”. Thread state is a small storage set which
+corresponds to the registers and processor state of the underlying
+computer. It’s fast to access in practice, but only has a small number
+of storage slots, so values are being constantly overwritten. It’s
+generally useful for short term storage between just a few
+blocks. Memory, on the other hand, is extremely large and can store
+objects for a long time. The downside is that’s it’s relatively slow
+to use.</p>
+
+<p>VEX programs are made up of a big list of instructions, much like the
+Float Machine. One kind of VEX instruction is an operation
+instruction, like the operation instruction in the float machine. It
+takes arguments, which can be either constant or values from
+temporaries, and runs some operation on them, storing the result in a
+temporary. Since VEX has three different types of storage, there’s
+another VEX instruction to move values between them. There are also
+instructions which just store metadata, and some complicated things
+like conditional exits which we don’t have to worry too much about for
+now.</p>
+
+<p>But it’ll probably be a lot easier to understand the role that these
+instructions play if we walk through an example.</p>
+
+<h2 id="a-simple-program-in-vex">A Simple Program in VEX</h2>
+
+<p>Let’s look at a simple example VEX program. Let’s say you write the
+program:</p>
+
+<pre><code class="language-C">int x = 1;
+int y = 2;
+int z = x + 3 * y;
+</code></pre>
+
+<p>The corresponding VEX program might look a little something like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------ IMark(0x40080D, 3, 0) ------
+STle(11111111111) = 0x01:I64
+------ IMark(0x400810, 7, 0) ------
+STle(22222222222) = 0x02:I64
+------ IMark(0x400817, 7, 0) ------
+t1 = LDle:I64(22222222222)
+t2 = Mul64(t1, 0x3)
+------ IMark(0x40081E, 4, 0) ------
+t3 = LDleI64(11111111111)
+t4 = Add64(t3, t2)
+STle(44444444444) = t4
+</code></pre></div></div>
+
+<p>That’s a lot of dense text… so let’s break it down a bit.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------ IMark(0x40080D, 3, 0) ------
+</code></pre></div></div>
+
+<p>This first line is called an IMark in VEX, for Instruction
+Mark. Basically, it lets you link the VEX you’re seeing back to
+instructions in the binary that your tool runs on. This IMark tells
+you that the VEX instructions that follow, until the next IMark, come
+from the binary instruction at address 0x400080D. You don’t really
+need to pay too much attention to these unless you’re debugging a
+Valgrind tool. But it’s nice to know that for every VEX instruction
+you deal with, you can trace it back to the binary that the user gave
+you. If that binary is compiled with debug information, you can even
+trace it all the way back to the source code!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>STle(11111111111) = 0x01:I64
+</code></pre></div></div>
+
+<p>This next line is storing the value \(1\) in memory at location
+<code class="language-plaintext highlighter-rouge">11111111111</code>. In most architectures, this address wouldn’t make any
+sense, but let’s suspend our disbelief for a second here and pretend
+it does; the actual memory locations don’t really matter too much. The
+right hand side of the equals, <code class="language-plaintext highlighter-rouge">0x01:I64</code>, is a numeric constant in
+VEX. It has a value, <code class="language-plaintext highlighter-rouge">0x01</code>, which is specified in hexidecimal. If it
+helps, you can just replace this with <code class="language-plaintext highlighter-rouge">1</code> in your head. It also has a
+second part <code class="language-plaintext highlighter-rouge">:I64</code>, which tells you what <em>type</em> the value has. In this
+case, <code class="language-plaintext highlighter-rouge">I64</code> means a 64-bit integer. There are also types <code class="language-plaintext highlighter-rouge">I32</code> for a
+32-bit integer, <code class="language-plaintext highlighter-rouge">F64</code> for a 64-bit float, and others<sup id="fnref:valgrind-types" role="doc-noteref"><a href="#fn:valgrind-types" class="footnote" rel="footnote">2</a></sup>.</p>
+
+<p>The left side of the equality tells VEX where to put the value. <code class="language-plaintext highlighter-rouge">STle</code>
+means, “STore Little Endian”, where “Little Endian” is just one of the
+ways that computers organize bytes.</p>
+
+<p>Together, these two lines represent the line in the source code:</p>
+
+<pre><code class="language-C">int x = 1;
+</code></pre>
+
+<p>Which assigns <code class="language-plaintext highlighter-rouge">x</code> to \(1\). When the program is compiled, the variable
+<code class="language-plaintext highlighter-rouge">x</code> gets given a concrete location in memory, in this example
+<code class="language-plaintext highlighter-rouge">11111111111</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------ IMark(0x400810, 7, 0) ------
+STle(22222222222) = 0x02:I64
+</code></pre></div></div>
+
+<p>These two lines are pretty much the same as the ones above: they store
+the value \(2\) (<code class="language-plaintext highlighter-rouge">0x02</code>) to the location <code class="language-plaintext highlighter-rouge">22222222222</code>, and correspond
+to the C code:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int y = 2;
+</code></pre></div></div>
+
+<p>The simply load the value two into the memory location the compiler
+picked for <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">22222222222</code>.</p>
+
+<p>The next seven lines will all be part of the line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int z = x + 3 * y;
+</code></pre></div></div>
+
+<p>There’s a lot going on in this line: <code class="language-plaintext highlighter-rouge">y</code> is being muitiplied by \(3\),
+then added to <code class="language-plaintext highlighter-rouge">x</code>, then stored in <code class="language-plaintext highlighter-rouge">z</code>. Since VEX is much lower-level
+than this source code, it uses many statements to accomplish this,
+each doing one simple thing.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------ IMark(0x400817, 7, 0) ------
+t1 = LDle:I64(22222222222)
+</code></pre></div></div>
+
+<p>First, an IMark, which we can ignore. The next line loads the value
+we just stored into the first temporary. The command <code class="language-plaintext highlighter-rouge">LDle</code> means
+“LoaD Little Endian”, and it grabs a value from memory. In this case,
+we’re taking that value and putting it in a temporary. As I explained
+above, there are an infinite number of temporaries, and they are
+generally used as a “workbench” for values. In this case, we’re
+loading this value (<code class="language-plaintext highlighter-rouge">x</code> in the C code) up so that we can multiply it
+by three.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t2 = Mul64(t1, 0x3)
+</code></pre></div></div>
+
+<p>Here we actually do the multiplication by three. Here, instead of a
+fixed command like load or store, we have an <em>operator</em>. Each operator
+in VEX has a number of arguments, in this case two, and an operator
+code. There’s a big table of operator codes in the primary reference
+file for Valgrind tool developers, <code class="language-plaintext highlighter-rouge">libvex_ir.h</code>. In this case, we
+have the operator for a sixty four bit multiply, which the
+pretty-printer helpfully prints for us as Mul64. In between the
+parenthesis, we have the two arguments to that operator: the first one
+is the temporary we loaded <code class="language-plaintext highlighter-rouge">y</code> into in the last line, and the second
+one is the constant value \(3\).</p>
+
+<p>Once we finish with the multiply, we want to store it in another
+temporary, so that’s what the <code class="language-plaintext highlighter-rouge">t2 = </code> part of the line does.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------ IMark(0x40081E, 4, 0) ------
+t3 = LDleI64(11111111111)
+t4 = Add64(t3, t2)
+STle(44444444444) = t4
+</code></pre></div></div>
+
+<p>Okay, let’s try to tackle these last four lines all at once. The first
+line is another IMark, which just tells you where the instruction came
+from. The second line is another load, which loads <code class="language-plaintext highlighter-rouge">x</code> into a new
+temporary, <code class="language-plaintext highlighter-rouge">t3</code>. The third line is another operation, this time a
+64-bit add, which adds the <code class="language-plaintext highlighter-rouge">x</code> we just loaded, and the <code class="language-plaintext highlighter-rouge">y * 3</code> we
+computed in the last line. Finally, in the last line, we store the
+result in memory at <code class="language-plaintext highlighter-rouge">44444444444</code>.</p>
+
+<hr />
+
+<p>That’s a VEX program, as a Valgrind tool receives it. Hopefully that
+wasn’t too hard to follow. In this example, I only used integers and
+integer operations, because those are often simpler. But float
+operations are pretty much encoded the same way, with just different
+operation codes, and types.</p>
+
+<p>I also skipped actually showing any thread state in this example,
+because I didn’t want to clutter things up with another type of
+storage in the first example. Thread state works exactly like memory,
+except instead of <code class="language-plaintext highlighter-rouge">LDle</code> and <code class="language-plaintext highlighter-rouge">STle</code>, we have <code class="language-plaintext highlighter-rouge">GET</code> and <code class="language-plaintext highlighter-rouge">PUT</code>. Since it
+usually represents processor state like registers, when and how it’s
+used depends on how your program got compiled to binary.</p>
+
+<p>There are many more details about Valgrind tools operate, but I don’t
+want to bog you down just yet, so I’ll try to bring them up as they’re
+needed.</p>
+
+<p><a href="http://valgrind.org"><img src="http://valgrind.org/images/valgrind-link4.png" alt="Valgrind Logo" style="width:auto; display:block; margin: 0 auto" /></a></p>
+
+<p>In the next posts, we’ll talk about how we move Herbgrind the abstract
+analysis to the VEX machine and Valgrind framework, where we can run
+it on real world computers. Each of the abstract machines we talked
+about before will work by both transforming the VEX code as it goes
+through the tool, and adding calls to it’s own code that can keep
+track of the client program.</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:infinite-temps" role="doc-endnote">
+      <p>Well, in theory. In practice, there is a limit, due
+to some technical limitations of the Valgrind Core. We’ll
+(hopefully) be discussing this later when I get into some tof the
+strange obstacles I encountered during the development of
+Herbgrind. For now though, we can think of the number of
+temporaries as being infinite. <a href="#fnref:infinite-temps" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:valgrind-types" role="doc-endnote">
+      <p>The types given by VEX to data are not exactly like
+the types you’ll find in a higher level programming language. They
+are only “correct” (in the sense that an <code class="language-plaintext highlighter-rouge">I64</code> actually holds an
+integer, and not a floating-point number), at a very local
+level. While you’ll never see a float operation being run on an
+<code class="language-plaintext highlighter-rouge">I64</code>, VEX programs might put a value into thread state (or
+memory) as an <code class="language-plaintext highlighter-rouge">I64</code>, only to take it out as a <code class="language-plaintext highlighter-rouge">F64</code>, sometimes
+even within the same superblock. In future posts, we’ll explore
+how Herbgrind layers it’s own type system on top of the one
+provided by VEX to get a little more precision. But in general,
+giving types to things at the machine-code level is hard <a href="#fnref:valgrind-types" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </article>
+
+</div>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>

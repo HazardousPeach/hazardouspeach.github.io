@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Alex Sanchez-Stern</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            class="active"
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <p><img src="https://www.alexsanchezstern.com//images/me3.png" alt="Alex Sanchez-Stern" class="authorpicture" /></p>
+
+<h1 id="alex-sanchez-stern">Alex Sanchez-Stern</h1>
+
+<p>Hey I’m Alex Sanchez-Stern, I’m a PhD student at the University of
+California San Diego. I’m also part of the team at the UW that built
+<a href="https://herbie.uwplse.org">Herbie</a>. I graduated from the UW with a
+Masters degree in the Spring of 2016, and started my PhD at UCSD in
+the Fall of 2016; I’m graduating in the Spring of 2021. I’m generally
+interested in using programming language techniques to bring
+hard-fought domain expertise to more everyday programmers. My thesis
+is on Proverbot9001, a neural-guided proof search tool described on
+the <a href="https://www.alexsanchezstern.com//projects.html">projects</a> page,
+and in the MAPL paper below.</p>
+
+<h2 id="publications">Publications</h2>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>Scooter & Sidecar: A Domain-Specific Approach to Writing Secure Migrations</h3></a> -->
+      <h3 style="display:inline-block">Scooter &amp; Sidecar: A Domain-Specific Approach to Writing Secure Migrations</h3>
+        <p>
+          
+          
+          
+      </p>
+        <div class="authors">John Renner, Alex Sanchez-Stern, Fraser Brown, Sorin Lerner, Deian Stefan</div>
+    </div>
+    <div class="conference">PLDI 2021</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-1" />
+            <label class="expander" for="bibtex-1">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@inproceedings{renner:2021:scooterandsidecar,
+  author    = {Renner, John and Sanchez-Stern, Alex and Brown, Fraser and Lerner, Sorin and Stefan, Deian}
+  title     = {Scooter &amp; Sidecar: A Domain-Specific Approach to Writing Secure Migrations}
+  booktitle = {Programming Languages Design and Implementation}
+  month     = {June}
+  year      = {2021}
+  publisher = {ACM SIGPLAN}
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>Generating Correctness Proofs with Neural Networks</h3></a> -->
+      <h3 style="display:inline-block">Generating Correctness Proofs with Neural Networks</h3>
+        <p>
+          
+          <a href="https://proverbot9001.ucsd.edu/papers/proverbot9001.pdf">[paper]</a>
+          
+          
+          
+          <a href="https://proverbot9001.ucsd.edu/">[website]</a>
+          
+      </p>
+        <div class="authors">Alex Sanchez-Stern, Yousef Alhessi, Lawrence Saul, Sorin Lerner</div>
+    </div>
+    <div class="conference">MAPL 2020</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-2" />
+            <label class="expander" for="bibtex-2">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@inproceedings{sanchezstern:2020:proverbot9001,
+  author    = {Sanchez-Stern, Alex and Alhessi, Yousef and Saul, Lawrence and Lerner, Sorin}
+  title     = {Generating Correctness Proofs with Neural Networks}
+  booktitle = {Machine Learning in Programming Languages}
+  month     = {June}
+  year      = {2020}
+  publisher = {ACM SIGPLAN}
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>REPLica: REPL instrumentation for Coq Analysis</h3></a> -->
+      <h3 style="display:inline-block">REPLica: REPL instrumentation for Coq Analysis</h3>
+        <p>
+          
+          <a href="https://www.alexsanchezstern.com/papers/replica.pdf">[paper]</a>
+          
+          
+          <a href="https://www.github.com/uwplse/coq-change-analytics">[github]</a>
+          
+          
+      </p>
+        <div class="authors">Talia Ringer, Alex Sanchez-Stern, Dan Grossman, Sorin Lerner</div>
+    </div>
+    <div class="conference">CPP 2020</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-3" />
+            <label class="expander" for="bibtex-3">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@inproceedings{ringer:2020:replica,
+  author = {Ringer, Talia and Sanchez-Stern, Alex and Grossman, Dan and Lerner, Sorin},
+  title = {REPLica: REPL Instrumentation for Coq Analysis},
+  year = {2020},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  doi = {10.1145/3372885.3373823},
+  booktitle = {Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+  series = {CPP 2020}
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>Finding Root Causes of Floating Point Error</h3></a> -->
+      <h3 style="display:inline-block">Finding Root Causes of Floating Point Error</h3>
+        <p>
+          
+          <a href="http://herbgrind.ucsd.edu/herbgrind-pldi18.pdf">[paper]</a>
+          
+          
+          
+          <a href="http://herbgrind.ucsd.edu/">[website]</a>
+          
+      </p>
+        <div class="authors">Alex Sanchez-Stern, Pavel Panchekha, Sorin Lerner, Zachary Tatlock</div>
+    </div>
+    <div class="conference">PLDI 2018</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-4" />
+            <label class="expander" for="bibtex-4">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@inproceedings{10.1145/3192366.3192411,
+  author = {Sanchez-Stern, Alex and Panchekha, Pavel and Lerner, Sorin and Tatlock, Zachary},
+  title = {Finding Root Causes of Floating Point Error},
+  year = {2018},
+  isbn = {9781450356985},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3192366.3192411},
+  doi = {10.1145/3192366.3192411},
+  booktitle = {Proceedings of the 39th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+  location = {Philadelphia, PA, USA},
+  series = {PLDI 2018}
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>Towards a Standard Benchmark Format and Suite for Floating-Point Analysis</h3></a> -->
+      <h3 style="display:inline-block">Towards a Standard Benchmark Format and Suite for Floating-Point Analysis</h3>
+        <p>
+          
+          <a href="https://fpbench.org/nsv16-paper.pdf">[paper]</a>
+          
+          
+          
+          <a href="https://fpbench.org/">[website]</a>
+          
+      </p>
+        <div class="authors">Nasrine Damouche, Matthieu Martel, Pavel Panchekha, Jason Qiu, Alex Sanchez-Stern, Zachary Tatlock</div>
+    </div>
+    <div class="conference">NSV 2016</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-5" />
+            <label class="expander" for="bibtex-5">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@article{fpbench,
+  author={Nasrine Damouche and Matthieu Martel and Pavel Panchekha and Jason Qiu and Alex Sanchez-Stern and Zachary Tatlock},
+  title={Toward a Standard Benchmark Format and Suite for Floating-Point Analysis},
+  series={NSV'16},
+  month=July,
+  year=2016
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<div class="publication">
+    <div class="info">
+        <!-- <a href=""><h3>Automatically Improving Accuracy for Floating-Point Expressions</h3></a> -->
+      <h3 style="display:inline-block">Automatically Improving Accuracy for Floating-Point Expressions</h3>
+        <p>
+          
+          <a href="https://herbie.uwplse.org/pldi15-paper.pdf">[paper]</a>
+          
+          
+          
+          <a href="https://herbie.uwplse.org/">[website]</a>
+          
+      </p>
+        <div class="authors">Pavel Panchekha, Alex Sanchez-Stern, James R. Wilcox, Zachary Tatlock</div>
+    </div>
+    <div class="conference">PLDI 2015 (Distinguished Paper Award)</div>
+    
+    <div class="bibtex">
+        <form>
+            <input type="checkbox" id="bibtex-6" />
+            <label class="expander" for="bibtex-6">
+                <i class="fas fa-caret-right"></i>
+                Bibtex
+            </label>
+            <div class="bib-content">
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@inproceedings{10.1145/2737924.2737959,
+  author = {Panchekha, Pavel and Sanchez-Stern, Alex and Wilcox, James R. and Tatlock, Zachary},
+  title = {Automatically Improving Accuracy for Floating Point Expressions},
+  year = {2015},
+  isbn = {9781450334686},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/2737924.2737959},
+  doi = {10.1145/2737924.2737959},
+  booktitle = {Proceedings of the 36th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+  location = {Portland, OR, USA},
+  series = {PLDI '15}
+}
+</code></pre></div></div>
+
+            </div>
+
+        </form>
+    </div>
+    
+</div>
+
+<h2 id="contact">Contact</h2>
+
+<p>You can reach me at <a href="mailto:alexss@eng.ucsd.edu">alexss@eng.ucsd.edu</a>
+my university email address. I’m
+also <a href="https://github.com/HazardousPeach">on GitHub</a>.</p>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>

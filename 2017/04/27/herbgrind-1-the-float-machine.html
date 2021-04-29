@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Herbgrind Part 1: The Float Machine</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Herbgrind Part 1: The Float Machine</h1>
+    <p class="post-meta">Apr 27, 2017 • Alex Sanchez-Stern</p>
+  </header>
+
+  <article class="post-content">
+    <p>In
+the
+<a href="//2017/04/22/introducing-herbgrind.html">previous post</a> here,
+I wrote about how I got started working on a new floating point
+tool, <a href="http://uwplse.github.io/herbgrind">Herbgrind</a>. Herbgrind is a
+program analysis tool that finds numerical issues. To understand how
+Herbgrind gets there, I want to start from the basics, to introduce
+the concepts in an easy-to-understand context.</p>
+
+<p>This post is the first in a series where we build up Herbgrind,
+starting from an abstract floating point program and analysis, and
+eventually getting to the systems which allow Herbgrind to find
+numerical errors. In this post we’ll define a simple machine
+which can do floating point calculation, and go over a simple example
+program. This is the machine which we’ll use to define Herbgrind’s
+analysis in future posts.</p>
+
+<p>So let’s get to it.</p>
+
+<h2 id="what-is-a-floating-point-program">What is a floating point program?</h2>
+
+<p>Well, it’s a program, so it runs on some sort of machine. And it uses
+floating point, so that machine must have some way of doing floating
+point calculations. Floating point is a number representation that
+computers use to approximate math with real numbers. It’s a bit like
+“scientific notation” you might have read about in high school; for a
+bit more background on how it works, check out my post on Kahan
+summation
+<a href="//2015/10/16/improving-accuracy-summation.html">here</a>. Real-world
+machines like the one you’re reading this on are big and complicated,
+so to start, we’ll talk about a much more basic machine. We call it a
+“Float Machine”.</p>
+
+<p>The Float Machine has three parts: a processor,
+some memory, and a display. This will let us compute on floats, store
+them somewhere and load them later, and produce output. We’ll ignore
+input from the user, and assume that all “inputs” are encoded in the
+program.</p>
+
+<p><img src="//images/floatmachine.png" alt="A Float Machine" /></p>
+
+<p>Wait, what’s a program? Okay, a program is a big list of instructions,
+where the instructions are numbered starting at 1. Instructions
+tell the processor to do something with the data in memory, and maybe
+write something to the display. The machine will keep track of a
+number to tell us which instruction we’re currently executing, called
+the PC, for <em>program counter</em>. There are going to be three types of
+instructions: operations on values, conditional branches, and output
+statements. It turns out, with just these three things (well, really
+just the first two, if you’re willing to read the memory afterwards),
+we can write any computation that runs on any computer.</p>
+
+<p>Let’s make this a little more concrete.</p>
+
+<h4 id="operations">Operations</h4>
+<p>We’ll define an “operation” instruction as having three parts: a
+function (like +, -, or sine<sup id="fnref:sine" role="doc-noteref"><a href="#fn:sine" class="footnote" rel="footnote">1</a></sup>), information about where the
+inputs come from, and information about where the output goes. Since
+memory is just a big array of values, we’re going to use numbers to
+represent locations in memory. For instance, you might have an
+operation like:</p>
+
+\[\texttt{memory}[25] \gets \texttt{memory}[42] + \texttt{memory}[0]\]
+
+<p>or</p>
+
+\[\texttt{memory}[45] \gets \sin(\texttt{memory}[30])\]
+
+<p>In a C-like language, you might write these as:</p>
+
+<pre><code class="language-C">memory[25] = memory[42] + memory[0]
+memory[45] = sin(memory[30])
+</code></pre>
+
+<p>Each of these instructions has a function (\(+\) and \(\sin\)), memory
+locations where the inputs come from (\(\texttt{memory}[42]\),
+\(\texttt{memory}[0]\), and \(\texttt{memory}[30]\)), and memory
+locations where the output goes (\(\texttt{memory}[25]\) and
+\(\texttt{memory}[45]\).</p>
+
+<p>Since our language doesn’t include constants explicitly, we’ll
+sometimes have operations which take no arguments, and produce a
+constant result, like:</p>
+
+\[\texttt{memory}[57] \gets Const4()\]
+
+<p>You can think of this as:</p>
+
+\[\texttt{memory}[57] \gets 4\]
+
+<h4 id="branches">Branches</h4>
+<p>A branch instruction is a little more complex, because it’s going to change the
+control flow of our programs. Every programming language has something
+like this, in a C-like language it might look like this:</p>
+
+<pre><code class="language-C">if (cond(memory)) { // cond is a predicate
+    // do something
+} else {
+    // do something else
+}
+</code></pre>
+
+<p>In this example, we have some function <code class="language-plaintext highlighter-rouge">cond</code> which returns “true” or “false”
+based on the state of the memory. Functions that return true or false
+are generally called <em>predicates</em>.</p>
+
+<p>For our float machine, we’re going to make branches even
+simpler. First of all, we’ll specify which cells in memory the
+predicate can use. Next, instead of marking blocks of code as true or false,
+we’re going to specify an alternate PC to jump to. That way, when the
+predicate returns true, we will set our PC to the alternate PC
+specified by that branch. Otherwise, we’ll just increase it by one
+like normal.</p>
+
+<p>For example, the instruction:</p>
+
+\[\texttt{if}\ (\text{LESS}(\texttt{memory}[57],\ \texttt{memory}[28]))\ \texttt{goto 45}\]
+
+<p>skips to \(\texttt{instruction[45]}\) if the value at location 57 is less than
+the value at location 28, and just goes to the next instruction
+otherwise.</p>
+
+<p>Finally…</p>
+
+<h4 id="output">Output</h4>
+
+<p>The last type of instruction is an output instruction, like:</p>
+
+\[\texttt{output}\ \texttt{memory}[64]\]
+
+<p>This takes a location in memory, and prints the value there to
+screen. A program can output as many times as it wants. When the user
+looks at the program’s behavior, all they see is the outputs that
+printed. An output instruction doesn’t affect the state of memory, or
+the PC, it just prints to the screen.</p>
+
+<h4 id="a-relatively-simple-example">A (Relatively) Simple Example</h4>
+
+<p>Let’s look at an example program. Say we want to get the absolute
+value of the \(\sin\) of 7. This doesn’t really mean much, math-wise,
+since \(\sin\) is a function that gets applied to angles measured in
+radians (180 degrees = \(\pi\) radians), but it’s a nice example. This
+is a program that computes what we want<sup id="fnref:colors" role="doc-noteref"><a href="#fn:colors" class="footnote" rel="footnote">2</a></sup>:</p>
+
+<table class="code">
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>\(\texttt{memory}[1] \gets Const7()\)</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>\(\texttt{memory}[2] \gets Const0()\)</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>\(\texttt{memory}[3] \gets \sin(\texttt{memory}[1])\)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>\(\texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto 6}\)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>\(\texttt{memory}[3] \gets \texttt{negate}(\texttt{memory}[3])\)</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>\(\texttt{output}\ \texttt{memory}[3]\)</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>\(\texttt{if}\ (ConstTRUE())\ \texttt{goto -1}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Let’s walk through this a line at a time:</p>
+
+<p>\(\texttt{instruction[1]}\) is an operation which puts the value 7
+into \(\texttt{memory[1]}\). Since operations can take any number of
+arguments, we’re allowed to define the operation \(Const7\) to take
+zero arguments, and always produce 7. \(\texttt{instruction[2]}\) puts
+the value 0 into \(\texttt{memory[2]}\).</p>
+
+<p>\(\texttt{instruction[3]}\) is our first real operation:</p>
+
+<table class="code">
+  <tbody>
+    <tr>
+      <td>3</td>
+      <td>\(\texttt{memory}[3] \gets \sin(\texttt{memory}[1])\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This line takes the value at \(\texttt{memory[1]}\) (\(7\)), runs it
+through the \(\sin\) function, and puts the result in
+\(\texttt{memory[3]}\). After all three of these instructions are run,
+memory looks like this:</p>
+
+<table class="memory">
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.6569…</td>
+    </tr>
+    <tr>
+      <td>…</td>
+      <td>…</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now that we’ve got \(\sin(7)\), we next need to find its absolute
+value, and for that we’ll need a branch. If the value is less than
+zero, then we’ll need to negate it.</p>
+
+<p>In this example the number \(7\) is fixed, but in general we can
+imagine these programs as having a bunch of code written once, with
+some special memory locations for the inputs. Then, whenever someone
+wants to run them, they’ll put their inputs in those memory locations,
+and let it run. In that case, when you’re writing the code, you won’t
+actually know what the inputs are.</p>
+
+<p>The next instruction:</p>
+
+<table class="code">
+  <tbody>
+    <tr>
+      <td>4</td>
+      <td>\(\texttt{if}\ (\text{LESS}(\texttt{memory}[2],\ \texttt{memory}[3]))\ \texttt{goto 6}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>is actually going to do the branch. Here, we run the LESS predicate
+over the value at \(\texttt{memory[2]}\) and the value at
+\(\texttt{memory[3]}\). \(\texttt{memory[2]}\) holds 0, since we put
+it there at the beginning of the program, and \(\texttt{memory[3]}\)
+holds \(\sin(7)\). LESS will return true if \(0 &lt; \sin(7)\), and
+false otherwise. In this case, since \(\sin(7)\) is positive, it’ll be
+true. That means that instead of just going to the next instruction
+after this one, we’ll “jump” over to instruction 6.</p>
+
+<p>If \(\sin(7)\) were negative, we wouldn’t have jumped, and instruction
+five would have negated \(\sin(7)\), making it positive.</p>
+
+<p>Since we did jump, we’re now at \(\texttt{instruction[6]}\):</p>
+
+<table class="code">
+  <tbody>
+    <tr>
+      <td>6</td>
+      <td>\(\texttt{output}\ \texttt{memory}[3]\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>which prints out the value we’ve computed, \(|\sin(7)|\). This provides
+the “answer” of the program to the user.</p>
+
+<p>Finally, we’re going to run \(\texttt{instruction[7]}\) to terminate
+the program.</p>
+
+<table class="code">
+  <tbody>
+    <tr>
+      <td>7</td>
+      <td>\(\texttt{if}\ (ConstTRUE())\ \texttt{goto -1}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This is another conditional jump, but the predicate always returns
+true. Why would we want that? Well, it allows us to jump to the
+special instruction \(\texttt{instruction[-1]}\) unconditionally. When
+the float machine gets to \(\texttt{instruction[-1]}\) it stops.</p>
+
+<hr />
+
+<p>So that’s a simple program. The programs we care about are going to be
+much more complex, but they all can be modeled using these simple
+pieces. That way, we only have to worry about what to do with each
+piece, and we can handle huge programs that do complicated things.</p>
+
+<h1 id="upgrading-the-float-machine">Upgrading the Float Machine</h1>
+
+<p>The machine we’ve constructed so far can do any floating point
+calculation you can dream up. It’ll be a useful base for defining what
+Herbgrind does to help programmers find dubious floating point
+code.</p>
+
+<p>However, before we do that, let’s make one more modification to the
+machine. In a real computer, not all calculation is done in floating
+point. There are also more integer-like types, that do almost
+everything in your computer. Even though you can technically emulate
+these with floats, we’ll add integers to the float machine, so that we
+can talk about the distinction between code that deals with floating
+point, and code that doesn’t.</p>
+
+<p>Real-world machines put integers and floats in the same memory bank, but
+this part isn’t really important for Herbgrind, so to simplify things
+we’ll give an extra type of memory to our computer: <code class="language-plaintext highlighter-rouge">int</code>
+memory.</p>
+
+<p><img src="//images/floatmachine2.png" alt="Another Float Machine" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">int</code> memory is indexed just like float memory, but contains integers
+as values instead of floating point numbers. Since both memories have
+slots for every address, we need to have a way to tell if a program
+instruction is talking about int memory or float memory. We’ll do this
+by creating an <code class="language-plaintext highlighter-rouge">int</code> version of every instruction: <code class="language-plaintext highlighter-rouge">int</code> operations
+take integer arguments and produce an integer, <code class="language-plaintext highlighter-rouge">int</code> branches take
+<code class="language-plaintext highlighter-rouge">int</code> predicates which operate on integers, and <code class="language-plaintext highlighter-rouge">int</code> output prints
+out an integer.</p>
+
+<p>We’ll also add conversion operations, both <code class="language-plaintext highlighter-rouge">float-to-int</code>, which takes
+floating point arguments and produces an integer, and <code class="language-plaintext highlighter-rouge">int-to-float</code>,
+which takes integer arguments and produces a float.</p>
+
+<p>And that’s it! That’s the Float Machine. For now that’s not going to
+be very useful, unless you particularly like thinking of novel ways of
+building a computer, but in the next post, I’ll talk about what
+Herbgrind does to this machine to detect and report its error.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:sine" role="doc-endnote">
+      <p>The sine function is a trigonometric function, which can’t be
+defined through finite arithmetic formulas. It returns values
+between -1 and 1, and repeats every 2\(\pi\). For the purposes of this
+post, you don’t need to know exactly what it does. Sine is often
+written “sin” in code and math. <a href="#fnref:sine" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:colors" role="doc-endnote">
+      <p>I’m using green for programs, and blue for memory in this
+post. <a href="#fnref:colors" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </article>
+
+</div>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>

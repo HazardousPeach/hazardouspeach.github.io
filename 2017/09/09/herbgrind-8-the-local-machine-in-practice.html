@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Herbgrind Part 8: The Local Machine In Practice</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Herbgrind Part 8: The Local Machine In Practice</h1>
+    <p class="post-meta">Sep 9, 2017 • Alex Sanchez-Stern</p>
+  </header>
+
+  <article class="post-content">
+    <p>Welcome back to my series of posts on Herbgrind, a dynamic analysis
+tool that finds floating point issues in compiled programs. The
+purpose of this series is to explain how Herbgrind works and the
+principles behind its design. To do that, we started with a simple
+hypothetical computer called the “Float Machine”, which is just enough
+to capture the interesting floating point behavior of a practical
+computer, like the one that’s probably sitting on your desk. Now,
+we’re bringing Herbgrind’s analysis to the real world, making it
+computable and fast.</p>
+
+<p><img src="//images/full-logo.png" alt="Herbgrind logo" style="width:30%" class="centered" /></p>
+
+<p>If you missed the previous posts in this series, you might find this
+one a bit confusing, so I suggest you go back and read it
+from
+<a href="//2017/04/22/introducing-herbgrind.html">the beginning</a>. If
+that’s too much reading,
+the
+<a href="//2017/05/25/herbgrind-5-building-a-grind.html">post on building a valgrind tool</a> has
+a short summary of the lead up, and introduces the Valgrind framework
+which this post builds on. In this post, I’m going to assume you know
+what I mean when I talk about “the Local Machine”, or “thread
+state”.</p>
+
+<p>We’ve already talked a lot about the Real Machine, a machine that
+executes programs in parallel with their regular execution, but uses
+Real numbers instead of floating point ones. Thanks to the Real
+Machine, we can figure out the “correct” answer for a floating point
+program, and we can compare it to the one that gets computed by the
+program using floating point. This let’s us tell the user how much
+error each result had when all is said and done.</p>
+
+<p>But just knowing that error is a problem isn’t enough; we need to
+enable the user to fix the error. The next machine, the Local Machine,
+tracks down where the error first appears, so we can go about fixing
+it. But not all the places where error appears are that bad: sometimes
+error appears in one place, but doesn’t get big enough to affect
+anything important, or ends up going nowhere. So the task of the Local
+Machine is twofold: figure out where error is coming from, and figure
+out where it goes.</p>
+
+<h2 id="where-error-comes-from">Where Error Comes From</h2>
+
+<p>In the post on
+the
+<a href="//2017/05/10/herbgrind-3-the-local-machine.html">Local Machine</a>,
+we developed the notion of “local error”, the error that a single
+operation has, independent of any error around it. We found that we
+can discover the local error of an operation by using exact values for
+its arguments, from the Real Machine, and then rounding them and
+executing the operation on floats. The difference between this result
+and the exact result is the local error of the operation on those
+inputs.</p>
+
+<p><img src="//images/local-error.png" alt="Finding Local Error" class="centered" /></p>
+
+<p class="image-caption"><em>To find local error, two executions on the exact arguments are
+compared: one which rounds <strong>before</strong> the computation, and one which
+rounds <strong>after</strong></em></p>
+
+<p>Doing this in on a practical computer, using the Valgrind framework, is
+pretty straightforward. We already know from the last post that we
+have shadow values for each argument, sitting around in memory
+somewhere. VEX only allows operations to be executed on temporaries
+(values in memory or thread state have to first be moved to
+temporaries), so we don’t have to consider the case where the shadow
+value is in the memory hash table, or thread state shadow
+storage. When we see an operation whose local error we want to
+evaluate, we know that the exact values of its arguments are in the
+shadow temporaries that correspond to its argument temporaries.</p>
+
+<p>MPFR provides an API for taking an exact shadow value, and rounding it
+to a double- or single- precision float. There’s a lot of flexibility
+in how you do this (so many rounding modes…), but we just round down
+all the time.</p>
+
+<p>To compute local error properly, we need to round to the precision of
+the original operation. Otherwise, if we try to compute the local
+error of a single-precision operation using a double-precision
+rounding, we might miss the error entirely, and never detect local
+error even when global error grows. On the other hand, if we try to
+compute the local error of a double-precision operation using a
+single-precision rounding, we’ll detect error that doesn’t really
+exist. Luckily it’s pretty easy to tell what the precision of the
+original operation is, just by looking at the instruction it uses:
+processors tend to have different instructions for dealing with
+single-precision floats and double-precision floats, and VEX preserves
+this distinction.</p>
+
+<p>For operations which aren’t a single instruction, but are instead a
+wrapped library call, we don’t have an instruction code to look at,
+but instead use the type of the function that was called. In <code class="language-plaintext highlighter-rouge">libm</code>
+(and any implementation of <code class="language-plaintext highlighter-rouge">math.h</code>, the standard API for math
+libraries in C), there are generally two versions of any function, one
+for double precision (the default, for instance <code class="language-plaintext highlighter-rouge">sqrt</code>), and one for
+single precision (usually with a suffix of <code class="language-plaintext highlighter-rouge">f</code>, like <code class="language-plaintext highlighter-rouge">sqrtf</code>).</p>
+
+<p>Once we’ve got the exact arguments rounded, we just need to run the
+“normal” operation on them, and compare the result to the exact
+answer. When the original operation is something basic like addition,
+or division, we can do this using the built in operators in C, as long
+as we make sure to specify the types in the right places. We saw in
+the
+<a href="//2017/08/05/herbgrind-7-what-about-square-root.html">last post</a> that
+because of the way Valgrind interacts with the C standard library,
+when the original operation is a library call we can’t run the
+“normal” by just calling the original <code class="language-plaintext highlighter-rouge">libm</code> implementation, but
+luckily we’ve already set up the machinery to call the OpenLibm
+implementation instead. OpenLibm, as a fully functional implementation
+of <code class="language-plaintext highlighter-rouge">math.h</code>, also includes the single-precision versions of all the
+functions.</p>
+
+<p>So the steps to computing local error are:</p>
+<ol>
+  <li>Get the argument and result locations of the original operation</li>
+  <li>Grab the shadow arguments from the shadow temporaries corresponding
+to the original arguments.</li>
+  <li>Round the shadow real value of each argument down to the precision
+of the original operation.</li>
+  <li>Pass the rounded arguments to the OpenLibm version of the original
+operation, to get the “locally approximate” result.</li>
+  <li>Grab the shadow result from the shadow temporary corresponding to
+the original result.</li>
+  <li>Round the shadow real value of the result down to the precision of
+the original operation.</li>
+  <li>Compare the “exact” result to the “locally approximate” result to
+get the local error.</li>
+</ol>
+
+<p>Once we can compute the local error for each operation, we can figure
+out where the error in a program is “coming from”, by just looking for
+the operations with lots of local error! The local error of different
+operations doesn’t interact, since we start from exact arguments every
+time, so we get a good measure of the error that arises from that
+operation alone.</p>
+
+<h2 id="where-error-goes">Where Error Goes</h2>
+
+<p>The second job of the local machine is tracking the “influence” of
+erroneous code on the final results of the program. Without this, we
+could report all the sources of error to the user, but we wouldn’t
+know which ones were important, and which ones end up going nowhere.</p>
+
+<p>In the original Local Machine post, for the abstract Float Machine, we
+talked about tracking these influences through
+a
+<a href="https://users.ece.cmu.edu/~aavgerin/papers/Oakland10.pdf">“taint analysis”</a>;
+which means we generate a “taint” on some event, and propagate that
+taint (copy it) from the arguments of certain operations to their
+results. In the case of our local error analysis, we generate a
+“taint” every time we see local error above some threshold (5 bits by
+default<sup id="fnref:5-bits-ulps" role="doc-noteref"><a href="#fn:5-bits-ulps" class="footnote" rel="footnote">1</a></sup>). And at every operation we shadow, we copy the
+taints from the arguments to the result.</p>
+
+<p>For the purposes of the local machine, we’ll call our taints
+“influences”. Each influence is an object that points to a specific
+operation, where local error occurred. When we first run into local
+error, we create a new influence which points to the current
+operation, and we add it to the current shadow value’s influence
+set. Since each shadow value also holds the influences from the shadow
+values used to create it, at each operation we have: the influences
+from the arguments, union-ed together, and an influence for the
+current operation if it had significant local error.</p>
+
+<p>With this system we can figure out which operations with error
+influenced each other, but we still have to figure out which values
+are “outputs”, in that we care about their results for program
+correctness.</p>
+
+<p>Originally in Herbgrind we asked the user to mark these values
+explicitly, but that involved a lot of manual labor, and required
+understanding the program that you wanted to analyze, which we don’t
+always want to make a requirement. So instead, we now automatically
+infer the outputs of the program based on a couple of conditions.</p>
+
+<p>The intuition behind this system is that you only care about floating
+point values you can “see”; out of sight, out of mind. While you’re
+doing operations on floating point values, they are just bits in
+memory, so it doesn’t yet matter how accurate they are. It’s only when
+you use them to change observable behavior that you care about their
+accuracy. There are a few ways you can “observe” floating point
+values: you can print them to the screen, you can compare them to
+another value to make some sort of decision in the program, or you can
+convert them to an integer. The last one might seem a little weird,
+since integers are still just bits in memory, and aren’t necessarily
+directly observable, but any integer might become observable later,
+and so to avoid having to track integer values, we just flag floating
+point values on a conversion to int as well. Luckily these conversions
+are infrequent enough to avoid overwhelming the user with “fake”
+outputs.</p>
+
+<p>Detecting each of these “observation” events involves a slightly
+different mechanism. For the first event, printing of floats, we do a
+similar trick as with math wrapping from the previous post, but
+instead of wrapping functions like <code class="language-plaintext highlighter-rouge">sqrt</code>, we wrap the printing
+functions like <code class="language-plaintext highlighter-rouge">printf</code><sup id="fnref:calling-underlying" role="doc-noteref"><a href="#fn:calling-underlying" class="footnote" rel="footnote">2</a></sup>. To detect comparisons,
+we just look for instances of the VEX compare instructions, and to
+detect conversions to integers we look for the VEX instructions which
+convert floating-point values to integers.</p>
+
+<h2 id="putting-it-all-together">Putting it All Together</h2>
+
+<p>To give the user the most complete picture of the error’s impact, we
+want to tell them, for each observation:</p>
+
+<ol>
+  <li>How often it happened</li>
+  <li>Which operations with high local error flowed into it</li>
+  <li>How accurate the result of the observation was, both on average and
+in the worst case</li>
+</ol>
+
+<p>Counting how often each observation point is hit is pretty easy: we
+just have an integer counter in its record, and increment it every time we
+hit the observation. Keeping track of the influences is slightly more
+complicated, but we’ve outlined above how that happens. Tracking the
+accuracy, though, gets a little tricky.</p>
+
+<p>What does it mean for an observation to be accurate? Well, for
+different observations, it means different things. For print
+observations, since we might be printing out an arbitrary amount of
+the floating point value, we’ll use our general metrics for floating
+point accuracy: how many bits of the result are correct. For integer
+conversions and floating point comparisons, we’ll do something a
+little more course grained, and just measure accuracy as either
+“right” or “wrong”. If a comparison returns the same value for both
+the computed and shadow values, it’s “right”; otherwise it’s
+“wrong”. Likewise, if a conversion produces the same integer for both
+the computed and shadow values, it’s “right”; otherwise it’s “wrong”.</p>
+
+<hr />
+
+<p>That’s pretty much it for local error! I think the transformation from
+the abstract Local Machine to an actual implementation is simpler than
+some of the other implementations; so much of the complexity is
+captured in the abstract model.</p>
+
+<p>For a final closing blurb, I recently designed a new “drawing” version
+of the Herbgrind logo, a little more cleaned up than the photo
+version, for using on slides and such. Here’s its official debut:</p>
+
+<p><img src="//images/logo-drawing.svg" alt="Herbgrind drawing logo" class="centered" /></p>
+
+<p>See you next time!</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:5-bits-ulps" role="doc-endnote">
+      <p>5 bits of error corresponds to \(2^5=32\) ulps of
+error, or 32 floating point values between the correct answer and
+the locally approximate one. <a href="#fnref:5-bits-ulps" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:calling-underlying" role="doc-endnote">
+      <p>We still run into a similar problem as before
+with passing through the floating-point arguments to a wrapped
+function. In this case we solve it by wrapping <code class="language-plaintext highlighter-rouge">printf</code>, and
+calling <code class="language-plaintext highlighter-rouge">vprintf</code> within the replacement. <a href="#fnref:calling-underlying" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </article>
+
+</div>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>

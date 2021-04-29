@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Herbgrind Part 4: The Symbolic Machine</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Herbgrind Part 4: The Symbolic Machine</h1>
+    <p class="post-meta">May 20, 2017 • Alex Sanchez-Stern</p>
+  </header>
+
+  <article class="post-content">
+    <p>Welcome back to my series of posts on Herbgrind, a dynamic analysis
+tool that finds floating point issues in compiled programs. The
+purpose of this series is to explain how Herbgrind works and the
+principles behind its design. To do that, we’re starting with a
+simple hypothetical computer called the “Float Machine”, which is just
+enough to capture the interesting floating point behavior of a real
+computer, like the one that’s probably sitting on your desk.</p>
+
+<p><img src="//images/full-logo.png" alt="Herbgrind logo" style="width:30%" class="centered" /></p>
+
+<p>In
+the
+<a href="//2017/04/27/herbgrind-1-the-float-machine.html">beginning of the series</a> I
+described the basics of the float machine. Then, we extended it with a
+“Real” machine for figuring out the correct output of the program. In
+the
+<a href="//2017/05/07/herbgrind-3-the-local-machine.html">previous post</a>,
+I showed how we can “localize” errors to a particular operation to
+find the source of error.</p>
+
+<p>The only problem is, one operation alone can’t explain the true cause
+of floating point error. Each operation on its own is about as
+accurate as it can be in IEEE754 floating point. It’s only when
+operations compose that non-trivial error starts to appear. So while
+the Localizing Machine is good for figuring out where the error first
+appears, it doesn’t tell the whole story.</p>
+
+<p>You can see this in this simple example:</p>
+
+\[(x + 1) - x\]
+
+<p>As I mentioned in earlier posts, this computation should always return
+\(1\), but for large values of \(x\) it returns \(0\) instead. This is
+because floating point can only represent numbers accurately at one
+magnitude at a time. So when you add the small value \(1\) to a large
+value of \(x\), it gets rounded off, and you just get \(x\). But this
+isn’t bad floating point error yet, because that’s still the closest
+floating point number to the correct answer, so it’s as “correct” as
+it can be. However, once you subtract \(x\) back out, you get \(0\)
+instead of \(1\), and that’s <em>not</em> the most correct answer.</p>
+
+<p>Pointing the Localizing Machine at this thing will tell you that the
+subtraction is the problem. After all, this is where the value first
+becomes different from the closest floating point number to the
+correct answer. But the subtraction alone isn’t enough to express the
+problem: given the inputs \(x\) and \(x\), zero is the correct
+answer. It’s only because we know that the first \(x\) is wrong in a
+very specific way that we know that the subtraction causes a problem.</p>
+
+<p>In general, to figure out enough about the error to fix it, you also
+need to look at the operations that come before the error appears.</p>
+
+<p>One way to do this is to just look at the source code. Once you know
+where the error appears, you sometimes only need to look a few lines
+back to see the relevant operations. Unfortunately this isn’t always
+the case. Sometimes the operations that matter are scattered across
+the program, in different functions and even different modules.</p>
+
+<p>The final machine that makes up Herbgrind is called the Symbolic
+Machine, and is intended to bring together the computation that
+produced a value so that it can be reported to the user. This way when
+you find local error, you’ll also know how that value was computed,
+and therefore which operations need to be fixed to solve the problem.</p>
+
+<h2 id="how-the-symbolic-machine-works">How the Symbolic Machine Works</h2>
+
+<p>Given the above example, what we want the symbolic machine to do is
+produce the expression “\(\texttt{(x + 1) - x}\)”. Since the addition and
+subtraction could be in different modules though, we can’t trust the
+code to easily tell us this. Instead, we rely on the <em>values</em> in the
+program to tell us how they were built.</p>
+
+<p>The Symbolic Machine takes programs, and runs them
+“symbolically”. When the float machine sees a program that computes \(1 + 2\), it produces \(3\). But when the symbolic machine sees that
+same program, it produces an object representing the computation
+abstractly, in this case “\(\texttt{1 + 2}\)”.</p>
+
+<p>This is especially powerful when the values flow through the program
+in interesting ways. Even if this \(3\) gets passed around in the
+program, and put in a hash table by one piece of code and taken out by
+another, it still has the “symbolic” value “\(\texttt{1 + 2}\)”. Then,
+if someone adds \(4\) to that \(3\), it’ll produce the expression
+“\(\texttt{(1 + 2) + 4}\)”, while the client program produces \(7\).</p>
+
+<p>So the Symbolic Machine has “symbolic memory” which it uses to track
+the float memory in the Float Machine. It also has a symbolic
+processor which looks at each operation in the program, and does the
+correct “symbolic” operation.</p>
+
+<p>This dynamic approach to finding expressions means that we will never
+miss part of the computation, because branches and crazy control flow
+don’t present a problem. Unfortunately it makes it harder for us to
+find some information about the program that would be obvious in
+source code, like which values are a constant and which values are a
+variable. Luckily, we have a few tricks up our sleeves to get that
+information back.</p>
+
+<h2 id="constant-or-variable">Constant or Variable?</h2>
+
+<p>When we’re trying to improve a computation, it’s usually pretty
+important to know which values are “variables” and which values are
+“constants”. You can do a lot more transformation of the expression
+when you know that a particular value is going to be always the same
+value. But try those transformations on a value that changes, and
+you’ll be in for a bad time!</p>
+
+<p>Unfortunately, as long as we’re being completely dynamic, it’s nearly
+impossible to figure out which is which perfectly. However, some good
+guesses can go a long way. For instance: most parts of the program
+that are standalone “procedures” with “inputs” that make variables,
+are going to be run more than once. When this happens, the symbolic
+machine will see the same code fragment run with some of its values
+different (the variables), and some the same (the constants).</p>
+
+<p>While so far we’ve only been talking about traces of values, that is
+the history that a particular value went through, now we care about
+something else: “code fragments”. This is a semi-static (the opposite
+of dynamic) notion, so it’s worth considering how the two mix. While
+with our “dynamic” techniques we stored information at each value, now
+we want to also know something about procedures that are run more than
+once, so we’re going to consider a different kind of storage. We’ll
+add another kind of memory to our symbolic machine. But instead of
+this one having one memory location for each location in the Float
+Machine’s float memory, it’ll have one memory location for every
+<em>program instruction</em>.</p>
+
+<p>This new program-based memory will store, for each operation in the
+program, every trace that was produced at it. Therefore, when we
+evaluate \((1 + 2) + 3\), we won’t just store \("\texttt{(1 + 2) +
+3}"\) in the symbolic memory where the value \(3\) goes in float
+memory, we’ll also store it as one of the traces cooresponding to the
+\(+\) operation.</p>
+
+<p>With each operation holding a set of traces, we can start to infer
+which values are constant, and which ones vary. Whenever two traces
+disagree on a value, or even a whole branch of the tree, we’ll call
+that part a variable. And anything that doesn’t change between traces
+we’ll call a constant.</p>
+
+<p>For example, let’s say we see a \(+\) operation with the traces:</p>
+
+\[\begin{align}
+\texttt{1 +}&amp;\texttt{ 4} \\
+\texttt{1 +}&amp;\texttt{ 3} \\
+\texttt{1 +}&amp;\texttt{ (2 + 5)}\\
+\end{align}\]
+
+<p>Since the 1 on the left hand side of the plus always stays the same,
+we’ll say it’s a constant. Since the right hand side changes, and is
+even sometimes another operation, we’ll call it a variable. The
+resulting inferred expression is:</p>
+
+<p>\(\texttt{1 + x}\).</p>
+
+<p>In practice finding this solution algorithmically can be a bit tricky,
+but we’ll discuss this when we talk about bringing Herbgrind to a real
+machine, not the abstract Float Machine.</p>
+
+<h2 id="variable-matching">Variable Matching</h2>
+
+<p>In the previous example we gave the variable the name “\(x\)”. We
+could have given it a different name, like “\(y\)” or “\(cow\)”, but
+“\(x\)” is as good a name as any. When there’s only one variable, the
+name we give it doesn’t matter. When multiple variables enter the
+picture though, we have to be a little more careful, because we can
+have different variables that have the same name, and that means
+something special.</p>
+
+<p>For example, in the expression:</p>
+
+\[(x + 1) - x\]
+
+<p>We have the same variable, \(x\), in two places. Rather than these
+both being independent variables, this means that they can vary in
+value, but they are always the same as each other. They could both be
+\(10000000\), or they could both be \(3.5\), but they have to match.</p>
+
+<p>To reproduce this equation with our dynamic system, we’ll need to
+figure out which variables are actually the <em>same</em> variable. Once
+again, we’ll look at the traces to determine this. To find out whether
+a value was a constant, we would see if it never changed across all
+the traces. Similarly, to find out whether two parts of the traces are
+actually the same variable, we’ll see if their values match across all
+traces.</p>
+
+<p>For instance, if we see the traces:</p>
+
+\[\begin{align}
+\texttt{(1 + 2) - 1} \\
+\texttt{(2 + 2) - 2} \\
+\texttt{(3 + 4) - 3} \\
+\end{align}\]
+
+<p>We’ll produce the expression:</p>
+
+\[\texttt{(x + y) - x}\]
+
+<p>In this expression, the left side of the \(+\), and the right side of
+the \(-\) are given the same variable name, \(x\). The right side of
+the \(+\) is given a different variable name, \(y\). This is because,
+while the first and third number vary across traces, in every trace
+they have the same value as each other; in the first they are both
+\(1\), in the second they are both \(2\), and in the third they are
+both \(3\).</p>
+
+<p>Even though in the second trace the second number matches the other,
+we don’t give it the same name. Because it differs in the other
+traces, we consider it a different variable. Herbgrind only treats two
+variables as the same if they match in <strong>every</strong> trace.</p>
+
+<h2 id="the-rules-of-the-game">The Rules of the Game</h2>
+
+<p>To make this process of inferring operation trees more concrete, let’s
+give it a name, and some rules. We’ll call this “generalizing the
+traces” into a “symbolic expression”. <em>Symbolic</em>, because while the
+traces just involve numbers and operations, when we generalize them we
+get variables also, which are “symbols” representing more than one
+value.</p>
+
+<p>The rules of this process are all about not being too specific, and
+not being too general. If the expression is too specific, then it
+won’t properly be able to represent the different traces. If it’s too
+general, than it won’t give you enough information.</p>
+
+<p>What does it mean to be too specific? Well, a variable like \(x\),
+\(y\), or \(cow\), can represent anything. A number, an operation,
+whatever. A variable by itself is never too specific. On the opposite
+end, an operation, or a constant, represents only a single thing:
+either running that operation, or that constant. We’re also going to
+do something kind of weird here, and say that an operation on
+constants can be “represented” by its result. For instance, the trace:</p>
+
+\[\texttt{(1 + 2) - 3}\]
+
+<p>can be represented as “\(\texttt{(1 + 2) - 3}\)”, or “\(\texttt{(x +
+y) - z}\)”, or “\(\texttt{3 - 3}\)”, or “\(\texttt{0}\)”, or even
+“\(\texttt{x}\)”. That’s a lot of options! If instead we had two
+traces:</p>
+
+\[\begin{align}
+\texttt{(1 + 2) - 3}\\
+\texttt{(1 + 2) - 4}
+\end{align}\]
+
+<p>Then we wouldn’t be able to use “\(\texttt{(1 + 2) - 3}\)”,
+“\(\texttt{3 - 3}\)”, or “\(\texttt{0}\)”, because they are now <em>too
+specific</em>; they don’t encompass all of the traces they are supposed to
+represent. But we could still use “\(\texttt{(1 + 2) - z}\)”,
+“\(\texttt{(x + y) - z}\)”, “\(\texttt{3 - x}\)”, or “\(\texttt{x}\)”.</p>
+
+<p>With so many options, we need to figure out which one is best. The
+easiest one to pick is always \(x\), because it can represent
+anything. However, it doesn’t tell the user very much, and it’s not
+useful for rewriting the code to be more accurate. The more specific
+of a trace we can give, the more chance we have of helping the
+user. So we’ll always look for the <em>most specific</em> trace that is still
+<em>general enough</em> to represent all the traces that we care about.</p>
+
+<p>In the case of:</p>
+
+\[\begin{align}
+\texttt{(1 + 2) - 3} \\
+\texttt{(1 + 2) - 4}
+\end{align}\]
+
+<p>the most specific trace that is general enough is:</p>
+
+\[\texttt{(1 + 2) - x}\]
+
+<p>Because in both traces the left hand side of the subtraction is
+“\(\texttt{(1 + 2)}\)”, it’s not too specific to use that for the
+generalized symbolic expression. And, it’s the most specific trace
+possible, since it’s completely concrete (just numbers and operations)
+and doesn’t pre-compute any operations.</p>
+
+<p>On the right hand side of the subtraction, we have a variable \(x\),
+because the value in that position is different in the two different
+traces. We couldn’t make it a concrete value like \(3\) or \(4\),
+because that would be <em>too</em> specific, and wouldn’t represent both
+traces.</p>
+
+<hr />
+
+<p>Wooh, okay. That’s the Symbolic Machine, the last machine in
+Herbgrind. Now that we’ve got all the machines in one place, we can do
+some pretty cool things. We can find that there is error in the output
+of a program, track it down to a particular part of the computation,
+and represent that computation as a symbolic expression to the
+user. From there, it’s up to the user to fix the computation, and put
+the fixed version back in the program.</p>
+
+<p>What we’ve defined up until now has been on an abstract machine,
+called the Float Machine. While the Float Machine has many of the
+things a normal computer does, there are still a few differences that
+make implementing Herbgrind a bit tricky. In future posts, I’ll talk
+about these differences, and what Herbgrind does to work on normal
+computers.</p>
+
+<p>Still though, what we’ve defined so far is most of the work. I hope
+it’s been useful to anyone out there trying to track down and
+understand floating point error!</p>
+
+  </article>
+
+</div>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>

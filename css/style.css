@@ -1,0 +1,95 @@
+body { padding-top: 30px; margin: 3em auto; position: relative; text-rendering: optimizeLegibility; }
+
+.content { padding: 40px 15px; text-align: left; width: auto; margin: 0 auto; }
+
+.authorpicture { float: right; height: 300px; width: auto; margin-left: 1.5em; margin-bottom: 1em; }
+
+.post-content { margin: 30px 50px; width: 90%; max-width: 700px; }
+
+.image-caption { text-align: center; text-size: .8rem; color: light-grey; }
+
+p { margin: 0 0 1.1em; font-size: 14pt; }
+
+li { margin: 0 0 .8em; font-size: 14pt; }
+
+ol { margin-bottom: 2.5em; }
+
+img { width: 70%; }
+
+#datecell { margin: 0 auto; text-align: center; }
+
+#dashcell { font-weight: bold; width: 10px; }
+
+table { color: #333; font-family: Helvetica, Arial, sans-serif; border-collapse: collapse; font-size: large; margin-bottom: 20px; }
+
+table.wide { width: 60em; }
+
+tr { border: 1px solid #CCC; }
+
+td { min-width: 50px; height: 30px; background: #FAFBFA; padding: 6px; background: inherit; }
+
+table.code { background: #9AFA9A; }
+
+table.memory { background: #9A9AFA; }
+
+img.centered { display: block; margin: 0 auto; }
+
+img.diagram { display: block; margin: 3em auto; }
+
+h4 { font-weight: bold; }
+
+ul { font-size: large; }
+
+.MathJax_Display { font-size: 1.2em !important; }
+
+.publication { margin-top: 1rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; line-height: 1.5rem; color: #888; width: 100%; }
+
+.publication h3 { margin-top: 0; }
+
+.publication > * { max-width: 100%; }
+
+.publication .info { flex: 1 1 70%; min-width: 40%; }
+
+.publication .conference { padding-left: 1rem; flex: 0 0 content; color: #888; }
+
+.publication .bibtex { flex: 0 0 100%; }
+
+.publication .bibtex input { display: none; }
+
+.publication .bibtex .expander:hover { cursor: pointer; text-decoration: underline; }
+
+.publication .bibtex .expander i { transition: transform 0.25s; }
+
+.publication .bibtex input:checked + .expander i { transform: rotate(90deg); }
+
+.publication .bibtex .bib-content { color: #222; transition: max-height 0.25s; overflow: hidden; transform-origin: top; max-height: 0; width: 100%; }
+
+.publication .bibtex input:checked + .expander + .bib-content { max-height: 14.5rem; }
+
+div.project { display: table; margin-top: 3em; margin-bottom: 3em; }
+
+img.projectlogo { float: left; margin-right: 2em; }
+
+div.projectdesc { display: table-cell; vertical-align: middle; }
+
+/*Scaling*/
+@media all { html { font-size: 16px; } }
+
+@media all and (max-width: 760px) { html { font-size: 15px; } }
+
+@media all and (max-width: 720px) { html { font-size: 14px; } }
+
+@media all and (max-width: 680px) { html { font-size: 13px; } }
+
+@media all and (max-width: 640px) { html { font-size: 12px; } }
+
+@media all and (max-width: 600px) { html { font-size: 11px; } }
+
+@media all and (max-width: 560px) { html { font-size: 10px; } }
+
+@media all and (max-width: 520px) { html { font-size: 9px; } }
+
+/* mobile layout tweaks */
+@media only screen and (max-device-width: 768px) { body { padding-top: 10px; margin: 0; } .content { padding: 40px 0; } .post-content { margin: 10px 10px; width: 98%; } p { font-size: 1.25em; line-height: 1.5; } h1 { font-size: 3em; } h2 { font-size: 2em; } pre { font-size: .8em; } .biglink { font-size: 3em; } .authorpicture { float: none; text-align: center; display: block; margin: 0 auto; width: 95%; height: auto; } table.wide { width: auto; } }
+
+/*# sourceMappingURL=style.css.map */

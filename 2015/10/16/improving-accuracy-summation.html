@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Improving Accuracy: A Look at Sums</title>
+  <!-- Bootstrap -->
+  
+  <link href=//bootstrap/css/bootstrap.min.css rel="stylesheet">
+  
+  <link href=//css/style.css rel="stylesheet">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    TeX: { extensions: ["color.js"] },
+    tex2jax: {inlineMath: [['\\(','\\)']]},
+    processEscapes: true
+    });
+    MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    if (!data.display) {data.math = "\\small{"+data.math+"}"}
+    });
+    });
+  </script>
+</head>
+
+  <body>
+    <header class="site-header">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.alexsanchezstern.com/">Alex Sanchez-Stern</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          
+
+          <li
+            
+            >
+            <a href="https://www.alexsanchezstern.com/">Home</a></li>
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//blog.html">
+              Blog
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//projects.html">
+              Projects
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="">
+            <a href="https://www.alexsanchezstern.com//statements.html">
+              Job Application Statements
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          
+          <li>
+            <a href=https://www.alexsanchezstern.com//cv.pdf>
+              CV
+            </a>
+          </li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+    <div class="container">
+      <div class="content">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Improving Accuracy: A Look at Sums</h1>
+    <p class="post-meta">Oct 16, 2015 • Alex Sanchez-Stern</p>
+  </header>
+
+  <article class="post-content">
+    <p>In the last post on this site, I talked about a project I’m working on
+called Herbie. Herbie is a project that automatically rewrites
+numerical program fragments to improve the accuracy of their
+answers. There’s more background on Herbie in my last post
+<a href="//2015/08/03/measuring-error.html">here</a>, and you can check out the
+Herbie website <a href="http://herbie.uwplse.org">here</a> to learn all about it.</p>
+
+<p>While we’ve already published a paper on how Herbie can improve the
+accuracy of floating point expressions, we’re still working on getting
+Herbie to improve the accuracy of more complex numerical programs,
+like ones with loops in them. Again, you can check out the last post
+for more background on this.</p>
+
+<p>In this post, I’ll be talking about a simple type of floating point
+computation that involves loops, adding up many numbers, and the trick
+we’re building into Herbie to improve the accuracy of programs that
+add numbers.</p>
+
+<p>While the basic example, taking a list of numbers that you have in
+memory and adding them together, seems like a bit of a niche case, it
+turns out that adding up many numbers is something that shows up a lot
+in practice. Anytime you’re evaluating a polynomial, multiplying two
+matrices, simulating a moving object, or many more basic numerical
+calculations, you’re going to end up adding up many numbers of some
+form or another. So it’s worth it to know the pitfalls of adding lots
+of numbers, and how you can avoid them.</p>
+
+<h2 id="a-simple-example">A Simple Example</h2>
+
+<p>For simplicity, let’s look at a basic example of summing a list, where
+you’re given a list of numbers, and all you need to do is add them
+together. Normally, the way you’d do this is to hold on to a variable
+for your current sum, and then loop through every item in the list,
+and add it to that variable. At the end, the variable will represent
+the sum of the entire list.</p>
+
+<p>In Herbie, we represent program fragments as lisp expressions, called
+s-expressions. So, the c-code that adds our list would look like this:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">double</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">(</span><span class="n">input_list</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+  <span class="n">sum</span> <span class="o">+=</span> <span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>But we’re going to represent it like this instead:</p>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">do-list</span> <span class="c1">;; This bit of syntax declares that we're looping over a list </span>
+  <span class="p">(</span><span class="nv">[sum</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">item</span> <span class="nv">s</span><span class="p">)</span><span class="nv">]</span><span class="p">)</span> <span class="c1">;; We have one accumulator variable, sum, which starts </span>
+                         <span class="c1">;; at zero and gets the next item added to it every time.</span>
+  <span class="p">(</span><span class="nv">[item</span> <span class="nv">lst]</span><span class="p">)</span> <span class="c1">;; We're going to loop across every item in the input list, "lst"</span>
+  <span class="nv">sum</span><span class="p">)</span> <span class="c1">;; When we're done, we'll return our sum.</span>
+</code></pre></div></div>
+
+<p>This makes it easy for Herbie to mess with the program while it’s
+looking for more accurate versions, and we’ll be presenting all of our
+program examples like this from here on out.</p>
+
+<p>You might think that programs as simple as this can’t have much error
+at all. But adding even as few as a thousand random 64-bit floating
+point numbers can result in losing almost half the bits in your result
+from rounding error. Since so many programs use summation in one way
+or another, this can end up being a serious problem.</p>
+
+<p>While the previous version of Herbie, which only operated on loop free
+programs, could improve the accuracy of a straight-line summation of a
+few numbers, without support for loops there’s no way to improve the
+accuracy of a sum of an arbitrary number of items. Fortunately, once
+we extend the tool to reason about loops, there is a way we can
+improve the accuracy of this program. It’s called “compensated
+summation”. But before we get into the details, let’s go over some
+background.</p>
+
+<h2 id="a-quick-introduction-to-floating-point-sums">A Quick Introduction to Floating Point Sums</h2>
+
+<p>Floating point numbers on computers are represented kind of like the
+“scientific notation” you might have learned about in high school. In
+this scientific notation, instead of writing numbers like 123,000, you
+write them as 1.23x10^5. The part that comes before the
+multiplication, the 1.23, is called the “significand”. The part that
+is raised to a power, the ten is called the “base”. And the power
+itself is called the “exponent”.</p>
+
+<p><img src="//images/scientificnotation.png" alt="Scientific notation" /></p>
+
+<p>In the floating point numbers that exist on modern computers, the base
+is two instead of ten. With a base of two, the digit of the
+significand before the decimal point is always a one (except for some
+weird cases called subnormals, but we can ignore those for now). So we
+instead only have to represent the digits after the decimal point, and
+the exponent. We call these digits after the decimal point the
+“mantissa”.</p>
+
+<p><img src="//images/floatnotation.png" alt="Binary scientific notation" /></p>
+
+<p>So floating point numbers on computers have some bits to represent the
+<strong>mantissa</strong>, some bits to represent the <strong>exponent</strong>, and some bits
+to represent the <strong>sign</strong> (whether the number is positive or negative).</p>
+
+<p><img src="//images/floatbits.png" alt="Floating point bit representation" /></p>
+
+<p>Now, what happens when you add two floating point numbers?</p>
+
+<p>Well, one of two things could happen. One number could be much larger
+than the other, in which case the result will probably be the same
+magnitude of the larger number. Otherwise, the numbers could have
+roughly the same magnitude (or the bigger one could be very close to
+jumping up an exponent), and the result will have a bigger exponent
+than both of them.</p>
+
+<p><img src="//images/addingpretrunc.png" alt="Adding floating point numbers, pre-truncation" /></p>
+
+<p>Either way, the result is going to have a bigger exponent than one of
+the numbers. Since the mantissa only has so many bits, this means that
+bits on the lower end of the smaller number are no longer going to be
+in the range that the mantissa represents, and they’ll be dropped
+off. This is what we call “rounding error”.</p>
+
+<p><img src="//images/addingposttrunc.png" alt="Adding floating point numbers, post-truncation" /></p>
+
+<p>In a case like this where we have a single addition, there really
+isn’t much we can do about this. No matter what we do, those small
+bits of the number won’t fit in our 64-bit floating point number. And
+since those bits are so small, we usually don’t care.</p>
+
+<p>The real problem comes when we are adding more than two floats, and
+the bits that were rounded off add up to enough that they would have
+affected the final sum. Even when we’re adding a bunch of numbers of
+the same sign, and the sum is growing pretty fast, the rounded off
+bits can still grow fast enough to change our final answer. And if
+some of your numbers are of the opposite sign, the sum might grow
+<em>much</em> slower than your rounded off bits, and you lose lots of
+accuracy by rounding off those bits.</p>
+
+<p>Adding a few numbers probably won’t produce enough error to really
+affect your sum, but when you start summing lots of numbers, it can
+become a serious problem.</p>
+
+<h2 id="compensated-summation">Compensated Summation</h2>
+
+<p>The solution to this problem: a trick called “compensated summation.”
+The Great and Powerful William Kahan introduced this trick in his 1965
+article, “Further Remarks on Reducing Truncation Error.”  Back then,
+many computers didn’t support the 64-bit floating point numbers that
+we have today, and could only use much smaller floats. I wish I could
+tell you how much smaller, but unfortunately, floating point wasn’t
+even standardized back then, so different computers had different
+sizes of floating point. Even back then they ran into sequences
+numbers they wanted to sum that would lose precision with the size of
+float they had. Then Kahan came along and wrote about this compensated
+summation trick that could sum numbers as accurately as if you’d used
+<em>twice</em> as many bits for your sum variable, and then truncated at the
+end.</p>
+
+<p>Today, support for 64-bit floats is ubiquitous on our computing
+devices. But 64-bit floats still aren’t enough to get an accurate sum
+in lots of cases. Luckily, Kahan’s summation technique can double the
+precision of your sum no matter how many bits you start with: today,
+it can make a 64-bit machine look like it used 128 bits for summing.</p>
+
+<p>So, without further ado, let’s dive in and learn about Kahan’s magical
+compensated summation trick.</p>
+
+<h3 id="how-it-works">How it works</h3>
+
+<p>The insight at the heart of compensated summation is to use a second
+variable, called the error term, to hold the parts of the sum that are
+too small to fit into our sum variable, but we might want later. Then,
+when this smaller part gets big enough, we add it back into our
+running sum. With two variables instead of just one holding on to
+information about our sum, we effectively double the number of
+“mantissa” bits we get to use. This means we can be twice as precise
+about what the value of our sum is, although it doesn’t increase the
+range of numbers we can hold (that would be the other part of floating
+point numbers, the “exponent”). Of course, our final answer is going
+to be a floating point number, so we’re going to have to truncate off
+this extra precision in the end. But using this trick we won’t lose
+bits which fit in our extra precision and could have affected the
+final answer, but were rounded off too early in the original version of
+the program.</p>
+
+<p>To understand how exactly we get this error term to hold on to the
+parts of the sum too small to fit into the sum variable, it’s helpful
+to look at some code. Here is a simple program which adds the items in
+a list, without any fancy compensated summation:</p>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">do-list</span> <span class="c1">;; This bit of syntax declares that we're looping over a list </span>
+  <span class="p">(</span><span class="nv">[sum</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">item</span> <span class="nv">s</span><span class="p">)</span><span class="nv">]</span><span class="p">)</span> <span class="c1">;; We have one accumulator variable, sum, which starts </span>
+                         <span class="c1">;; at zero and gets the next item added to it every time.</span>
+  <span class="p">(</span><span class="nv">[item</span> <span class="nv">lst]</span><span class="p">)</span> <span class="c1">;; We're going to loop across every item in the input list, "lst"</span>
+  <span class="nv">sum</span><span class="p">)</span> <span class="c1">;; When we're done, we'll return our sum.</span>
+</code></pre></div></div>
+
+<p>Hopefully, this program fragment is pretty easy to understand. Now, to
+add compensated summation to this, the first thing we’ll want to do is
+add a error term, which we’ll call “err”. err, like sum, should also
+start at zero. But how do we update err? Well, err is supposed to hold
+the parts of the sum that are too small to fit in the sum
+variable. Let’s do a little bit of math here to figure out what that
+means.</p>
+
+<p>We can say we update our sum with the rule:</p>
+
+\[sum_{i} = sum_{i-1} + item_{i}\]
+
+<p>When we add a pretty big number, our old sum, to a smaller number, our
+current item, we know some error is introduced. If we then subtract
+the old sum again:</p>
+
+\[(sum_{i-1} + item_i) - sum_{i-1}\]
+
+<p>We get a result which is back down to a scale where it can represent
+the bits that were lost, but since we passed through a big number,
+we’ve lost them. Now, if we subtract that result from the item:</p>
+
+\[item_i - ((sum_{i-1} + item_i) - sum_{i-1})\]
+
+<p>We get the error!</p>
+
+<p>In the real numbers, that formula would always be zero, since we add
+some things, and then subtract all of the same things. But in floating
+point numbers, we get the error of the addition. Since we first do the
+addition, losing some precision as our number gets too big to hold the
+smaller bits of the item, but then subtract the big part away again,
+and then subtract the item, we only have the parts of the number that
+were rounded off.</p>
+
+<p>Let’s look at this with an example. Say we’ve got a sum that’s
+currently 300,000. For simplicity, let’s say that we can only hold 4
+digits of precision, so our number is represented 3.000x10^5. Now,
+let’s say that we’re adding the item 301 (or 3.010x10^2). When we do
+the addition, we’ll lose the one at the end of our item, since it’s
+too small to fit in our four digits. The result will be 3.003x10^5,
+when the real number answer would be 300,301 (or 3.00301x10^5). If we
+then subtract the old sum away from that, we get 3.003x10^5 -
+3.000x10^5 = 3.000x10^2. Finally, subtracting that number from our
+item gets us 3.010x10^2 - 3.000x10^2 = 1.000x10^0, or 1. That’s
+exactly the amount that we lost when we added the item to the old sum.</p>
+
+<p>Here we found the error of our computation 3.000x10^5 + 3.01x10^2 with
+the computation:</p>
+
+<p><img src="//images/findingerrorformula.png" alt="How we find the error of an addition" /></p>
+
+<p>Now that we can find the error of each addition, we can keep track of
+this error and add it in at the end with the program:</p>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">do-list</span> 
+  <span class="p">(</span><span class="nv">[sum</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="nv">item</span><span class="p">)</span><span class="nv">]</span>
+   <span class="nv">[err</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">err</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">item</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="nv">item</span><span class="p">)</span> <span class="nv">sum</span><span class="p">)))</span><span class="nv">]</span><span class="p">)</span> <span class="c1">;; Here's where the magic happens</span>
+  <span class="p">(</span><span class="nv">[item</span> <span class="nv">lst]</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="nv">err</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>This program will significantly improve the accuracy of adding the
+items of a list over the program we had previously. Yay, we did it!</p>
+
+<p><img src="http://www.ufunk.net/wp-content/uploads/2013/03/thumbs-and-ammo-5.jpg" alt="Thumbs up!" /></p>
+
+<p>…but actually, we’re not quite done yet. Even though this program
+can keep track of more bits of the sum while we’re summing, it can’t
+yet keep track of <em>twice</em> as many bits as the original. And we can do
+better.</p>
+
+<p>You see, in this program the error term keeps growing with every
+addition we do. And eventually, it might get too big to hold some of
+the bits we care about. In fact, the error term is only useful when
+some of the bigger parts of it are big enough to fit into the smaller
+parts of the sum variable that we return at the end. And as soon as it
+gets that big, it’s precision overlaps with the precision of the sum
+variable, and it becomes too big to hold the smaller bits of the
+promised doubled precision. Over time, these bits might have
+accumulated enough to affect our final sum, so we don’t want to lose
+them.</p>
+
+<p><img src="//images/errandsum.png" alt="Why we lose bits" /></p>
+
+<p>So how do we stop our error term from getting too big to hold some of
+the bits we care about? Instead of only adding in our error term at
+the end of the loop, let’s add it in <em>every</em> time we go around the
+loop! If we do this right, every time the error term get’s big enough
+to overlap with the sum, we can take the part that overlaps and add it
+into the sum, and the error term will always be a little less than
+overlapping at the start of the next step. This way, we can always
+hold on to twice as much precision as either of our accumulator
+variables (the sum and the error term) could on their own.</p>
+
+<p>To figure out how to do this right, we’ll need some math again. First,
+let’s look at how our update rule for the sum is going to
+change. Before, we updated the sum with:</p>
+
+\[sum_i = sum_{i-1} + item_i\]
+
+<p>Now, we want to include our error term so far in there, so we’ll
+update it with:</p>
+
+\[sum_i = sum_{i-1} + item_i + err_{i-1}\]
+
+<p>The update rule for our error term get’s a bit trickier, but bear with
+me. Before, we updated the error term with:</p>
+
+\[err_i = err_{i-1} + (item_i - ((sum_{i-1} + item_i) - sum_{i-1}))\]
+
+<p>But now we don’t want to just account for the error in adding the old
+sum and the item, but also in adding the error term. So we change this
+to:</p>
+
+\[err_i = err_{i-1} + (item_i - (((sum_{i-1} + item_i + err_{i-1}) - sum_{i-1}) - err_{i-1}))\]
+
+<p>We actually don’t need to add in the old error anymore, because the
+big parts of it are going to be folded into the sum this iteration, so
+our error term doesn’t need to keep track of them, and the small parts
+are going to show up in the error of our addition anyway. So, dropping
+the part where we add the error term from last iteration, we have:</p>
+
+\[err_i = item_i - (((sum_{i-1} + item_i + err_{i-1}) - sum_{i-1}) - err_{i-1})\]
+
+<p>If we translate these new update rules back into program form, we get:</p>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">do-list</span> 
+  <span class="p">(</span><span class="nv">[sum</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">item</span> <span class="nv">err</span><span class="p">))</span><span class="nv">]</span>
+   <span class="nv">[err</span> <span class="mf">0.0</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">item</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">item</span> <span class="nv">err</span><span class="p">))</span> <span class="nv">sum</span><span class="p">)</span> <span class="nv">err</span><span class="p">))</span><span class="nv">]</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">[item</span> <span class="nv">lst]</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">+</span> <span class="nv">sum</span> <span class="nv">err</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>And there you have it! That’s our final program, with the full power
+of compensated summation. This program will act approximately as if
+you had a sum variable with twice as many bits, and then at the end
+you cut off half the bits.</p>
+
+<p>Now that we know how to transform programs which do summation into
+ones which do compensated summation, it’s fairly straightforward to
+add this capability to Herbie. We can now finally improve the accuracy
+of our first loop program fragments. With this technique, we can
+effectively eliminate the error of programs that add hundreds of
+numbers. Even more complex programs, like those that calculate the
+value of a polynomial, can be improved significantly, since many
+real-world programs make use of adding lots of numbers in one way or
+another.</p>
+
+<p>With this trick under our belt, we’re well under way to preventing
+numerical inaccuracy in real-world code.</p>
+
+  </article>
+
+</div>
+
+      </div>
+    <div class="container">
+    <footer class="site-footer">
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+  </script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+</footer>
+
+  </body>
+</html>
