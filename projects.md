@@ -41,15 +41,15 @@ Analysis](papers/replica.pdf).
 
 <div markdown="1" class="projectdesc">
 
-Caravan is a new tool for secure database migrations that respect data
-access policies. The project consists of several languages, for
-specifying data access policies, specifying migration actions, and
-maniuplating database values. It also includes tooling for interacting
-with those languages, automatically enforcing the policies at runtime,
-running the migrations over existing database, and statically checking
-that the migrations do not leak data unintentionally. Caravan is an
-ongoing work in collaboration with John Renner (UCSD), Fraser Brown
-(Stanford), and Deian Stefan (UCSD).
+Scooter & Sidecar is a new tool for secure database migrations that
+respect data access policies. The project consists of several
+languages, for specifying data access policies, specifying migration
+actions, and maniuplating database values. It also includes tooling
+for interacting with those languages, automatically enforcing the
+policies at runtime, running the migrations over existing database,
+and statically checking that the migrations do not leak data
+unintentionally. Caravan is an ongoing work in collaboration with John
+Renner (UCSD), Fraser Brown (Stanford), and Deian Stefan (UCSD).
 
 </div>
 </div>
