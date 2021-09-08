@@ -7,16 +7,16 @@ layout: default
 Alex Sanchez-Stern
 ==================
 
-Hey I'm Alex Sanchez-Stern, I'm a PhD student at the University of
-California San Diego. I'm also part of the team at the UW that built
-[Herbie](https://herbie.uwplse.org). I graduated from the UW with a
-Masters degree in the Spring of 2016, and started my PhD at UCSD in
-the Fall of 2016; I'm graduating in the Spring of 2021. I'm generally
-interested in using programming language techniques to bring
-hard-fought domain expertise to more everyday programmers. My thesis
-is on Proverbot9001, a neural-guided proof search tool described on
-the [projects]({{ site.url }}{{ site.baseurl }}/projects.html) page,
-and in the MAPL paper below.
+Hey I'm Alex Sanchez-Stern, I'm a Postdoctoral researcher at UMass
+Amherst. I graduated from the University of Washington with a Masters
+degree in the Spring of 2016, and finished my PhD at UC San Diego in
+the Spring of 2021. I'm also part of the team at the UW that built
+[Herbie](https://herbie.uwplse.org). I'm generally interested in using
+programming language techniques to bring hard-fought domain expertise
+to more everyday programmers. My PhD thesis was on Proverbot9001, a
+neural-guided proof search tool described on the [projects]({{
+site.url }}{{ site.baseurl }}/projects.html) page, and in the MAPL
+paper below.
 
 Publications
 ------------
@@ -36,6 +36,5 @@ Publications
 Contact
 -------
 
-You can reach me at [alexss@eng.ucsd.edu](mailto:alexss@eng.ucsd.edu)
-my university email address. I'm
+You can reach me at [alex.sanchezstern@gmail.com](alex.sanchezstern@gmail.com). I'm
 also [on GitHub](https://github.com/HazardousPeach).
