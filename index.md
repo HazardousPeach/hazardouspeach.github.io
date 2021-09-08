@@ -13,10 +13,10 @@ degree in the Spring of 2016, and finished my PhD at UC San Diego in
 the Spring of 2021. I'm also part of the team at the UW that built
 [Herbie](https://herbie.uwplse.org). I'm generally interested in using
 programming language techniques to bring hard-fought domain expertise
-to more everyday programmers. My PhD thesis was on Proverbot9001, a
-neural-guided proof search tool described on the [projects]({{
-site.url }}{{ site.baseurl }}/projects.html) page, and in the MAPL
-paper below.
+to more everyday programmers. My PhD thesis was on
+[Proverbot9001](https://proverbot9001.ucsd.edu), a neural-guided proof
+search tool described on the [projects]({{ site.url }}{{ site.baseurl
+}}/projects.html) page, and in the MAPL paper below.
 
 Publications
 ------------
