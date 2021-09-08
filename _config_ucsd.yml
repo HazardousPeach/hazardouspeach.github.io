@@ -4,7 +4,7 @@ email: asnchstr@cs.uw.edu
 description: > # this means to ignore newlines until "baseurl:"
   A website describing me and my work.
 baseurl: "/~alexss" # the subpath of your site, e.g. /blog/
-url: "cseweb.ucsd.edu" # the base hostname & protocol for your site
+url: "https://cseweb.ucsd.edu" # the base hostname & protocol for your site
 github_username:  HazardousPeach
 exclude: [Makefile]
 css: [/bootstrap/css/bootstrap.min.css, /css/style.css]
