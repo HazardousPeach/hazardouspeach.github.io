@@ -1,14 +1,15 @@
 - title: "Scooter & Sidecar: A Domain-Specific Approach to Writing Secure Migrations"
   conference: "PLDI 2021"
+  paper: "https://www.alexsanchezstern.com/papers/scooter-pldi21-preprint.pdf"
   authors: John Renner, Alex Sanchez-Stern, Fraser Brown, Sorin Lerner, Deian Stefan
   bibtex: |-
     @inproceedings{renner:2021:scooterandsidecar,
-      author    = {Renner, John and Sanchez-Stern, Alex and Brown, Fraser and Lerner, Sorin and Stefan, Deian}
-      title     = {Scooter & Sidecar: A Domain-Specific Approach to Writing Secure Migrations}
-      booktitle = {Programming Languages Design and Implementation}
-      month     = {June}
-      year      = {2021}
-      publisher = {ACM SIGPLAN}
+      author    = {Renner, John and Sanchez-Stern, Alex and Brown, Fraser and Lerner, Sorin and Stefan, Deian},
+      title     = {Scooter & Sidecar: A Domain-Specific Approach to Writing Secure Migrations},
+      booktitle = {Programming Languages Design and Implementation},
+      month     = {June},
+      year      = {2021},
+      publisher = {ACM SIGPLAN},
     }
 
 - title: "Generating Correctness Proofs with Neural Networks"
@@ -18,12 +19,12 @@
   authors: Alex Sanchez-Stern, Yousef Alhessi, Lawrence Saul, Sorin Lerner
   bibtex: |-
     @inproceedings{sanchezstern:2020:proverbot9001,
-      author    = {Sanchez-Stern, Alex and Alhessi, Yousef and Saul, Lawrence and Lerner, Sorin}
-      title     = {Generating Correctness Proofs with Neural Networks}
-      booktitle = {Machine Learning in Programming Languages}
-      month     = {June}
-      year      = {2020}
-      publisher = {ACM SIGPLAN}
+      author    = {Sanchez-Stern, Alex and Alhessi, Yousef and Saul, Lawrence and Lerner, Sorin},
+      title     = {Generating Correctness Proofs with Neural Networks},
+      booktitle = {Machine Learning in Programming Languages},
+      month     = {June},
+      year      = {2020},
+      publisher = {ACM SIGPLAN},
     }
 
 - title: "REPLica: REPL instrumentation for Coq Analysis"
