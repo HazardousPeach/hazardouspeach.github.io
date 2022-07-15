@@ -8,6 +8,27 @@ Projects
 ========
 
 <div markdown="1" class="project">
+<img src="{{ site.url }}{{ site.baseurl }}/images/passport.png" class="projectlogo"/>
+
+<div markdown="1" class="projectdesc">
+
+[Passport](https://github.com/LASER-UMASS/Passport/) is a project
+studying new ways of encoding identifiers for neural models of code in
+the context of learning-guided foundational verification. It proposes
+three novel encoding mechanisms for identifiers: a method of indexing
+common identifiers while storing the category of every identifier
+(local variable, definition, or constructor), an encoding of the
+subwords which make up the identifier name, and an encoding of the
+file and module locations where the identifiers are defined. Passport
+is [free and open source
+software](https://github.com/LASER-UMASS/Passport/), and you can find
+the pre-print paper draft on
+[arXiv](https://arxiv.org/abs/2204.10370).
+</div>
+</div>
+
+<div markdown="1" class="project">
+
 <img src="https://proverbot9001.ucsd.edu/images/proverbot9001-logo-with-text.png" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
