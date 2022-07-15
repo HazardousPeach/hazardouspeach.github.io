@@ -1,3 +1,16 @@
+- title: Data-Driven Lemma Synthesis for Interactive Proofs
+  conference: "OOPSLA 2022"
+  paper: "https://www.alexsanchezstern.com/papers/lfind-oopsla22-preprint.pdf"
+  authors: Aishwarya Sivaraman, Alex Sanchez-Stern, Bretton Chen, Sorin Lerner, Todd Millstein
+  bibtex: |-
+    @inproceedings{sivaraman:2022:lfind,
+      author    = {Sivaraman, Aishwarya and Sanchez-Stern, Alex and Chen, Bretton and Lerner, Sorin and Millstein Todd},
+      title     = {Data-Driven Lemma Synthesis for Interactive Proofs},
+      booktitle = {Object-Oriented Programming, Systems, Languages & Applications},
+      month     = {December},
+      year      = {2022},
+      publisher = {ACM SIGPLAN},
+    }
 - title: "Scooter & Sidecar: A Domain-Specific Approach to Writing Secure Migrations"
   conference: "PLDI 2021"
   paper: "https://www.alexsanchezstern.com/papers/scooter-pldi21-preprint.pdf"
