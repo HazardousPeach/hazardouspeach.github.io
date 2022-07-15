@@ -8,7 +8,7 @@ Projects
 ========
 
 <div markdown="1" class="project">
-<img src="{{ site.url }}{{ site.baseurl }}/images/passport.png" class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/passport.png" style="height:7em;width:auto;" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
