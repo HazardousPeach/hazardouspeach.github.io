@@ -30,6 +30,7 @@ Publications
     authors=pub.authors
     id=forloop.index
     bibtex=pub.bibtex
+    artifact=pub.artifact
 %}
 {% endfor %}
 
