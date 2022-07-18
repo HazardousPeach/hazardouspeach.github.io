@@ -12,6 +12,9 @@
           {% if include.website %}
           <a href="{{ include.website }}">[website]</a>
           {% endif %}
+	  {% if include.artifact %}
+	  <a href="{{ include.artifact }}">[artifact]</a>
+	  {% endif %}
       </p>
         <div class="authors">{{include.authors}}</div>
     </div>

@@ -1,6 +1,7 @@
 - title: Data-Driven Lemma Synthesis for Interactive Proofs
   conference: "OOPSLA 2022"
   paper: "https://www.alexsanchezstern.com/papers/lfind-oopsla22-preprint.pdf"
+  artifact: "https://docs.google.com/document/d/1C_A3wibNOLGsPv5Wytn_x3N3S6YpraK9kVPuWFYzZ9g/edit"
   authors: Aishwarya Sivaraman, Alex Sanchez-Stern, Bretton Chen, Sorin Lerner, Todd Millstein
   bibtex: |-
     @inproceedings{sivaraman:2022:lfind,
