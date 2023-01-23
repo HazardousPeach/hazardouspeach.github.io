@@ -1,4 +1,4 @@
-- title: Passport: Improving Automated Formal Verification with Identifiers
+- title: "Passport: Improving Automated Formal Verification with Identifiers"
   conference: "TOPLAS 2023 (Under Minor Revisions)"
   authors: Sanchez-Stern, Alex and First, Emily and Zhou, Timothy and Kaufman, Zhanna and Brun, Yuriy and Ringer, Talia
   github: "https://github.com/LASER-UMASS/Passport"
@@ -13,7 +13,7 @@
       publisher = {ACM SIGPLAN},
     }
 
-- title: Proofster: Automated Formal Verification
+- title: "Proofster: Automated Formal Verification"
   conference: "ICSE 2023 Demo Track"
   paper: "https://www.alexsanchezstern.com/papers/proofster.pdf"
   website: "https://proofster.cs.umass.edu/"
