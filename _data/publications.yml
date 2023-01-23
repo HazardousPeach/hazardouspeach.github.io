@@ -1,3 +1,33 @@
+- title: Passport: Improving Automated Formal Verification with Identifiers
+  conference: "TOPLAS 2023"
+  authors: Sanchez-Stern, Alex and First, Emily and Zhou, Timothy and Kaufman, Zhanna and Brun, Yuriy and Ringer, Talia
+  github: "https://github.com/LASER-UMASS/Passport"
+  paper: "https://arxiv.org/abs/2204.10370"
+  bibtex: |-
+    @inproceedings{sanchezstern:2023:passport,
+      author    = {Alex Sanchez-Stern, Emily First, Timothy Zhou, Zhanna Kaufman, Yuriy Brun, and Talia Ringer},
+      title     = {Passport: Improving Automated Formal Verification with Identifiers},
+      booktitle = {Transactions On Programming Languages And Systems},
+      month     = {December},
+      year      = {2023},
+      publisher = {ACM SIGPLAN},
+    }
+
+- title: Proofster: Automated Formal Verification
+  conference: "ICSE 2023 Demo Track"
+  paper: "https://www.alexsanchezstern.com/papers/proofster.pdf"
+  website: "https://proofster.cs.umass.edu/"
+  github: "https://github.com/UCSD-PL/proverbot9001/tree/demowebtool"
+  authors: Arpan Agrawal, Emily First, Zhanna Kaufman, Tom Reichel, Shizhou Zhang, Timothy Zhou, Alex Sanchez-Stern, Talia Ringer, Yuriy Brun
+  bibtex: |-
+    @inproceedings{agrawal:2023:proofster,
+      author    = {Agrawal, Arpan and First, Emily and Kaufman, Zhanna and Reichel, Tom and Zhang, Shizhou and Zhou, Timothy and Sanchez-Stern, Alex and Ringer, Talia and Brun, Yuriy},
+      title     = {Proofster: Automated Formal Verification},
+      booktitle = {International Conference on Software Engineering Demonstrations Track},
+      month     = {May},
+      year      = {2023},
+      publisher = {ACM SIGPLAN},
+    }
 - title: Data-Driven Lemma Synthesis for Interactive Proofs
   conference: "OOPSLA 2022"
   paper: "https://www.alexsanchezstern.com/papers/lfind-oopsla22-preprint.pdf"
