@@ -1,5 +1,5 @@
 - title: "Passport: Improving Automated Formal Verification with Identifiers"
-  conference: "TOPLAS 2023 (Under Minor Revisions)"
+  conference: "TOPLAS 2023"
   authors: Alex Sanchez-Stern, Emily First, Timothy Zhou, Zhanna Kaufman, Yuriy Brun, and Talia Ringer
   github: "https://github.com/LASER-UMASS/Passport"
   paper: "https://arxiv.org/abs/2204.10370"
