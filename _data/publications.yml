@@ -3,6 +3,7 @@
   authors: Alex Sanchez-Stern, Emily First, Timothy Zhou, Zhanna Kaufman, Yuriy Brun, and Talia Ringer
   github: "https://github.com/LASER-UMASS/Passport"
   paper: "https://arxiv.org/abs/2204.10370"
+  talk: "https://www.youtube.com/watch?v=p2BkndEEgNo"
   bibtex: |-
     @inproceedings{sanchezstern:2023:passport,
       author    = {Sanchez-Stern, Alex and First, Emily and Zhou, Timothy and Kaufman, Zhanna and Brun, Yuriy and Ringer, Talia},
