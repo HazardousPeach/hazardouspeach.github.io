@@ -58,6 +58,7 @@
     }
 
 - title: "Generating Correctness Proofs with Neural Networks"
+  talk: "https://www.youtube.com/watch?v=rwBbYhOAnPo&t=11540s"
   website: "https://proverbot9001.ucsd.edu/"
   paper: "https://proverbot9001.ucsd.edu/papers/proverbot9001.pdf"
   conference: "MAPL 2020"
