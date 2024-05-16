@@ -7,7 +7,7 @@ layout: default
 Projects
 ========
 <div markdown="1" class="project">
-<img src="{{ site.url }}{{ site.baseurl }}/images/lambdelphi.png" class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/lambdelphi.jpg" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
