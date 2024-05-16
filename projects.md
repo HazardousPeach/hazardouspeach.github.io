@@ -50,7 +50,8 @@ the pre-print paper draft on
 </div>
 </div>
 <div markdown="1" class="project">
-<img src="{{ site.url }}{{ site.baseurl }}/images/proofster.png", class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/proofster.png" class="projectlogo"/>
+
 <div markdown="1" class="projectdesc">
 
 Proofster is work on interfaces to proof synthesis tools. It exists
@@ -64,7 +65,8 @@ Agrawal.
 </div>
 
 <div markdown="1" class="project">
-<img src="{{ site.url }}{{ site.baseurl }}/images/lfind.png", class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/lfind.png" class="projectlogo"/>
+
 <div markdown="1" class="projectdesc">
 
 LFind is a tool for data-driven lemma synthesis. It uses term
