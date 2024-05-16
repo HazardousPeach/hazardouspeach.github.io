@@ -18,7 +18,7 @@ Lawrence Livermore National Lab (previously at Cornell).
 </div>
 </div>
 <div markdown="1" class="project">
-<img src="{{ site.url }}{{ site.baseurl }}/images/qedcartographer-logo.png" class="projectlogo"/>
+<img src="{{ site.url }}{{ site.baseurl }}/images/qedcartographer-logo.png" style="height:7em;width:auto;" class="projectlogo"/>
 
 <div markdown="1" class="projectdesc">
 
