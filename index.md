@@ -17,10 +17,12 @@ programming language techniques to bring hard-fought domain expertise
 to more everyday programmers. My PhD thesis was on
 [Proverbot9001](https://proverbot9001.ucsd.edu), a neural-guided proof
 search tool described on the [projects]({{ site.url }}{{ site.baseurl
-}}/projects.html) page, and in the MAPL paper below.
+}}/projects.html) page, and in the MAPL paper below. Since then, I've
+been working on a few different tools in the space of proof synthesis.
 
-I'm teaching CSE333 at the University of Washington in the Summer of
-2024.
+I'm teaching
+[CSE333](https://courses.cs.washington.edu/courses/cse333/24su/) at
+the University of Washington in the Summer of 2024.
 
 Publications
 ------------
