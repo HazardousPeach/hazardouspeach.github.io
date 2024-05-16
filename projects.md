@@ -55,11 +55,11 @@ the pre-print paper draft on
 <div markdown="1" class="projectdesc">
 
 Proofster is work on interfaces to proof synthesis tools. It exists
-both in a [web version](https://proofster.cs.umass.edu) and a plugin
-for Coq. It was originally published at the ICSE 2023 demo track, you
-can find the preprint [here](papers/proofster.pdf). Proofster is
-primarily developed at UIUC by Talia Ringer's group, headed by Arpan
-Agrawal.
+both in a [web version](https://proofster.cs.umass.edu) and a [plugin
+for Coq](https://github.com/agrarpan/coq-synthesis). It was originally
+published at the ICSE 2023 demo track, you can find the preprint
+[here](papers/proofster.pdf). Proofster is primarily developed at UIUC
+by Talia Ringer's group, headed by Arpan Agrawal.
 
 </div>
 </div>
