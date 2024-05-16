@@ -121,8 +121,8 @@ actions, and maniuplating database values. It also includes tooling
 for interacting with those languages, automatically enforcing the
 policies at runtime, running the migrations over existing database,
 and statically checking that the migrations do not leak data
-unintentionally. Caravan is an ongoing work in collaboration with John
-Renner (UCSD), Fraser Brown (Stanford), and Deian Stefan (UCSD).
+unintentionally. Caravan is work in collaboration with John Renner
+(UCSD), Fraser Brown (Stanford), and Deian Stefan (UCSD).
 
 </div>
 </div>
