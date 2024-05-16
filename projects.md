@@ -6,6 +6,29 @@ layout: default
 
 Projects
 ========
+<div markdown="1" class="project">
+<img src="{{ site.url }}{{ site.baseurl }}/images/lambdelphi.png" class="projectlogo"/>
+
+<div markdown="1" class="projectdesc">
+
+Lambdelphi learns from human-written proofs to figure out how hard a
+given proof state is. It's a collaboration with John Sarracino at
+Lawrence Livermore National Lab (previously at Cornell).
+
+</div>
+</div>
+<div markdown="1" class="project">
+<img src="{{ site.url }}{{ site.baseurl }}/images/qedcartographer-logo.png" class="projectlogo"/>
+
+<div markdown="1" class="projectdesc">
+
+QEDCartographer uses reinforcement learning to learn how to search for
+proofs more efficiently. It can produces 26% shorter proofs, in 27%
+less time. It's free and open source software that can be found on
+[GitHub](https://github.com/UCSD-PL/proverbot9001/tree/qedcartographer).
+
+</div>
+</div>
 
 <div markdown="1" class="project">
 <img src="{{ site.url }}{{ site.baseurl }}/images/passport.png" style="height:7em;width:auto;" class="projectlogo"/>
@@ -24,6 +47,33 @@ is [free and open source
 software](https://github.com/LASER-UMASS/Passport/), and you can find
 the pre-print paper draft on
 [arXiv](https://arxiv.org/abs/2204.10370).
+</div>
+</div>
+<div markdown="1" class="project">
+<img src="{{ site.url }}{{ site.baseurl }}/images/proofster.png", class="projectlogo">
+<div markdown="1" class="projectdesc">
+
+Proofster is work on interfaces to proof synthesis tools. It exists
+both in a [web version](https://proofster.cs.umass.edu) and a plugin
+for Coq. It was originally published at the ICSE 2023 demo track, you
+can find the preprint [here](papers/proofster.pdf). Proofster is
+primarily developed at UIUC by Talia Ringer's group, headed by Arpan
+Agrawal.
+
+</div>
+</div>
+
+<div markdown="1" class="project">
+<img src="{{ site.url }}{{ site.baseurl }}/images/lfind.png", class="projectlogo">
+<div markdown="1" class="projectdesc">
+
+LFind is a tool for data-driven lemma synthesis. It uses term
+generalization, synthesis, property-based tasting, and proof-synthesis
+to try to find useful lemmas for any point in a proof. LFind was
+published at OOPSLA 2022, you can find the pre-print
+[here](papers/lfind-oopsla22-preprint.pdf). LFind is a collaboration
+with Todd Millsteins group at UCLA.
+
 </div>
 </div>
 
