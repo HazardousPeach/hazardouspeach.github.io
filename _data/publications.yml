@@ -2,6 +2,7 @@
   conference: "ICSE 2025"
   authors: Alex Sanchez-Stern, Abhishek Varghese, Zhanna Kaufman, Dylan Zhang Talia Ringer, Yuriy Brun
   github: "https://github.com/UCSD-PL/proverbot9001/tree/qedcartographer"
+  paper: "https://www.alexsanchezstern.com/papers/qed-cartographer-icse2025-extended.pdf"
 
 - title: "Passport: Improving Automated Formal Verification with Identifiers"
   conference: "TOPLAS 2023"
