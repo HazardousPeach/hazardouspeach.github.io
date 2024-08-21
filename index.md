@@ -8,10 +8,9 @@ Alex Sanchez-Stern
 ==================
 
 Hey I'm Alex Sanchez-Stern, I'm a Postdoctoral researcher at UMass
-Amherst, and an Adjunct Professor at the University of Washington. I
-graduated from the University of Washington with a Masters degree in
-the Spring of 2016, and finished my PhD at UC San Diego in the Spring
-of 2021. I'm also part of the team at the UW that built
+Amherst. I graduated from the University of Washington with a Masters
+degree in the Spring of 2016, and finished my PhD at UC San Diego in
+the Spring of 2021. I'm also part of the team at the UW that built
 [Herbie](https://herbie.uwplse.org). I'm generally interested in using
 programming language techniques to bring hard-fought domain expertise
 to more everyday programmers. My PhD thesis was on
@@ -20,7 +19,7 @@ search tool described on the [projects]({{ site.url }}{{ site.baseurl
 }}/projects.html) page, and in the MAPL paper below. Since then, I've
 been working on a few different tools in the space of proof synthesis.
 
-I'm teaching
+I taught
 [CSE333](https://courses.cs.washington.edu/courses/cse333/24su/) at
 the University of Washington in the Summer of 2024.
 
