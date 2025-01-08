@@ -1,0 +1,14 @@
+
+<svg xmlns="http://www.w3.org/2000/svg">
+  <path d="M30 10
+           h260
+           v110
+           a20,20 0 0,1 -20,20
+           h-260
+           v-110
+           a20,20 0 0,1 20,-20
+           z"
+        fill="#c9daf8ff"
+        stroke="black"
+        stroke-width="5"/>
+</svg>

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="80">
+  <text x="10" y="14" font-size="20" font-family="Arial">Specification</text>
+  <use transform="translate(10,20) scale(0.4)" href="#spec-box"/>
+  <text x="152" y="14" font-size="20" font-family="Arial">Program</text>
+  <use transform="translate(150,18) scale(0.8)" href="#program"/>
+  <defs>
+    <g id="spec-box">
+      <path d="M20 0
+               h260
+               v110
+               a20,20 0 0,1 -20,20
+               h-260
+               v-110
+               a20,20 0 0,1 20,-20
+               z"
+            fill="#c9daf8ff"
+            stroke="black"
+            stroke-width="5"/>
+      <text y="80" x="30" font-family="arial" font-size="60"> &#8704; x, ...</text>
+    </g>
+    <g id="architect-tool">
+      <path d="m 34.972534,98.644068 h 20.364442 v -9.041712 h 25.831422 1.664914 c 5.729455,0 10.390335,-4.660879 10.390335,-10.390335 V 79.002259 12.390336 C 93.223647,6.661978 88.562767,2 82.833312,2 h -3.312256 v 8.742993 H 55.338074 V 2 h -20.36554 v 8.742993 H 10.202 v 78.859363 h 24.771632 v 9.041712 z m 3.294684,-9.040613 V 86.30877 73.110266 h 5.643794 v -1.647342 -1.647342 h -5.643794 v -7.551416 h 7.954465 v -1.647342 -1.647342 h -7.954465 v -7.550318 h 5.643794 V 49.771822 48.12448 h -5.643794 v -7.551416 h 7.954465 v -1.647343 -1.647342 h -7.954465 v -7.551416 h 5.643794 v -1.647342 -1.647342 h -5.643794 v -7.552514 h 7.954465 V 17.232423 15.585081 H 38.267218 V 14.037678 10.742993 5.2946841 h 13.775074 v 5.4483089 3.294685 72.269994 3.294684 5.747028 H 38.267218 Z M 82.833312,5.2946841 c 3.912986,0 7.095651,3.1826649 7.095651,7.0956519 v 59.042936 c -1.8593,-1.743987 -4.351179,-2.821348 -7.095651,-2.821348 L 82.81574,5.2946841 Z m -3.312256,8.7429939 v 56.221588 1.647342 h 3.312256 c 3.912986,0 7.095651,3.182665 7.095651,7.095651 v 0.209762 c 0,3.912986 -3.182665,7.095651 -7.095651,7.095651 H 81.168398 55.338074 V 14.037678 Z M 13.496684,86.30877 V 14.037678 H 34.973632 V 86.307672 H 13.496684 Z"/>
+      <path d="m 45.046949,83.551475 c -1.417,0 -2.667,0.683 -3.476,1.725 -0.58,0.747 -0.939,1.673 -0.939,2.689 0,0.106 0.024,0.206 0.031,0.311 0.163,2.287 2.056,4.104 4.383,4.104 2.327,0 4.22,-1.817 4.383,-4.104 0.007,-0.104 0.031,-0.204 0.031,-0.311 0,-1.017 -0.359,-1.942 -0.939,-2.689 -0.807,-1.042 -2.057,-1.725 -3.474,-1.725 z m 0,5.829 c -0.673,0 -1.235,-0.474 -1.378,-1.104 -0.022,-0.1 -0.037,-0.204 -0.037,-0.311 0,-0.78 0.635,-1.414 1.415,-1.414 0.78,0 1.414,0.634 1.414,1.414 0,0.107 -0.014,0.21 -0.037,0.311 -0.142,0.63 -0.704,1.104 -1.377,1.104 z"/>
+    </g>
+    <clipPath id="backgroundClip">
+      <rect width="100" height="75" rx="10" ry="10"/>
+    </clipPath>
+
+    <linearGradient id="fadeInOut" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#00ff00" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#00ff00" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#00ff00" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#00ff00" stop-opacity="0"/>
+    </linearGradient>
+    <g id="program" clip-path="url(#backgroundClip)">
+      <!-- Black background -->
+      <rect width="100" height="75" fill="black" rx="10" ry="10"/>
+      <!-- Columns with varied horizontal spacing -->
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="0" y="10">1</tspan><tspan x="0" y="20">0</tspan><tspan x="0" y="30">1</tspan><tspan x="0" y="40">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="7" y="45">0</tspan><tspan x="7" y="55">1</tspan><tspan x="7" y="65">1</tspan><tspan x="7" y="75">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="12" y="5">1</tspan><tspan x="12" y="15">0</tspan><tspan x="12" y="25">1</tspan><tspan x="12" y="35">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="20" y="35">1</tspan><tspan x="20" y="45">0</tspan><tspan x="20" y="55">1</tspan><tspan x="20" y="65">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="24" y="15">1</tspan><tspan x="24" y="25">0</tspan><tspan x="24" y="35">1</tspan><tspan x="24" y="45">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="32" y="40">0</tspan><tspan x="32" y="50">1</tspan><tspan x="32" y="60">0</tspan><tspan x="32" y="70">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="40" y="8">1</tspan><tspan x="40" y="18">0</tspan><tspan x="40" y="28">1</tspan><tspan x="40" y="38">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="43" y="50">1</tspan><tspan x="43" y="60">0</tspan><tspan x="43" y="70">1</tspan><tspan x="43" y="80">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="50" y="25">0</tspan><tspan x="50" y="35">1</tspan><tspan x="50" y="45">0</tspan><tspan x="50" y="55">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="57" y="42">1</tspan><tspan x="57" y="52">0</tspan><tspan x="57" y="62">1</tspan><tspan x="57" y="72">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="61" y="3">1</tspan><tspan x="61" y="13">0</tspan><tspan x="61" y="23">1</tspan><tspan x="61" y="33">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="70" y="38">0</tspan><tspan x="70" y="48">1</tspan><tspan x="70" y="58">0</tspan><tspan x="70" y="68">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="74" y="12">1</tspan><tspan x="74" y="22">0</tspan><tspan x="74" y="32">1</tspan><tspan x="74" y="42">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="81" y="25">1</tspan><tspan x="81" y="35">0</tspan><tspan x="81" y="45">1</tspan><tspan x="81" y="55">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="87" y="15">1</tspan><tspan x="87" y="25">0</tspan><tspan x="87" y="35">1</tspan><tspan x="87" y="45">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="95" y="30">1</tspan><tspan x="95" y="40">0</tspan><tspan x="95" y="50">1</tspan><tspan x="95" y="60">0</tspan>
+      </text>
+    </g>
+  </defs>
+</svg>
