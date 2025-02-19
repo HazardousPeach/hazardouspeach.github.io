@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="600">
+  <!-- Robot Arm from Wikipedia -->
+  <g transform="translate(30,370) scale(1.2)">
+    <use href="#robot-arm"/>
+  </g>
+  <!-- Eye -->
+  <g transform="translate(180,405) scale(0.7)">
+    <use href="#eye"/>
+  </g>
+  <text x="35" y="600" font-size="20" font-family="Arial">Proof of Correctness</text>
+  <use transform="translate(92,520)" href="#scroll"/>
+  <use transform="translate(150,510) scale(0.1)" href="#check"/>
+  <use transform="translate(10,245) scale(0.25)" href="#spec-box"/>
+  <use transform="translate(90,245) scale(0.25)" href="#spec-box"/>
+  <use transform="translate(170,245) scale(0.25)" href="#spec-box"/>
+
+  <use transform="translate(95, 130) scale(0.6)" href="#architect-tool"/>
+
+  <text x="10" y="14" font-size="20" font-family="Arial">Specification</text>
+  <use transform="translate(10,20) scale(0.4)" href="#spec-box"/>
+  <text x="152" y="14" font-size="20" font-family="Arial">Program</text>
+  <use transform="translate(150,18) scale(0.8)" href="#program"/>
+
+  <g transform="translate(-50,20)">
+  <!-- Circular Arrows -->
+  <path d="M 130 350 C 155 320, 190 320, 215 350"
+        fill="none"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+
+  <path d="M 215 420 C 190 450, 155 450, 130 420"
+        fill="none"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <!-- Straight arrows -->
+  <line x1="172" y1="450" x2="172" y2="490"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="172" y1="270" x2="172" y2="310"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="172" y1="170" x2="172" y2="210"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="162" y1="170" x2="110" y2="210"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="182" y1="170" x2="234" y2="210"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="110" y1="64" x2="160" y2="100"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  <line x1="240" y1="64" x2="190" y2="100"
+        stroke="#666666"
+        stroke-width="5"
+        marker-end="url(#arrowhead)"/>
+  </g>
+
+  <defs>
+    <!-- Arrowhead -->
+    <marker id="arrowhead"
+            markerWidth="5"
+            markerHeight="3"
+            refX="2.5"
+            refY="1.5"
+            orient="auto">
+      <polygon points="0 0, 5 1.5, 0 3" fill="#666666"/>
+    </marker>
+    <!-- Robot Arm (from wikipedia) -->
+    <g id="robot-arm">
+      <path d="M14.789 8.902l-9.245 2.904 1.934 6.157c.882.319 1.812.484 2.75.489 2.567 0 4.987-1.199 6.543-3.242l-1.981-6.309zm2.615 8.325c-1.886 1.935-4.474 3.026-7.176 3.027-.71-.008-1.417-.092-2.109-.25l7.96 25.344c2.104-1.767 4.859-2.839 7.874-2.839a12.58 12.58 0 0 1 1.417.08l-7.966-25.362z"/>
+      <path d="M8.935 5.122L7.12 15.278l8.138 1.455c2.014-1.557 3.193-3.96 3.194-6.506-.003-1.229-.282-2.442-.816-3.55L8.935 5.122zm10.792 1.929c.346 1.023.524 2.096.528 3.176 0 2.57-.988 5.042-2.758 6.905l26.338 4.708 1.816-10.156-25.924-4.634z"/>
+      <circle cx="10.227" cy="10.227" r="8.086"/>
+      <path d="M23.954 44.484c-5.247 0-9.501 4.083-9.501 9.119-.093 2.115-.094 4.311-.108 6.134h19.218c.011-1.987.038-4.325-.108-6.134 0-5.036-4.254-9.119-9.501-9.119zm18.992-23.018l8.22 7.728 11.033-2.36-.829-3.876-9.002 1.926-6.707-6.306zm1.855-10.298l10.378-4.426 9.546 6.013-2.112 3.354-7.789-4.907-8.467 3.612z"/>
+      <path d="M41.376 9.166l7.17 1.134-2.132 13.482-7.171-1.134z"/>
+    </g>
+    <g id="eye">
+      <ellipse cx="5" cy="5" rx="35" ry="30" fill="#ffffff" stroke="#000000" stroke-width="2" />
+      <circle cx="5" cy="5" r="15" fill="#000000" />
+      <circle cx="0" cy="0" r="5" fill="#ffffff" />
+      <circle cx="10" cy="0" r="5" fill="#ffffff" />
+    </g>
+    <g id="scroll">
+      <path
+          fill="#fff2cc"
+        d="m 8.99734,51.71606 c 1.46115,0 2.64566,-1.18451 2.64566,-2.64569 h -2.64566 c 0.73059,0 1.32281,-0.59226 1.32281,-1.32282 0,-0.73059 -0.59222,-1.32284 -1.32281,-1.32284 h 2.64566 v -34.39371 0 c 0,-1.46115 1.18451,-2.64566 2.64569,-2.64566 h 32.28345 c 1.46118,0 2.64569,1.18451 2.64569,2.64566 0,1.46118 -1.18451,2.64569 -2.64569,2.64569 h -2.64569 v 34.39368 c 0,1.46118 -1.18451,2.64569 -2.64563,2.64569 z m 7.93698,-39.68506 v 0 c 0,1.46118 -1.18451,2.64569 -2.64563,2.64569 -0.73059,0 -1.32287,-0.59225 -1.32287,-1.32284 0,-0.7306 0.59228,-1.32285 1.32287,-1.32285 z"
+        fill-rule="evenodd"
+        id="path2"
+        style="display:inline" />
+      <path
+        fill="#cbc1a3"
+        d="m 16.9343,12.031 v 0 c 0,1.46118 -1.18451,2.64569 -2.64563,2.64569 -0.73059,0 -1.32288,-0.59225 -1.32288,-1.32284 0,-0.7306 0.59229,-1.32285 1.32288,-1.32285 z m -5.29132,37.03937 c 0,1.46118 -1.18451,2.64569 -2.64566,2.64569 -1.46118,0 -2.64566,-1.18451 -2.64566,-2.64569 0,-1.46115 1.18448,-2.64566 2.64566,-2.64566 v 0 c 0.73059,0 1.32281,0.59225 1.32281,1.32284 0,0.73056 -0.59222,1.32282 -1.32281,1.32282 z"
+        fill-rule="evenodd"
+        id="path3"
+        style="display:inline" />
+      <path
+          fill="none"
+        stroke="#666666"
+        stroke-width="1"
+        stroke-linejoin="round"
+        stroke-linecap="butt"
+        d="m 11.643,46.4247 v -34.39371 0 c 0,-1.46115 1.18451,-2.64566 2.64569,-2.64566 h 32.28345 c 1.46118,0 2.64569,1.18451 2.64569,2.64566 0,1.46118 -1.18451,2.64569 -2.64569,2.64569 h -2.64569 v 34.39368 c 0,1.46118 -1.18451,2.64569 -2.64563,2.64569 h -32.28348 c -1.46118,0 -2.64566,-1.18451 -2.64566,-2.64569 0,-1.46115 1.18448,-2.64566 2.64566,-2.64566 z m 2.64569,-37.03937 v 0 c 1.46112,0 2.64563,1.18451 2.64563,2.64566 0,1.46118 -1.18451,2.64569 -2.64563,2.64569 -0.73059,0 -1.32287,-0.59225 -1.32287,-1.32284 0,-0.73059 0.59228,-1.32285 1.32287,-1.32285 h 2.64563 m 26.99213,2.64569 h -29.63776 m -5.29135,31.74802 v 0 c 0.73059,0 1.32281,0.59225 1.32281,1.32284 0,0.73057 -0.59222,1.32282 -1.32281,1.32282 h 2.64566 m -2.64566,2.64569 c 1.46115,0 2.64566,-1.18451 2.64566,-2.64569 v -2.64566"
+        fill-rule="evenodd"
+        id="path5"
+        style="display:inline" />
+    </g>
+    <path id="check" d="m7.7,404.6c0,0 115.2,129.7 138.2,182.68l99,0c41.5-126.7 202.7-429.1 340.92-535.1c28.6-36.8-43.3-52-101.35-27.62-87.5,36.7-252.5,317.2-283.3,384.64-43.7,11.5-89.8-73.7-89.84-73.7z" fill="#181"/>
+    <g id="spec-box">
+      <path d="M20 0
+               h260
+               v110
+               a20,20 0 0,1 -20,20
+               h-260
+               v-110
+               a20,20 0 0,1 20,-20
+               z"
+            fill="#c9daf8ff"
+            stroke="black"
+            stroke-width="5"/>
+      <text y="80" x="30" font-family="arial" font-size="60"> &#8704; x, ...</text>
+    </g>
+    <g id="architect-tool">
+      <path d="m 34.972534,98.644068 h 20.364442 v -9.041712 h 25.831422 1.664914 c 5.729455,0 10.390335,-4.660879 10.390335,-10.390335 V 79.002259 12.390336 C 93.223647,6.661978 88.562767,2 82.833312,2 h -3.312256 v 8.742993 H 55.338074 V 2 h -20.36554 v 8.742993 H 10.202 v 78.859363 h 24.771632 v 9.041712 z m 3.294684,-9.040613 V 86.30877 73.110266 h 5.643794 v -1.647342 -1.647342 h -5.643794 v -7.551416 h 7.954465 v -1.647342 -1.647342 h -7.954465 v -7.550318 h 5.643794 V 49.771822 48.12448 h -5.643794 v -7.551416 h 7.954465 v -1.647343 -1.647342 h -7.954465 v -7.551416 h 5.643794 v -1.647342 -1.647342 h -5.643794 v -7.552514 h 7.954465 V 17.232423 15.585081 H 38.267218 V 14.037678 10.742993 5.2946841 h 13.775074 v 5.4483089 3.294685 72.269994 3.294684 5.747028 H 38.267218 Z M 82.833312,5.2946841 c 3.912986,0 7.095651,3.1826649 7.095651,7.0956519 v 59.042936 c -1.8593,-1.743987 -4.351179,-2.821348 -7.095651,-2.821348 L 82.81574,5.2946841 Z m -3.312256,8.7429939 v 56.221588 1.647342 h 3.312256 c 3.912986,0 7.095651,3.182665 7.095651,7.095651 v 0.209762 c 0,3.912986 -3.182665,7.095651 -7.095651,7.095651 H 81.168398 55.338074 V 14.037678 Z M 13.496684,86.30877 V 14.037678 H 34.973632 V 86.307672 H 13.496684 Z"/>
+      <path d="m 45.046949,83.551475 c -1.417,0 -2.667,0.683 -3.476,1.725 -0.58,0.747 -0.939,1.673 -0.939,2.689 0,0.106 0.024,0.206 0.031,0.311 0.163,2.287 2.056,4.104 4.383,4.104 2.327,0 4.22,-1.817 4.383,-4.104 0.007,-0.104 0.031,-0.204 0.031,-0.311 0,-1.017 -0.359,-1.942 -0.939,-2.689 -0.807,-1.042 -2.057,-1.725 -3.474,-1.725 z m 0,5.829 c -0.673,0 -1.235,-0.474 -1.378,-1.104 -0.022,-0.1 -0.037,-0.204 -0.037,-0.311 0,-0.78 0.635,-1.414 1.415,-1.414 0.78,0 1.414,0.634 1.414,1.414 0,0.107 -0.014,0.21 -0.037,0.311 -0.142,0.63 -0.704,1.104 -1.377,1.104 z"/>
+    </g>
+    <clipPath id="backgroundClip">
+      <rect width="100" height="75" rx="10" ry="10"/>
+    </clipPath>
+
+    <linearGradient id="fadeInOut" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#00ff00" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#00ff00" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#00ff00" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#00ff00" stop-opacity="0"/>
+    </linearGradient>
+    <g id="program" clip-path="url(#backgroundClip)">
+      <!-- Black background -->
+      <rect width="100" height="75" fill="black" rx="10" ry="10"/>
+      <!-- Columns with varied horizontal spacing -->
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="0" y="10">1</tspan><tspan x="0" y="20">0</tspan><tspan x="0" y="30">1</tspan><tspan x="0" y="40">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="7" y="45">0</tspan><tspan x="7" y="55">1</tspan><tspan x="7" y="65">1</tspan><tspan x="7" y="75">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="12" y="5">1</tspan><tspan x="12" y="15">0</tspan><tspan x="12" y="25">1</tspan><tspan x="12" y="35">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="20" y="35">1</tspan><tspan x="20" y="45">0</tspan><tspan x="20" y="55">1</tspan><tspan x="20" y="65">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="24" y="15">1</tspan><tspan x="24" y="25">0</tspan><tspan x="24" y="35">1</tspan><tspan x="24" y="45">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="32" y="40">0</tspan><tspan x="32" y="50">1</tspan><tspan x="32" y="60">0</tspan><tspan x="32" y="70">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="40" y="8">1</tspan><tspan x="40" y="18">0</tspan><tspan x="40" y="28">1</tspan><tspan x="40" y="38">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="43" y="50">1</tspan><tspan x="43" y="60">0</tspan><tspan x="43" y="70">1</tspan><tspan x="43" y="80">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="50" y="25">0</tspan><tspan x="50" y="35">1</tspan><tspan x="50" y="45">0</tspan><tspan x="50" y="55">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="57" y="42">1</tspan><tspan x="57" y="52">0</tspan><tspan x="57" y="62">1</tspan><tspan x="57" y="72">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="61" y="3">1</tspan><tspan x="61" y="13">0</tspan><tspan x="61" y="23">1</tspan><tspan x="61" y="33">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="70" y="38">0</tspan><tspan x="70" y="48">1</tspan><tspan x="70" y="58">0</tspan><tspan x="70" y="68">1</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="74" y="12">1</tspan><tspan x="74" y="22">0</tspan><tspan x="74" y="32">1</tspan><tspan x="74" y="42">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="81" y="25">1</tspan><tspan x="81" y="35">0</tspan><tspan x="81" y="45">1</tspan><tspan x="81" y="55">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="87" y="15">1</tspan><tspan x="87" y="25">0</tspan><tspan x="87" y="35">1</tspan><tspan x="87" y="45">0</tspan>
+      </text>
+
+      <text style="fill: url(#fadeInOut);" font-family="monospace" font-size="12">
+        <tspan x="95" y="30">1</tspan><tspan x="95" y="40">0</tspan><tspan x="95" y="50">1</tspan><tspan x="95" y="60">0</tspan>
+      </text>
+    </g>
+  </defs>
+</svg>
