@@ -10,6 +10,11 @@ body {
     position: relative;
     text-rendering: optimizeLegibility;
 }
+@media (min-width: 1200px) {
+  .container {
+    width: 1185px;
+  }
+}
 .content {
     padding: 40px 15px;
     text-align: left;
