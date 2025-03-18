@@ -6,7 +6,7 @@
   bibtex: |-
     @inproceedings{sanchezstern25qedcartographer,
        author = {Sanchez-Stern, Alex and Varghese, Abhishek and Kaufman, Zhanna and Zhang, Dylan and Ringer, Talia and Brun, Yuriy},
-   }
+    }
 
 - title: "Passport: Improving Automated Formal Verification with Identifiers"
   conference: "TOPLAS 2023"
