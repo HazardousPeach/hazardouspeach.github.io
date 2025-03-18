@@ -5,7 +5,12 @@
   paper: "https://www.alexsanchezstern.com/papers/qed-cartographer-icse2025-extended.pdf"
   bibtex: |-
     @inproceedings{sanchezstern25qedcartographer,
-       author = {Sanchez-Stern, Alex and Varghese, Abhishek and Kaufman, Zhanna and Zhang, Dylan and Ringer, Talia and Brun, Yuriy},
+       author = {Sanchez-Stern, Alex and Varghese, Abhishek and Kaufman, Zhanna and Zhang, Dylan and Ringer, Talia and Brun, Yuriy}
+       title = {QEDCartographer: Automating Formal Verification Using Reward-Free Reinforcement Learning}
+       booktitle = {International Conference on Software Engineering}
+       month = {April}
+       year = {2025}
+       publisher = {ACM SIGSOFT}
     }
 
 - title: "Passport: Improving Automated Formal Verification with Identifiers"
