@@ -23,7 +23,8 @@ been working on a few different tools in the space of proof synthesis.
 
 I taught
 [CSE333](https://courses.cs.washington.edu/courses/cse333/24su/) at
-the University of Washington in the Summer of 2024.
+the University of Washington in the Summer of 2024, and I'll be
+teaching it again the Summer of 2025.
 
 Publications
 ------------
