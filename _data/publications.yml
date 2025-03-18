@@ -1,3 +1,17 @@
+- title: "Rango: Adaptive Retrieval-Augmented Proving for Automated Software Verification"
+  conference: "ICSE 2025 (Distinguished Paper Award)"
+  authors: Robert Thompson, Nuno Saavedra, Pedro Carrott, Kevin Fisher, Alex Sanchez-Stern, Yuriy Brun, João F. Ferreira, Sorin Lerner, Emily First
+  github: "https://github.com/rkthomps/coq-modeling"
+  paper: "https://arxiv.org/abs/2412.14063v1"
+  bibtex: |-
+    @inproceedings{thompson25rango,
+       author = {Thompson, Robert and Saavedra, Nuno and Carrot, Pedro, and Fisher, Kevin and Sanchez-Stern, Alex and Brun, Yuriy and Ferreira, João F. and Lerner, Sorin and First, Emily}
+       title = {Rango: Adaptive Retrieval-Augmented Proving for Automated Software Verification}
+       booktitle = {International Conference on Software Engineering}
+       month = {April}
+       year = {2025}
+       publisher = {ACM SIGSOFT}
+    }
 - title: "QEDCartographer: Automating Formal Verification Using Reward-Free Reinforcement Learning"
   conference: "ICSE 2025"
   authors: Alex Sanchez-Stern, Abhishek Varghese, Zhanna Kaufman, Dylan Zhang, Talia Ringer, Yuriy Brun
