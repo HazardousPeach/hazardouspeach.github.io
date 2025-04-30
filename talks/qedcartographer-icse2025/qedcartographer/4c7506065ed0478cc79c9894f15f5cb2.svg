@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="432"
+   height="240"
+   viewBox="0 0 432 240"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath19">
+      <path
+         d="M 0,0 H 8 V 8 H 0 Z"
+         id="path19" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath20">
+      <path
+         d="M 0,0 H 8 V 8 H 0 Z"
+         id="path20" />
+    </clipPath>
+    <pattern
+       patternTransform="matrix(1,0,0,-1,0.5,179.5)"
+       patternUnits="userSpaceOnUse"
+       x="0"
+       y="0"
+       width="8"
+       height="8"
+       id="pattern22">
+      <g
+         id="g22">
+        <path
+           d="M 0,0 8,8"
+           style="fill:none;stroke:#90ee90;stroke-opacity:1;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none"
+           clip-path="url(#clipPath19)"
+           id="path21" />
+        <path
+           d="M 0,8 8,0"
+           style="fill:none;stroke:#90ee90;stroke-opacity:1;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none"
+           clip-path="url(#clipPath20)"
+           id="path22" />
+      </g>
+    </pattern>
+  </defs>
+  <g
+     id="g1">
+    <text
+       id="text1"
+       xml:space="preserve"
+       transform="matrix(1.3333333,0,0,1.3333333,32.366667,202.18206)"><tspan
+         id="tspan1"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0"> 2000</tspan><tspan
+         id="tspan2"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-19.315001"> 2100</tspan><tspan
+         id="tspan3"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-38.635002"> 2200</tspan><tspan
+         id="tspan4"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-57.950001"> 2300</tspan><tspan
+         id="tspan5"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-77.264999"> 2400</tspan><tspan
+         id="tspan6"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-96.580002"> 2500</tspan><tspan
+         id="tspan7"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-115.9"> 2600</tspan><tspan
+         id="tspan8"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="-135.215"> 2700</tspan></text>
+    <text
+       id="text8"
+       xml:space="preserve"
+       transform="matrix(1.2879011,-0.3450921,0.3450921,1.2879011,69.719112,234.04784)"><tspan
+         id="tspan9"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">Proverbot9001</tspan><tspan
+         id="tspan10"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="116.66503"
+         y="20.774105">QEDC</tspan><tspan
+         id="tspan11"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="175.11023"
+         dx="0 -0.19200586"
+         y="41.546921">P + QEDC</tspan></text>
+    <path
+       id="path11"
+       d="M 56.891,12.422 H 305.703 V 147.637 H 56.891 Z"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       transform="scale(1.3333333)" />
+    <path
+       id="path12"
+       d="m 80.969,70.367 h 40.137 v 77.27 H 80.969 Z"
+       style="fill:#90ee90;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="scale(1.3333333)" />
+    <path
+       id="path13"
+       d="m 80.969,70.371 h 40.133 v 77.266 H 80.969 Z"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       transform="scale(1.3333333)" />
+    <text
+       id="text13"
+       xml:space="preserve"
+       transform="matrix(1.3333333,0,0,1.3333333,118.9,91.222057)"><tspan
+         id="tspan13"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">2400</tspan></text>
+    <path
+       id="path14"
+       d="m 161.23,61.672 h 40.141 v 85.965 H 161.23 Z"
+       style="fill:#0078ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="scale(1.3333333)" />
+    <path
+       id="path15"
+       d="m 161.23,61.676 h 40.133 v 85.961 H 161.23 Z"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       transform="scale(1.3333333)" />
+    <text
+       id="text15"
+       xml:space="preserve"
+       transform="matrix(1.3333333,0,0,1.3333333,225.92,79.628724)"><tspan
+         id="tspan15"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">2445</tspan></text>
+    <path
+       id="path16"
+       d="m 241.496,31.152 h 40.137 v 116.484 h -40.137 z"
+       style="fill:#0078ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="scale(1.3333333)" />
+    <path
+       id="path17"
+       d="m 241.496,31.156 h 40.129 v 116.48 h -40.129 z"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       transform="scale(1.3333333)" />
+    <path
+       id="path18"
+       d="m 241.496,31.152 h 40.137 v 116.484 h -40.137 z"
+       style="fill:url(#pattern22);fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="scale(1.3333333)" />
+    <text
+       id="text22"
+       xml:space="preserve"
+       transform="matrix(1.3333333,0,0,1.3333333,332.93333,38.935391)"><tspan
+         id="tspan22"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0">2603</tspan></text>
+    <path
+       id="path23"
+       d="M 56.891,12.422 H 305.703 V 147.637 H 56.891 Z"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1"
+       transform="scale(1.3333333)" />
+    <text
+       id="text23"
+       xml:space="preserve"
+       transform="matrix(0,-1.3333333,1.3333333,0,19.875391,165.98667)"><tspan
+         id="tspan23"
+         style="font-variant:normal;font-weight:normal;font-size:10.667px;font-family:'Liberation Sans';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         x="0"
+         y="0"># theorems proven</tspan></text>
+  </g>
+</svg>
