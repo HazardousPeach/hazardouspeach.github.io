@@ -18,6 +18,9 @@
 	  {% if include.talk %}
 	  <a href="{{ include.talk }}">[talk video]</a>
 	  {% endif %}
+          {% if include.slides %}
+          <a href="{{ include.slides }}">[talk slides]</a>
+          {% endif %}
       </p>
         <div class="authors">{{include.authors}}</div>
     </div>
