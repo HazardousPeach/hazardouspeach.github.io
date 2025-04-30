@@ -39,6 +39,7 @@ Publications
     id=forloop.index
     bibtex=pub.bibtex
     artifact=pub.artifact
+    slides=pub.slides
     talk=pub.talk
 %}
 {% endfor %}
