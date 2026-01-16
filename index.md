@@ -23,8 +23,7 @@ been working on a few different tools in the space of proof synthesis.
 
 I taught
 [CSE333](https://courses.cs.washington.edu/courses/cse333/24su/) at
-the University of Washington in the Summer of 2024, and I'll be
-teaching it again the Summer of 2025.
+the University of Washington in the Summers of 2024, and 2025.
 
 Publications
 ------------
@@ -47,5 +46,5 @@ Publications
 Contact
 -------
 
-You can reach me at [alex.sanchezstern@gmail.com](alex.sanchezstern@gmail.com). I'm
+You can reach me at [alex@dmodel.ai](alex@dmodel.ai). I'm
 also [on GitHub](https://github.com/HazardousPeach).
